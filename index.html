@@ -543,8 +543,8 @@ function rDash(){
   const now=new Date();const q90=new Date(now.getTime()+90*864e5);
   const closingSoon=pipeDeals.filter(d=>{if(!d.closeDate)return false;const dt=new Date(d.closeDate);return dt>=now&&dt<=q90;});
   const stageCounts=pipeStages.map(st=>S.deals.filter(d=>d.stage===st.id).length);
-  const maxStageCount=Math.max(...stageCounts,1);
-  const bar=pipeStages.map((st,i)=>{const n=stageCounts[i];const w=Math.round(n/maxStageCount*100);return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:100px;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0" title="'+st.label+'">'+st.label+'</div><div style="flex:1;background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+w+'%;background:'+st.color+';height:100%;border-radius:3px;transition:width .3s"></div></div><div style="width:18px;text-align:right;font-size:10px;font-weight:600;flex-shrink:0">'+n+'</div></div>';}).join('');
+  const barScale=10;
+  const bar=pipeStages.map((st,i)=>{const n=stageCounts[i];const w=Math.min(Math.round(n/barScale*100),100);return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:100px;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0" title="'+st.label+'">'+st.label+'</div><div style="flex:1;background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+w+'%;background:'+st.color+';height:100%;border-radius:3px;transition:width .3s"></div></div><div style="width:18px;text-align:right;font-size:10px;font-weight:600;flex-shrink:0">'+n+'</div></div>';}).join('');
   let feed=S.acts.slice(0,10).map(a=>'<div class="act-item"><div class="act-ico">'+a.ico+'</div><div class="act-body"><div>'+a.msg+'</div><div class="act-time">'+fmtDT(a.ts)+'</div></div></div>').join('');
   if(!feed)feed='<div class="empty">No activity yet. Create your first deal above.</div>';
   el.className='dash-view';
