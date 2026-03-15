@@ -551,16 +551,13 @@ function rDash(){
   el.innerHTML=
     // Outer: full height flex column
     '<div style="display:flex;flex-direction:column;height:calc(100vh - 52px - 28px);gap:10px">'+
-      // Row 1: KPI cards — 6-col grid giving rows of 3, 3, 2
-      '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">'+
-        '<div style="grid-column:span 2">'+kpi('Active Pipeline',activeCount,'Deals in active stages','#404a57','navigate(\'pipe\')')+'</div>'+
-        '<div style="grid-column:span 2">'+kpi('Total Pipeline Value',fmt$(pipeVal),'Active stages combined','#404a57','navigate(\'pipe\')')+'</div>'+
-        '<div style="grid-column:span 2">'+kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981','showDealSummary(\'Value Under Contract\',S.deals.filter(d=>d.stage===\'contract\'))')+'</div>'+
-        '<div style="grid-column:span 2">'+kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6','showDealSummary(\'LOI Outstanding\',S.deals.filter(d=>d.stage===\'loi\'))')+'</div>'+
-        '<div style="grid-column:span 2">'+kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308','showDealSummary(\'In Underwriting\',S.deals.filter(d=>d.stage===\'uw_v1\'||d.stage===\'in_process_uw\'))')+'</div>'+
-        '<div style="grid-column:span 2">'+kpi('Closing Next 90 Days',closingSoon.length,closingSoon.length?'Nearest: '+fmtD(closingSoon.sort((a,b)=>new Date(a.closeDate)-new Date(b.closeDate))[0].closeDate):'No close dates set','#f97316')+'</div>'+
-        '<div style="grid-column:span 3">'+kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444','showDealSummary(\'NPA / PSA\',S.deals.filter(d=>d.stage===\'psa\'))')+'</div>'+
-        '<div style="grid-column:span 3">'+kpi('Closed Portfolio',closedCount,'Owned &amp; previously owned','#6366f1')+'</div>'+
+      // Row 1: KPI cards — 5 cards in a single row
+      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">'+
+        kpi('Active Pipeline',activeCount+' deals',fmt$(pipeVal)+' combined value','#404a57','navigate(\'pipe\')')+
+        kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981','showDealSummary(\'Value Under Contract\',S.deals.filter(d=>d.stage===\'contract\'))')+
+        kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6','showDealSummary(\'LOI Outstanding\',S.deals.filter(d=>d.stage===\'loi\'))')+
+        kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308','showDealSummary(\'In Underwriting\',S.deals.filter(d=>d.stage===\'uw_v1\'||d.stage===\'in_process_uw\'))')+
+        kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444','showDealSummary(\'NPA / PSA\',S.deals.filter(d=>d.stage===\'psa\'))')+
       '</div>'+
       // Row 2: Map (left, flex:1) + Right column (25%)
       '<div style="display:grid;grid-template-columns:3fr 1fr;gap:10px;flex:1;min-height:0">'+
