@@ -572,17 +572,23 @@ function rDash(){
     '<div style="margin-top:8px">'+
       '<div class="sec"><h3>Deal Map <span style="font-size:11px;color:var(--muted);font-weight:400">— Active pipeline locations</span></h3></div>'+
       '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh)">'+
-        '<div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">'+
-          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
+        '<div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">'+
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
           '<input id="map-search-input" type="text" placeholder="Search any address…" style="flex:1;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text);background:transparent">'+
+          '<button onclick="toggleMapLayer()" id="map-layer-btn" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">🛰 Satellite</button>'+
+          '<button onclick="openStreetView()" id="map-sv-btn" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap" title="Street View of searched or selected location">👁 Street View</button>'+
         '</div>'+
-        '<div id="dash-map" style="height:420px;width:100%"></div>'+
+        '<div style="position:relative">'+
+          '<div id="dash-map" style="height:420px;width:100%"></div>'+
+          '<div id="dash-sv" style="height:420px;width:100%;display:none;position:absolute;top:0;left:0"></div>'+
+          '<button id="sv-back-btn" onclick="closeStreetView()" style="display:none;position:absolute;top:10px;left:10px;z-index:10;background:rgba(255,255,255,.95);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)">← Back to Map</button>'+
+        '</div>'+
       '</div>'+
     '</div>';
   fetchTsy();
   if(window._mapsReady)initDashMap();else{const t=setInterval(()=>{if(window._mapsReady){clearInterval(t);initDashMap();}},200);}
 }
-let _dashMap=null,_mapMarkers=[],_infoWin=null;
+let _dashMap=null,_mapMarkers=[],_infoWin=null,_svPano=null,_svPos=null,_isSatellite=false;
 async function geocodeAddr(addr){
   try{
     const r=await fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key=AIzaSyAiPB5pq89eHUq3BIMU6gvoPklJUAbXJng');
@@ -590,6 +596,34 @@ async function geocodeAddr(addr){
     if(d.results&&d.results[0])return d.results[0].geometry.location;
   }catch(e){}
   return null;
+}
+function toggleMapLayer(){
+  if(!_dashMap)return;
+  _isSatellite=!_isSatellite;
+  _dashMap.setMapTypeId(_isSatellite?google.maps.MapTypeId.HYBRID:google.maps.MapTypeId.ROADMAP);
+  const btn=document.getElementById('map-layer-btn');
+  if(btn){btn.textContent=_isSatellite?'🗺 Map View':'🛰 Satellite';btn.style.color=_isSatellite?'var(--accent)':'var(--muted)';}
+}
+function openStreetView(){
+  const svEl=document.getElementById('dash-sv');
+  const mapEl=document.getElementById('dash-map');
+  const backBtn=document.getElementById('sv-back-btn');
+  if(!svEl||!_dashMap)return;
+  const pos=_svPos||_dashMap.getCenter();
+  if(!_svPano)_svPano=new google.maps.StreetViewPanorama(svEl,{position:pos,pov:{heading:0,pitch:0},addressControl:true,linksControl:true,enableCloseButton:false,zoomControl:true});
+  else _svPano.setPosition(pos);
+  mapEl.style.display='none';svEl.style.display='block';backBtn.style.display='block';
+  const svBtn=document.getElementById('map-sv-btn');if(svBtn)svBtn.style.color='var(--accent)';
+}
+function closeStreetView(){
+  const svEl=document.getElementById('dash-sv');
+  const mapEl=document.getElementById('dash-map');
+  const backBtn=document.getElementById('sv-back-btn');
+  if(svEl)svEl.style.display='none';
+  if(mapEl)mapEl.style.display='block';
+  if(backBtn)backBtn.style.display='none';
+  const svBtn=document.getElementById('map-sv-btn');if(svBtn)svBtn.style.color='var(--muted)';
+  if(_dashMap)google.maps.event.trigger(_dashMap,'resize');
 }
 async function initDashMap(){
   const el=document.getElementById('dash-map');
@@ -601,15 +635,22 @@ async function initDashMap(){
     mapTypeControl:false,streetViewControl:false,fullscreenControl:true,
   });
   _infoWin=new google.maps.InfoWindow();
-  // Search box
+  // Search autocomplete
   const inp=document.getElementById('map-search-input');
   if(inp){
     const ac=new google.maps.places.Autocomplete(inp,{types:['geocode','establishment']});
     ac.addListener('place_changed',()=>{
       const p=ac.getPlace();
-      if(p.geometry){_dashMap.panTo(p.geometry.location);_dashMap.setZoom(15);}
+      if(p.geometry){
+        _svPos=p.geometry.location;
+        _dashMap.panTo(_svPos);_dashMap.setZoom(16);
+        // If street view is open, update it
+        if(_svPano&&document.getElementById('dash-sv').style.display!=='none')_svPano.setPosition(_svPos);
+      }
     });
   }
+  // Track map center for street view
+  _dashMap.addListener('center_changed',()=>{_svPos=_dashMap.getCenter();});
   // Plot pipeline deals
   const HIDE=['closing','recent_trades','dod','dow','matt','written_loi','disposition'];
   const deals=S.deals.filter(d=>!HIDE.includes(d.stage)&&d.addr);
@@ -625,13 +666,15 @@ async function initDashMap(){
       icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:st.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2}
     });
     marker.addListener('click',()=>{
+      _svPos=pos;
       _infoWin.setContent(
-        '<div style="font-family:\'DM Sans\',sans-serif;min-width:180px;padding:2px">'+
+        '<div style="font-family:\'DM Sans\',sans-serif;min-width:190px;padding:2px">'+
         '<div style="font-weight:600;font-size:13px;margin-bottom:4px">'+esc(deal.name)+'</div>'+
         '<div style="color:#666;font-size:11px;margin-bottom:8px">'+esc(deal.addr)+'</div>'+
         '<div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Stage:</span> '+st.label+'</div>'+
         '<div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Value:</span> '+fmt$(Number(deal.tgt)||Number(deal.ask)||0)+'</div>'+
-        (deal.lead?'<div style="font-size:12px"><span style="color:#888">Lead:</span> '+esc(deal.lead)+'</div>':'')+
+        (deal.lead?'<div style="font-size:12px;margin-bottom:8px"><span style="color:#888">Lead:</span> '+esc(deal.lead)+'</div>':'')+
+        '<button onclick="openStreetView()" style="margin-top:6px;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer;font-weight:600">👁 Street View</button>'+
         '</div>'
       );
       _infoWin.open(_dashMap,marker);
