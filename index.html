@@ -258,7 +258,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="ni ni-sub" onclick="navigate('medical')" data-v="medical">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Medical Pipeline
+      All Deal Archive
     </div>
     <div class="nav-group-hd">Thomas Park Construction</div>
     <div class="ni ni-sub" onclick="navigate('con_dash')" data-v="con_dash">
@@ -271,7 +271,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="ni ni-sub" onclick="navigate('con_deals')" data-v="con_deals">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
-      All Jobs
+      All Jobs Archive
     </div>
     <div class="ni ni-sub" onclick="navigate('con_pipe')" data-v="con_pipe">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/></svg>
@@ -415,19 +415,19 @@ const DOC_T=['Offering Memorandum','Rent Roll','T12 Financials','PSA / Purchase 
 const SB_URL='https://wponbaapholnvfpjmkpw.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwb25iYWFwaG9sbnZmcGpta3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzM2NDksImV4cCI6MjA4OTEwOTY0OX0.E1BmEskHoVFHdaeh2UvVfUQtfjizD9h_V8RT6wLBRg0';
 const sb=supabase.createClient(SB_URL,SB_KEY);
-let S={view:'dash',deals:[],acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],eid:null,adid:null,did:null,dtab:'ov',drag:null,sort:{col:'name',asc:true},collapsed:{}};
+let S={view:'dash',deals:[],acts:[],con_deals:[],con_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],eid:null,adid:null,did:null,dtab:'ov',drag:null,sort:{col:'name',asc:true},collapsed:{},con_collapsed:{}};
 let _saveTimer=null;
 function setSyncDot(state){const d=document.getElementById('sync-dot');if(d){d.className='sync-dot'+(state==='syncing'?' syncing':'');}}
 function save(){
-  try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,settings:S.settings,team:S.team}))}catch(e){}
+  try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team}))}catch(e){}
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>{
     setSyncDot('syncing');
-    sb.from('app_data').upsert({id:'main',deals:S.deals,acts:S.acts,settings:S.settings,team:S.team,updated_at:new Date().toISOString()})
+    sb.from('app_data').upsert({id:'main',deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team,updated_at:new Date().toISOString()})
       .then(({error})=>{setSyncDot(error?'':'ok');if(error)console.error('Save error:',error);});
   },600);
 }
-function load(){try{const d=localStorage.getItem('tg9');if(d){const p=JSON.parse(d);S.deals=p.deals||[];S.acts=p.acts||[];S.settings=p.settings||{firm:'Thomas Park'};S.team=p.team||['AK','BJ','CR','DL','ES']}}catch(e){}}
+function load(){try{const d=localStorage.getItem('tg9');if(d){const p=JSON.parse(d);S.deals=p.deals||[];S.acts=p.acts||[];S.con_deals=p.con_deals||[];S.con_acts=p.con_acts||[];S.settings=p.settings||{firm:'Thomas Park'};S.team=p.team||['AK','BJ','CR','DL','ES']}}catch(e){}}
 // ============================================================
 // ALLOWED USERS — remove this block once self-signup is enabled
 const ALLOWED_EMAILS=[
@@ -495,7 +495,7 @@ async function onSignedIn(session){
   document.getElementById('auth-screen').style.display='none';
   const {data}=await sb.from('app_data').select('*').eq('id','main').single();
   if(data&&data.deals&&data.deals.length){
-    S.deals=data.deals||[];S.acts=data.acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
+    S.deals=data.deals||[];S.acts=data.acts||[];S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
   } else {
     load();
     if(!S.deals.length)initSample();
@@ -503,7 +503,7 @@ async function onSignedIn(session){
   }
   // Real-time sync
   sb.channel('app_data').on('postgres_changes',{event:'UPDATE',schema:'public',table:'app_data',filter:'id=eq.main'},payload=>{
-    const d=payload.new;S.deals=d.deals||S.deals;S.acts=d.acts||S.acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
+    const d=payload.new;S.deals=d.deals||S.deals;S.acts=d.acts||S.acts;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
     navigate(S.view);
   }).subscribe();
   navigate('dash');
@@ -528,7 +528,7 @@ function navigate(v){
   const el=document.getElementById('view');
   if(v!=='dash')el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'Medical Pipeline',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Deal Snapshot',con_deals:'All Jobs',con_pipe:'Construction Pipeline'};
+  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Deal Snapshot',con_deals:'All Jobs Archive',con_pipe:'Construction Pipeline'};
   document.getElementById('pg-title').textContent=T[v]||v;
   ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe})[v]();
   const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
@@ -1092,15 +1092,41 @@ function rMedical(){
     const rowsHtml=rows.map(r=>'<tr class="med-row">'+(cols.map(c=>'<td title="'+esc(r[c]||'')+'">'+esc(r[c]||'')+'</td>').join(''))+'</tr>').join('');
     return '<tr class="med-sec-hd" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'table-row-group\':\'none\'"><td colspan="'+cols.length+'"><span class="med-dot" style="background:'+color+'"></span>'+esc(sec)+'<span class="med-cnt">'+rows.length+' deals</span></td></tr><tbody>'+rowsHtml+'</tbody>';
   }).join('');
+  // Build live CRM deals as rows appended under a "Live CRM Deals" section
+  const liveSections=[...new Set(S.deals.map(d=>sobj(d.stage).label))];
+  const liveBySection={};
+  const liveSq=sq;
+  S.deals.filter(d=>{
+    if(secFilter&&secFilter!=='__live_'+d.stage)return false;
+    if(liveSq){const v=(d.name+' '+(d.addr||'')+' '+(d.source||'')+' '+(d.lead||'')).toLowerCase();return v.includes(liveSq);}
+    return true;
+  }).forEach(d=>{const lbl=sobj(d.stage).label;(liveBySection[lbl]=liveBySection[lbl]||[]).push(d);});
+  const liveTbody=liveSections.map(sec=>{
+    const rows=liveBySection[sec];if(!rows||!rows.length)return'';
+    const st=STAGES.find(s=>s.label===sec)||STAGES[0];
+    const rowsHtml=rows.map(d=>'<tr class="med-row">'+
+      '<td title="'+esc(d.name)+'">'+esc(d.name)+'</td>'+
+      '<td title="'+esc(d.addr||'')+'">'+esc(d.addr||'--')+'</td>'+
+      '<td>'+esc(d.bsf||'--')+'</td>'+
+      '<td>'+fmt$(Number(d.tgt)||Number(d.ask)||0)+'</td>'+
+      '<td>'+esc(d.cap?d.cap+'%':'--')+'</td>'+
+      '<td>'+esc(d.lead||'--')+'</td>'+
+      '<td>'+esc(d.source||'--')+'</td>'+
+      '<td>'+fmtD(d.createdAt)+'</td>'+
+      '<td>'+esc(d.stage==='closing'?'Closed':'Active')+'</td>'+
+    '</tr>').join('');
+    return '<tr class="med-sec-hd" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'table-row-group\':\'none\'"><td colspan="9"><span class="med-dot" style="background:'+st.color+'"></span>'+esc(sec)+' — Live CRM<span class="med-cnt">'+rows.length+' deals</span></td></tr><tbody>'+rowsHtml+'</tbody>';
+  }).join('');
   const thHtml=cols.map(c=>'<th>'+esc(c)+'</th>').join('');
+  const grandTotal=total+S.deals.length;
   el.innerHTML=
-    '<div class="med-hd"><h2>Medical Deal Pipeline</h2><span class="med-total">'+total+' deals</span></div>'+
+    '<div class="med-hd"><h2>All Deal Archive</h2><span class="med-total">'+grandTotal+' deals</span></div>'+
     '<div class="med-filters">'+
     '<input id="med-search" type="text" placeholder="Search all fields..." value="'+esc(search)+'" oninput="rMedical()">'+
     '<select id="med-sec" onchange="rMedical()"><option value="">All Sections</option>'+secOptions+'</select>'+
     '</div>'+
     '<div class="med-tbl-wrap">'+
-    '<table class="med-tbl"><thead><tr>'+thHtml+'</tr></thead>'+tbody+'</table></div>';
+    '<table class="med-tbl"><thead><tr>'+thHtml+'</tr></thead>'+tbody+liveTbody+'</table></div>';
 }
 // ============================================================
 // CONSTRUCTION DATA
@@ -1204,41 +1230,145 @@ function rConSnap(){
   }).join('');
   el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
 }
+// ---- CONSTRUCTION PIPELINE (live CRM — S.con_deals) ----
+function conSobj(sid){return CONST_STAGES.find(s=>s.id===sid)||{id:sid,label:sid,color:'#6c7a8d',short:'?'};}
 function rConPipe(){
-  // Construction Pipeline: pricing → monitoring kanban (active pipeline)
   const el=document.getElementById('view');
-  const pipeStages=['pricing','pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted','con_monitoring'];
-  const cols=CONST_STAGES.filter(st=>pipeStages.includes(st.id)).map(st=>{
-    const ds=CONST_DATA.filter(d=>d.stage===st.id);
-    const cards=ds.map(d=>'<div class="dcard" style="cursor:default">'+
-      '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
-      '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
-      '<div class="dcard-foot">'+
-        '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
-        '<div style="font-size:10px;color:var(--muted)">'+(d.prob?d.prob+'% prob':'')+'</div>'+
-      '</div></div>'
+  const ALL_CON_STAGES=CONST_STAGES.map(s=>s.id);
+  const cols=CONST_STAGES.map(st=>{
+    const ds=S.con_deals.filter(d=>d.stage===st.id);
+    const cards=ds.map(d=>
+      '<div class="dcard" draggable="true" ondragstart="conDst(event,\''+d.id+'\')" onclick="openConDet(\''+d.id+'\')">'+
+        '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
+        '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
+        '<div class="dcard-foot">'+
+          '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
+          '<div style="font-size:10px;color:var(--muted)">'+(d.prob?d.prob+'%':'')+'</div>'+
+        '</div></div>'
     ).join('');
-    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div><div class="col-body" style="min-height:60px">'+cards+'</div></div>';
+    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div>'+
+      '<div class="col-body" ondragover="dov(event)" ondragleave="dlv(event)" ondrop="conDdr(event,\''+st.id+'\')">'+cards+'</div></div>';
   }).join('');
-  el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
+  el.innerHTML=
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:10px">'+
+      '<button class="btn btn-primary btn-sm" onclick="openConForm()">+ New Job</button>'+
+    '</div>'+
+    '<div id="pipe-wrap">'+cols+'</div>';
 }
+function conDst(e,id){S.drag=id;e.dataTransfer.effectAllowed='move';}
+function conDdr(e,sid){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const d=S.con_deals.find(x=>x.id===S.drag);
+  if(!d||d.stage===sid)return;
+  d.stage=sid;d.stageEnteredAt=new Date().toISOString();
+  addConAct('&#8594;','<strong>'+esc(d.name)+'</strong> moved to <strong>'+conSobj(sid).label+'</strong>');
+  saveCon();rConPipe();
+}
+function openConDet(did){
+  const d=S.con_deals.find(x=>x.id===did);if(!d)return;
+  document.getElementById('summo-title').textContent=d.name;
+  const st=conSobj(d.stage);
+  document.getElementById('summo-body').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">'+
+      '<div class="info-block"><h4>Job Info</h4>'+
+        '<div class="info-row"><span class="lbl">Stage</span><span class="val">'+cbadge(d.stage)+' '+esc(st.label)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Address</span><span class="val">'+esc(d.addr||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Source</span><span class="val">'+esc(d.source||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Type</span><span class="val">'+esc(d.ptype||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Start Date</span><span class="val">'+fmtD(d.startDate)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Duration</span><span class="val">'+(d.duration?d.duration+' mo':'--')+'</span></div>'+
+      '</div>'+
+      '<div class="info-block"><h4>Financials</h4>'+
+        '<div class="info-row"><span class="lbl">Project Cost</span><span class="val" style="font-weight:700;color:var(--accent)">'+fmt$(d.cost)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Win Probability</span><span class="val">'+(d.prob?d.prob+'%':'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Square Feet</span><span class="val">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Bid Due</span><span class="val">'+fmtD(d.bidDue)+'</span></div>'+
+      '</div>'+
+    '</div>'+
+    (d.notes?'<div class="info-block"><h4>Notes</h4><p style="font-size:13px;line-height:1.6">'+esc(d.notes)+'</p></div>':'')+
+    '<div style="display:flex;gap:8px;margin-top:16px">'+
+      '<button class="btn btn-ghost btn-sm" onclick="openConForm(\''+did+'\')">Edit</button>'+
+      '<button class="btn btn-danger btn-sm" onclick="confirmDelCon(\''+did+'\')">Delete</button>'+
+    '</div>';
+  document.getElementById('summo').style.display='flex';
+}
+function openConForm(did){
+  const d=did?S.con_deals.find(x=>x.id===did):null;
+  const stOpts=CONST_STAGES.map(s=>'<option value="'+s.id+'"'+(d&&d.stage===s.id?' selected':'')+'>'+s.label+'</option>').join('');
+  document.getElementById('summo-title').textContent=did?'Edit Job':'New Construction Job';
+  document.getElementById('summo-body').innerHTML=
+    '<form onsubmit="sConForm(event,\''+( did||'')+'\')">'+
+    '<div class="form-grid">'+
+      '<div class="form-group full"><label>Job Name *</label><input type="text" id="cf-name" required value="'+esc(d?d.name:'')+'"></div>'+
+      '<div class="form-group"><label>Stage</label><select id="cf-stage">'+stOpts+'</select></div>'+
+      '<div class="form-group"><label>Type</label><input type="text" id="cf-ptype" value="'+esc(d?d.ptype:'')+'"></div>'+
+      '<div class="form-group full"><label>Address</label><input type="text" id="cf-addr" value="'+esc(d?d.addr:'')+'"></div>'+
+      '<div class="form-group"><label>Source</label><input type="text" id="cf-source" value="'+esc(d?d.source:'')+'"></div>'+
+      '<div class="form-group"><label>Project Cost ($)</label><input type="number" id="cf-cost" min="0" value="'+(d?d.cost:'')+'"></div>'+
+      '<div class="form-group"><label>Win Probability (%)</label><input type="number" id="cf-prob" min="0" max="100" value="'+(d?d.prob:'')+'"></div>'+
+      '<div class="form-group"><label>Square Feet</label><input type="number" id="cf-sf" min="0" value="'+(d?d.sf:'')+'"></div>'+
+      '<div class="form-group"><label>Est. Start Date</label><input type="date" id="cf-start" value="'+(d?d.startDate:'')+'"></div>'+
+      '<div class="form-group"><label>Duration (months)</label><input type="text" id="cf-dur" value="'+esc(d?d.duration:'')+'"></div>'+
+      '<div class="form-group"><label>Bid Due Date</label><input type="date" id="cf-bid" value="'+(d?d.bidDue:'')+'"></div>'+
+      '<div class="form-group full"><label>Notes</label><textarea id="cf-notes" rows="3">'+esc(d?d.notes:'')+'</textarea></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById(\'summo\').style.display=\'none\'">Cancel</button>'+
+      '<button type="submit" class="btn btn-primary btn-sm">'+(did?'Save Changes':'Create Job')+'</button>'+
+    '</div></form>';
+  document.getElementById('summo').style.display='flex';
+}
+function sConForm(e,did){
+  e.preventDefault();
+  const now=new Date().toISOString();
+  let d=did?S.con_deals.find(x=>x.id===did):{id:uid(),createdAt:now,stageEnteredAt:now,notes:''};
+  if(!did)S.con_deals.push(d);
+  d.name=document.getElementById('cf-name').value.trim();
+  d.stage=document.getElementById('cf-stage').value;
+  d.ptype=document.getElementById('cf-ptype').value.trim();
+  d.addr=document.getElementById('cf-addr').value.trim();
+  d.source=document.getElementById('cf-source').value.trim();
+  d.cost=Number(document.getElementById('cf-cost').value)||0;
+  d.prob=Number(document.getElementById('cf-prob').value)||0;
+  d.sf=Number(document.getElementById('cf-sf').value)||0;
+  d.startDate=document.getElementById('cf-start').value;
+  d.duration=document.getElementById('cf-dur').value.trim();
+  d.bidDue=document.getElementById('cf-bid').value;
+  d.notes=document.getElementById('cf-notes').value.trim();
+  addConAct('&#9733;','<strong>'+esc(d.name)+'</strong> '+(did?'updated':'added to '+conSobj(d.stage).label));
+  saveCon();document.getElementById('summo').style.display='none';navigate('con_pipe');toast(did?'Job updated':'Job created');
+}
+function confirmDelCon(did){
+  const d=S.con_deals.find(x=>x.id===did);if(!d)return;
+  document.getElementById('conf-title').textContent='Delete Job';
+  document.getElementById('conf-msg').textContent='Delete "'+d.name+'"? This cannot be undone.';
+  document.getElementById('conf-ok').onclick=()=>{
+    S.con_deals=S.con_deals.filter(x=>x.id!==did);
+    saveCon();closeMo('confMo');document.getElementById('summo').style.display='none';navigate('con_pipe');toast('Job deleted');
+  };
+  document.getElementById('confMo').classList.add('show');
+}
+function addConAct(ico,msg){S.con_acts.unshift({ico,msg,ts:new Date().toISOString()});if(S.con_acts.length>100)S.con_acts.pop();}
+function saveCon(){save();}
+// ---- ALL JOBS ARCHIVE (CONST_DATA + live S.con_deals combined, read-only) ----
 function rConDeals(){
   const el=document.getElementById('view');
   const sq=((document.getElementById('con-search')||{}).value||'').toLowerCase();
   const sf=(document.getElementById('con-stage')||{}).value||'';
-  const stageOptions=CONST_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+' ('+CONST_DATA.filter(d=>d.stage===st.id).length+')</option>').join('');
-  const filtered=CONST_DATA.filter(d=>{
+  // Combine archive + live
+  const liveRows=S.con_deals.map(d=>({...d,_live:true}));
+  const allRows=[...CONST_DATA,...liveRows];
+  const stageOptions=CONST_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+'</option>').join('');
+  const filtered=allRows.filter(d=>{
     if(sf&&d.stage!==sf)return false;
     if(sq){const v=Object.values(d).join(' ').toLowerCase();return v.includes(sq);}
     return true;
   });
-  // Group by stage
   const byStage={};
   filtered.forEach(d=>{(byStage[d.stage]=byStage[d.stage]||[]).push(d);});
   const tbody=CONST_STAGES.map(st=>{
-    const rows=byStage[st.id];
-    if(!rows||!rows.length)return'';
-    const rowsHtml=rows.map(d=>'<tr style="cursor:default"><td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(d.name)+'">'+esc(d.name)+'</td>'+
+    const rows=byStage[st.id];if(!rows||!rows.length)return'';
+    const rowsHtml=rows.map(d=>'<tr style="cursor:default"'+(d._live?' title="Live CRM job"':'')+'><td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
       '<td style="font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.addr||'--')+'</td>'+
       '<td>'+cbadge(d.stage)+'</td>'+
       '<td style="font-size:12px">'+esc(d.source||'--')+'</td>'+
@@ -1246,7 +1376,7 @@ function rConDeals(){
       '<td style="font-size:12px;font-weight:600">'+fmt$(d.cost)+'</td>'+
       '<td style="font-size:12px;text-align:center">'+(d.prob?d.prob+'%':'--')+'</td>'+
       '<td style="font-size:12px">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</td>'+
-      '<td style="font-size:12px">'+esc(d.startDate?fmtD(d.startDate):'--')+'</td>'+
+      '<td style="font-size:12px">'+fmtD(d.startDate)+'</td>'+
     '</tr>').join('');
     return '<tr onclick="toggleConGroup(\''+st.id+'\')" style="cursor:pointer"><td colspan="9" style="padding:8px 14px;background:'+st.color+'15;border-left:3px solid '+st.color+'"><div style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px"><div style="width:9px;height:9px;border-radius:50%;background:'+st.color+'"></div>'+st.label+'<span style="background:'+st.color+'20;color:'+st.color+';border-radius:20px;padding:1px 8px;font-size:11px">'+rows.length+'</span></div></td></tr>'+
       '<tbody id="cg-'+st.id+'">'+rowsHtml+'</tbody>';
@@ -1255,7 +1385,7 @@ function rConDeals(){
     '<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">'+
       '<input id="con-search" type="text" placeholder="Search jobs..." oninput="rConDeals()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;width:220px;font-family:inherit">'+
       '<select id="con-stage" onchange="rConDeals()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit"><option value="">All Stages</option>'+stageOptions+'</select>'+
-      '<span style="font-size:12px;color:var(--muted)">'+filtered.length+' of '+CONST_DATA.length+' jobs</span>'+
+      '<span style="font-size:12px;color:var(--muted)">'+filtered.length+' of '+allRows.length+' jobs</span>'+
     '</div>'+
     '<div class="tbl-wrap"><table><thead><tr>'+
       '<th>Job Name</th><th>Address</th><th>Stage</th><th>Source</th><th>Type</th><th>Cost</th><th>Prob</th><th>SF</th><th>Start Date</th>'+
