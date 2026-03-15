@@ -578,9 +578,9 @@ function rDash(){
           '<button onclick="toggleMapLayer()" id="map-layer-btn" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">🛰 Satellite</button>'+
           '<button onclick="openStreetView()" id="map-sv-btn" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap" title="Street View of searched or selected location">👁 Street View</button>'+
         '</div>'+
-        '<div style="position:relative">'+
-          '<div id="dash-map" style="height:420px;width:100%"></div>'+
-          '<div id="dash-sv" style="height:420px;width:100%;display:none;position:absolute;top:0;left:0"></div>'+
+        '<div style="position:relative;height:420px">'+
+          '<div id="dash-map" style="position:absolute;inset:0"></div>'+
+          '<div id="dash-sv" style="position:absolute;inset:0;z-index:2;visibility:hidden"></div>'+
           '<button id="sv-back-btn" onclick="closeStreetView()" style="display:none;position:absolute;top:10px;left:10px;z-index:10;background:rgba(255,255,255,.95);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)">← Back to Map</button>'+
         '</div>'+
       '</div>'+
@@ -605,12 +605,10 @@ function toggleMapLayer(){
   if(btn){btn.textContent=_isSatellite?'🗺 Map View':'🛰 Satellite';btn.style.color=_isSatellite?'var(--accent)':'var(--muted)';}
 }
 function _svShowPanel(){
-  const mapEl=document.getElementById('dash-map');
   const svEl=document.getElementById('dash-sv');
   const backBtn=document.getElementById('sv-back-btn');
   const svBtn=document.getElementById('map-sv-btn');
-  if(mapEl)mapEl.style.display='none';
-  if(svEl)svEl.style.display='block';
+  if(svEl)svEl.style.visibility='visible';
   if(backBtn)backBtn.style.display='block';
   if(svBtn)svBtn.style.color='var(--accent)';
 }
@@ -623,12 +621,10 @@ function openStreetView(pos){
 }
 function closeStreetView(){
   if(_svPano)_svPano.setVisible(false);
-  const mapEl=document.getElementById('dash-map');
   const svEl=document.getElementById('dash-sv');
   const backBtn=document.getElementById('sv-back-btn');
   const svBtn=document.getElementById('map-sv-btn');
-  if(svEl)svEl.style.display='none';
-  if(mapEl)mapEl.style.display='block';
+  if(svEl)svEl.style.visibility='hidden';
   if(backBtn)backBtn.style.display='none';
   if(svBtn)svBtn.style.color='var(--muted)';
   if(_dashMap)google.maps.event.trigger(_dashMap,'resize');
