@@ -551,11 +551,20 @@ function rDash(){
   el.innerHTML=
     // Outer: full height flex column
     '<div style="display:flex;flex-direction:column;height:calc(100vh - 52px - 28px);gap:10px">'+
-      // Row 1: KPI cards — 5 cards in a single row
-      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">'+
-        kpi('Active Pipeline',activeCount+' deals',fmt$(pipeVal)+' combined value','#404a57','navigate(\'pipe\')')+
+      // KPI block: large Active Pipeline left (spans 2 rows), 2x2 grid right
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto;gap:8px">'+
+        // Large Active Pipeline card — spans both rows
+        '<div class="kpi" onclick="navigate(\'pipe\')" style="grid-row:span 2;border-top:3px solid #404a57;cursor:pointer;display:flex;flex-direction:column;justify-content:center;padding:16px 18px">'+
+          '<div class="kpi-lbl">Active Pipeline</div>'+
+          '<div style="font-size:52px;font-weight:700;color:#404a57;line-height:1;margin:10px 0 4px">'+activeCount+'</div>'+
+          '<div style="font-size:11px;color:var(--muted);margin-bottom:16px">deal'+(activeCount!==1?'s':'')+' in active stages</div>'+
+          '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px">Combined Value</div>'+
+          '<div style="font-size:26px;font-weight:700;color:#404a57;line-height:1">'+fmt$(pipeVal)+'</div>'+
+        '</div>'+
+        // 2x2 grid — top row
         kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981','showDealSummary(\'Value Under Contract\',S.deals.filter(d=>d.stage===\'contract\'))')+
         kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6','showDealSummary(\'LOI Outstanding\',S.deals.filter(d=>d.stage===\'loi\'))')+
+        // 2x2 grid — bottom row
         kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308','showDealSummary(\'In Underwriting\',S.deals.filter(d=>d.stage===\'uw_v1\'||d.stage===\'in_process_uw\'))')+
         kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444','showDealSummary(\'NPA / PSA\',S.deals.filter(d=>d.stage===\'psa\'))')+
       '</div>'+
