@@ -1187,9 +1187,9 @@ function rConDash(){
     '</div>';
 }
 function rConSnap(){
-  // Active Deal Snapshot: Active + Pre-Construction kanban
+  // Active Deal Snapshot: all stages except completed, lost, dead, monitoring
   const el=document.getElementById('view');
-  const snapStages=['active','preconstruction'];
+  const snapStages=['active','preconstruction','pricing','pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted'];
   const cols=CONST_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
     const ds=CONST_DATA.filter(d=>d.stage===st.id);
     const cards=ds.map(d=>'<div class="dcard" style="cursor:default">'+
@@ -1202,7 +1202,7 @@ function rConSnap(){
     ).join('');
     return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div><div class="col-body" style="min-height:80px">'+cards+'</div></div>';
   }).join('');
-  el.innerHTML='<div id="pipe-wrap" style="grid-template-columns:repeat(2,1fr)">'+cols+'</div>';
+  el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
 }
 function rConPipe(){
   // Construction Pipeline: pricing → monitoring kanban (active pipeline)
