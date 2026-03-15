@@ -243,7 +243,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="ni" onclick="navigate('pipe')" data-v="pipe">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="7" width="5" height="14" rx="1"/><rect x="17" y="5" width="5" height="16" rx="1"/></svg>
-      Pipeline
+      Active Deal Snapshot
     </div>
     <div class="ni" onclick="navigate('deals')" data-v="deals">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
@@ -343,6 +343,15 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 <div id="toast-wrap"></div>
+<div id="summo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8000;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:10px;width:min(860px,95vw);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)">
+      <h2 id="summo-title" style="font-size:16px;font-weight:600"></h2>
+      <button onclick="document.getElementById('summo').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1">&times;</button>
+    </div>
+    <div id="summo-body" style="padding:18px 22px;overflow-y:auto"></div>
+  </div>
+</div>
 <script>
 const STAGES=[
   {id:'closing',label:'Closed',color:'#10b981',short:'CL',req:['Loan commitment received','Final walk-through complete','Closing statement approved','Wire instructions confirmed','Title insurance bound']},
@@ -477,12 +486,34 @@ function badge(sid){const s=sobj(sid);return '<span class="badge" style="backgro
 function navigate(v){
   S.view=v;
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={dash:'Dashboard',pipe:'Pipeline',deals:'All Deals',medical:'Medical Pipeline',settings:'Settings'};
+  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'Medical Pipeline',settings:'Settings'};
   document.getElementById('pg-title').textContent=T[v]||v;
   ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings})[v]();
   document.getElementById('sfirm').textContent=S.settings.firm||'Telegraph';
 }
-function kpi(lbl,val,sub,accent){return '<div class="kpi" style="border-top:3px solid '+accent+'"><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val" style="color:'+accent+';font-size:'+(String(val).length>8?'18px':'26px')+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';}
+function kpi(lbl,val,sub,accent,onclick){const click=onclick?'onclick="'+onclick+'" style="border-top:3px solid '+accent+';cursor:pointer" title="Click to view details"':'style="border-top:3px solid '+accent+'"';return '<div class="kpi" '+click+'><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val" style="color:'+accent+';font-size:'+(String(val).length>8?'18px':'26px')+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';}
+function showDealSummary(title,deals){
+  const rows=deals.length?deals.map(d=>{
+    const st=sobj(d.stage);
+    return '<tr><td style="font-weight:500">'+esc(d.name)+'</td><td style="color:var(--muted);font-size:12px">'+esc(d.addr||'--')+'</td><td><span class="badge" style="background:'+st.color+'20;color:'+st.color+'">'+st.short+'</span></td><td style="font-weight:600">'+fmt$(Number(d.tgt)||Number(d.ask)||0)+'</td><td style="color:var(--muted);font-size:12px">'+fmtD(d.closeDate)+'</td><td style="color:var(--muted);font-size:12px">'+esc(d.lead||'--')+'</td></tr>';
+  }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No deals in this stage.</td></tr>';
+  const total=deals.reduce((a,d)=>a+(Number(d.tgt)||Number(d.ask)||0),0);
+  document.getElementById('summo-title').textContent=title;
+  document.getElementById('summo-body').innerHTML=
+    '<div style="margin-bottom:12px;font-size:13px;color:var(--muted)">'+deals.length+' deal'+(deals.length!==1?'s':'')+' &nbsp;·&nbsp; Total: <strong style="color:var(--text)">'+fmt$(total)+'</strong></div>'+
+    '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">'+
+      '<thead><tr style="border-bottom:1px solid var(--border)">'+
+        '<th style="text-align:left;padding:6px 10px 8px;color:var(--muted);font-weight:500">Property</th>'+
+        '<th style="text-align:left;padding:6px 10px 8px;color:var(--muted);font-weight:500">Address</th>'+
+        '<th style="text-align:left;padding:6px 10px 8px;color:var(--muted);font-weight:500">Stage</th>'+
+        '<th style="text-align:left;padding:6px 10px 8px;color:var(--muted);font-weight:500">Value</th>'+
+        '<th style="text-align:left;padding:6px 10px 8px;color:var(--muted);font-weight:500">Target Close</th>'+
+        '<th style="text-align:left;padding:6px 10px 8px;color:var(--muted);font-weight:500">Lead</th>'+
+      '</tr></thead>'+
+      '<tbody>'+rows+'</tbody>'+
+    '</table></div>';
+  document.getElementById('summo').style.display='flex';
+}
 function rDash(){
   const el=document.getElementById('view');
   const PIPE_HIDE=['closing','recent_trades','dod','dow','matt','written_loi'];
@@ -513,16 +544,16 @@ function rDash(){
     '<div class="dash-layout">'+
       '<div class="dash-main">'+
         '<div class="kpi-grid">'+
-          kpi('Active Pipeline',activeCount,'Deals in active stages','#404a57')+
-          kpi('Total Pipeline Value',fmt$(pipeVal),'Active stages combined','#404a57')+
-          kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981')+
-          kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6')+
-          kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308')+
+          kpi('Active Pipeline',activeCount,'Deals in active stages','#404a57','navigate(\'pipe\')')+
+          kpi('Total Pipeline Value',fmt$(pipeVal),'Active stages combined','#404a57','navigate(\'pipe\')')+
+          kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981','showDealSummary(\'Value Under Contract\',S.deals.filter(d=>d.stage===\'contract\'))')+
+          kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6','showDealSummary(\'LOI Outstanding\',S.deals.filter(d=>d.stage===\'loi\'))')+
+          kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308','showDealSummary(\'In Underwriting\',S.deals.filter(d=>d.stage===\'uw_v1\'||d.stage===\'in_process_uw\'))')+
           kpi('Closing Next 90 Days',closingSoon.length,closingSoon.length?'Nearest: '+fmtD(closingSoon.sort((a,b)=>new Date(a.closeDate)-new Date(b.closeDate))[0].closeDate):'No close dates set','#f97316')+
-          kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444')+
+          kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444','showDealSummary(\'NPA / PSA\',S.deals.filter(d=>d.stage===\'psa\'))')+
           kpi('Closed Portfolio',closedCount,'Owned &amp; previously owned','#6366f1')+
         '</div>'+
-        '<div class="sec"><h3>Pipeline by Stage</h3></div>'+
+        '<div class="sec" style="cursor:pointer" onclick="navigate(\'pipe\')"><h3>Pipeline by Stage <span style="font-size:11px;color:var(--tp-blue);font-weight:400;margin-left:6px">View Snapshot →</span></h3></div>'+
         '<div class="settings-sec" style="padding:16px 20px">'+bar+'</div>'+
       '</div>'+
       '<div>'+
