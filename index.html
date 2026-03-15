@@ -157,6 +157,9 @@ textarea{resize:vertical;min-height:80px}
 .adv-prog-track{background:var(--border);border-radius:4px;height:8px;overflow:hidden;margin-bottom:6px}
 .adv-prog-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
 .adv-prog-lbl{font-size:12px;color:var(--muted)}
+.nav-group-hd{padding:10px 16px 4px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:6px;border-top:1px solid rgba(255,255,255,.08)}
+.nav-group-hd:first-child{border-top:none;margin-top:0}
+.ni-sub{padding-left:26px}
 .edit-cell{cursor:pointer;position:relative}
 .edit-cell:hover{background:rgba(64,74,87,.05) !important}
 .edit-cell input,.edit-cell select{width:100%;padding:3px 6px;border:1.5px solid var(--accent);border-radius:4px;font-size:12px;font-family:inherit;background:#fff;outline:none}
@@ -240,21 +243,39 @@ textarea{resize:vertical;min-height:80px}
     <div class="slogo-name">Telegraph<span>by Thomas Park</span></div>
   </div>
   <nav id="nav">
-    <div class="ni active" onclick="navigate('dash')" data-v="dash">
+    <div class="nav-group-hd">Thomas Park Investments</div>
+    <div class="ni ni-sub active" onclick="navigate('dash')" data-v="dash">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       Dashboard
     </div>
-    <div class="ni" onclick="navigate('pipe')" data-v="pipe">
+    <div class="ni ni-sub" onclick="navigate('pipe')" data-v="pipe">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="7" width="5" height="14" rx="1"/><rect x="17" y="5" width="5" height="16" rx="1"/></svg>
       Active Deal Snapshot
     </div>
-    <div class="ni" onclick="navigate('deals')" data-v="deals">
+    <div class="ni ni-sub" onclick="navigate('deals')" data-v="deals">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
       All Deals
     </div>
-    <div class="ni" onclick="navigate('medical')" data-v="medical">
+    <div class="ni ni-sub" onclick="navigate('medical')" data-v="medical">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Medical Pipeline
+    </div>
+    <div class="nav-group-hd">Thomas Park Construction</div>
+    <div class="ni ni-sub" onclick="navigate('con_dash')" data-v="con_dash">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="ni ni-sub" onclick="navigate('con_snap')" data-v="con_snap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="7" width="5" height="14" rx="1"/><rect x="17" y="5" width="5" height="16" rx="1"/></svg>
+      Active Deal Snapshot
+    </div>
+    <div class="ni ni-sub" onclick="navigate('con_deals')" data-v="con_deals">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      All Jobs
+    </div>
+    <div class="ni ni-sub" onclick="navigate('con_pipe')" data-v="con_pipe">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/></svg>
+      Construction Pipeline
     </div>
     <div class="ni" onclick="navigate('settings')" data-v="settings">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -374,6 +395,22 @@ const STAGES=[
   {id:'matt',label:'Matt',color:'#64748b',short:'MT',req:[]},
 ];
 const STRATEGY=['Core Plus','Value Add','Development'];
+const CONST_STAGES=[
+  {id:'active',label:'Active Construction',color:'#10b981',short:'AC'},
+  {id:'preconstruction',label:'Pre-Construction (Won)',color:'#059669',short:'PC'},
+  {id:'pricing',label:'Pipeline - Pricing',color:'#84cc16',short:'PRI'},
+  {id:'pursuing_bid',label:'Pursuing - Bidding',color:'#3b82f6',short:'PB'},
+  {id:'pursuing_budget',label:'Pursuing - Budgeting',color:'#6366f1',short:'PBG'},
+  {id:'bid_pending',label:'Bid Submitted - Pending Award',color:'#f59e0b',short:'BPA'},
+  {id:'bid_hold',label:'Bid Submitted (On Hold)',color:'#f97316',short:'BOH'},
+  {id:'budget_submitted',label:'Budget Submitted',color:'#a855f7',short:'BS'},
+  {id:'con_monitoring',label:'Monitoring',color:'#0ea5e9',short:'MON'},
+  {id:'con_completed',label:'Completed Projects',color:'#14b8a6',short:'CMP'},
+  {id:'con_lost',label:'Lost',color:'#ef4444',short:'LST'},
+  {id:'con_dead',label:'Dead',color:'#64748b',short:'DED'},
+];
+function csobj(sid){return CONST_STAGES.find(s=>s.id===sid)||{id:sid,label:sid,color:'#6c7a8d',short:'?'};}
+function cbadge(sid){const s=csobj(sid);return '<span class="badge" style="background:'+s.color+'20;color:'+s.color+'">'+s.short+'</span>';}
 const DOC_T=['Offering Memorandum','Rent Roll','T12 Financials','PSA / Purchase Agreement','LOI','Environmental Report','Title Report','Survey','Appraisal','Lender Commitment Letter'];
 const SB_URL='https://wponbaapholnvfpjmkpw.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwb25iYWFwaG9sbnZmcGpta3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzM2NDksImV4cCI6MjA4OTEwOTY0OX0.E1BmEskHoVFHdaeh2UvVfUQtfjizD9h_V8RT6wLBRg0';
@@ -491,10 +528,10 @@ function navigate(v){
   const el=document.getElementById('view');
   if(v!=='dash')el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'Medical Pipeline',settings:'Settings'};
+  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'Medical Pipeline',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Deal Snapshot',con_deals:'All Jobs',con_pipe:'Construction Pipeline'};
   document.getElementById('pg-title').textContent=T[v]||v;
-  ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings})[v]();
-  document.getElementById('sfirm').textContent=S.settings.firm||'Telegraph';
+  ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe})[v]();
+  const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
 }
 function kpi(lbl,val,sub,accent,onclick){const click=onclick?'onclick="'+onclick+'" style="border-top:3px solid '+accent+';cursor:pointer" title="Click to view details"':'style="border-top:3px solid '+accent+'"';return '<div class="kpi" '+click+'><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val" style="color:'+accent+';font-size:'+(String(val).length>8?'18px':'26px')+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';}
 function showDealSummary(title,deals){
@@ -1064,6 +1101,169 @@ function rMedical(){
     '</div>'+
     '<div class="med-tbl-wrap">'+
     '<table class="med-tbl"><thead><tr>'+thHtml+'</tr></thead>'+tbody+'</table></div>';
+}
+// ============================================================
+// CONSTRUCTION DATA
+// ============================================================
+const CONST_DATA=[{"id": "con0000", "name": "222 Severn Bldg 3", "addr": "222 Severn Avenue, Annapolis, MD, USA", "source": "TPM", "ptype": "Competitive Bid", "cost": 282424.0, "prob": 100, "duration": "5", "startDate": "2025-11-03", "sf": 2686, "dpsf": "", "bidDue": "", "stage": "active", "notes": ""}, {"id": "con0001", "name": "222 Severn - Bldg 3 - 1st Floor", "addr": "222 Severn Avenue, Annapolis, MD, USA", "source": "Repeat Client", "ptype": "Sole Bidder", "cost": 230246.0, "prob": 100, "duration": "2", "startDate": "2026-01-05", "sf": 1306, "dpsf": "", "bidDue": "", "stage": "active", "notes": ""}, {"id": "con0002", "name": "175 Admiral - Atwell Test Fit", "addr": "175 Admiral Cochrane Drive, Annapolis, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 754236.23, "prob": 100, "duration": "3", "startDate": "2026-01-19", "sf": 9764, "dpsf": "", "bidDue": "", "stage": "active", "notes": ""}, {"id": "con0003", "name": "11107 Sunset Hills Boulevard - Suite 230", "addr": "11107 Sunset Hills Road, Reston, VA, USA", "source": "Accelerate", "ptype": "Sole Bidder", "cost": 336099.0, "prob": 100, "duration": "2", "startDate": "2026-01-12", "sf": 2458, "dpsf": "", "bidDue": "", "stage": "active", "notes": ""}, {"id": "con0004", "name": "11435 Cronhill Drive - ALCO Renovation", "addr": "11435 Cronhill Drive, Owings Mills, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 141445.0, "prob": 100, "duration": "2", "startDate": "2026-05-05", "sf": 10272, "dpsf": "", "bidDue": "", "stage": "preconstruction", "notes": ""}, {"id": "con0005", "name": "Ritchie Court Suite 315", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPI", "ptype": "Negotiated", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "preconstruction", "notes": ""}, {"id": "con0006", "name": "706 Giddings MDSW", "addr": "706 Giddings Avenue, Annapolis, MD, USA", "source": "TPI", "ptype": "Competitive Bid", "cost": 10000.0, "prob": 100, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0007", "name": "716 Giddings", "addr": "716 Giddings Avenue, Annapolis, MD, USA", "source": "TPI", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0008", "name": "Medstar Olney Suite 221", "addr": "18111 Prince Philip Drive, Olney, MD, USA", "source": "TPI", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0009", "name": "2431 Linden Lane - Berkel", "addr": "2431 Linden Lane, Silver Spring, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 129720.0, "prob": 100, "duration": "1", "startDate": "2026-02-23", "sf": 9900, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0010", "name": "3903 Fair Ridge Drive - Prima Medicine", "addr": "3903 Fair Ridge Drive, Fairfax, VA, USA", "source": "Accelerate", "ptype": "Prelim Budget", "cost": 281969.0, "prob": 99, "duration": "2", "startDate": "2026-03-09", "sf": 2240, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0011", "name": "2107 Laurel Bush Road - Suite 209", "addr": "2107 Laurel Bush Road, Bel Air, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 15000.0, "prob": 25, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0012", "name": "Byte Dental Paint", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPI", "ptype": "Negotiated", "cost": 30000.0, "prob": 75, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pricing", "notes": ""}, {"id": "con0013", "name": "Helping Hands Foundation - Leesburg", "addr": "211 Gibson Street Northwest, Leesburg, VA, USA", "source": "A/E", "ptype": "Prelim Budget", "cost": 492399.0, "prob": 33, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pursuing_bid", "notes": ""}, {"id": "con0014", "name": "BVA Papermill", "addr": "3299 K Street Northwest, Washington, DC, USA", "source": "Broker", "ptype": "Competitive Bid", "cost": 931674.0, "prob": 25, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pursuing_budget", "notes": ""}, {"id": "con0015", "name": "William & Mary Expansion", "addr": "901 4th Street Northwest, Washington, DC, USA", "source": "Broker", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pursuing_budget", "notes": ""}, {"id": "con0016", "name": "222 Severn 1st Deck - Suite B", "addr": "222 Severn Avenue, Annapolis, MD, USA", "source": "Repeat Client", "ptype": "Prelim Budget", "cost": 200000.0, "prob": 50, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "pursuing_budget", "notes": ""}, {"id": "con0017", "name": "4000 Old Court Common Areas", "addr": "4000 Old Court Road, Pikesville, MD, USA", "source": "TPI", "ptype": "Prelim Budget", "cost": 200000.0, "prob": 50, "duration": "2", "startDate": "2026-09-07", "sf": 10000, "dpsf": "", "bidDue": "", "stage": "pursuing_budget", "notes": ""}, {"id": "con0018", "name": "Signal Financial Federal Credit Union", "addr": "6720b Rockledge Drive, Bethesda, MD, USA", "source": "CM", "ptype": "Prelim Budget", "cost": 1016673.75, "prob": 33, "duration": "4", "startDate": "2026-06-05", "sf": 11128, "dpsf": "", "bidDue": "", "stage": "pursuing_budget", "notes": ""}, {"id": "con0019", "name": "John Hopkins 2", "addr": "10710 Charter Drive, Columbia, MD, USA", "source": "CM", "ptype": "Competitive Bid", "cost": 624677.0, "prob": 33, "duration": "3", "startDate": "2026-04-14", "sf": 15497, "dpsf": "", "bidDue": "", "stage": "bid_pending", "notes": ""}, {"id": "con0020", "name": "497 Ritchie Highway", "addr": "497 Ritchie Highway, Severna Park, MD, USA", "source": "TPM", "ptype": "Competitive Bid", "cost": 141517.0, "prob": 80, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "bid_hold", "notes": ""}, {"id": "con0021", "name": "5005 Signal Bell Lane - Suite 205", "addr": "5005 Signal Bell Lane, Clarksville, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 85546.0, "prob": 15, "duration": "1", "startDate": "", "sf": 1000, "dpsf": "", "bidDue": "", "stage": "budget_submitted", "notes": ""}, {"id": "con0022", "name": "Pure Green Juice Bar", "addr": "", "source": "TPComm", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0023", "name": "716 Monterey", "addr": "716 Monterey Avenue, Annapolis, MD, USA", "source": "TPI", "ptype": "Negotiated", "cost": 1255655.0, "prob": 30, "duration": "210", "startDate": "2025-09-30", "sf": 7426, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0024", "name": "Culinary Square", "addr": "", "source": "TPComm", "ptype": "Prelim Budget", "cost": 2425698.0, "prob": 20, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0025", "name": "5999 Harpers Farm Road MANA", "addr": "5999 Harpers Farm Road, Columbia, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 357512.0, "prob": 33, "duration": "1.5", "startDate": "2026-02-16", "sf": 6029, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0026", "name": "43130 Amberwood Plaza - PT Suite", "addr": "43130 Amberwood Plaza, South Riding, VA, USA", "source": "Repeat Client", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0027", "name": "175 Admiral - Thomas Park", "addr": "", "source": "", "ptype": "", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0028", "name": "175 Admiral - Dr. Michie", "addr": "", "source": "", "ptype": "", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0029", "name": "175 Admiral - State Farm", "addr": "", "source": "", "ptype": "", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0030", "name": "11107 Sunset Hills Boulevard - Suite 240", "addr": "11107 Sunset Hills Road, Reston, VA, USA", "source": "Accelerate", "ptype": "Sole Bidder", "cost": 363591.0, "prob": 80, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0031", "name": "222 Severn - Edward Jones", "addr": "222 Severn Avenue, Annapolis, MD, USA", "source": "Repeat Client", "ptype": "Prelim Budget", "cost": 127079.0, "prob": 40, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0032", "name": "Aspen Hills Renovations", "addr": "4110 Aspen Hill Court, Aspen Hill, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 14000.0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_monitoring", "notes": ""}, {"id": "con0033", "name": "4712 Harford Road", "addr": "4712 Harford Road Baltimore, MD", "source": "TPM", "ptype": "Sole Bidder", "cost": 65658.0, "prob": 100, "duration": "30", "startDate": "2025-02-03", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0034", "name": "175 Admiral -Suite 104", "addr": "175 Admiral Cochrane Drive, Annapolis, MD, USA", "source": "TPI", "ptype": "Sole Bidder", "cost": 23356.0, "prob": 100, "duration": "1", "startDate": "2025-04-14", "sf": 1815, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0035", "name": "Homes For America", "addr": "175 Admiral Cochrane Drive, Annapolis, MD, USA", "source": "TPComm", "ptype": "Negotiated", "cost": 304639.0, "prob": 100, "duration": "2", "startDate": "2025-04-07", "sf": 5660, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0036", "name": "Hospice of Chesapeake- Phase 1", "addr": "92 Ritchie Highway, Pasadena, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 16548.0, "prob": 100, "duration": "1", "startDate": "2025-04-01", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0037", "name": "UMCES", "addr": "115 West Street, Annapolis, MD, USA", "source": "TPComm", "ptype": "Negotiated", "cost": 287252.0, "prob": 100, "duration": "2", "startDate": "2025-03-03", "sf": 4993, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0038", "name": "Ritchie Court - Suite 312 - River Hills Consulting", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 32266.0, "prob": 100, "duration": "1", "startDate": "2025-06-02", "sf": 1313, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0039", "name": "Ritchie Court Suite 313", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 19958.0, "prob": 100, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0040", "name": "Federated Lighting", "addr": "16000 Trade Zone Avenue, Upper Marlboro, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 409042.0, "prob": 100, "duration": "3", "startDate": "2025-07-07", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0041", "name": "Zimmer Biomet - Hanover Office Renovation", "addr": "961 Mercantile Dr, Hanover, MD 21076, USA", "source": "A/E", "ptype": "Competitive Bid", "cost": 131946.45, "prob": 100, "duration": "2", "startDate": "2025-07-07", "sf": 4359, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0042", "name": "222 Severn Perch", "addr": "222 Severn Avenue, Annapolis, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 21012.0, "prob": 100, "duration": ".25", "startDate": "2026-01-05", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_completed", "notes": ""}, {"id": "con0043", "name": "Westgate Plaza Whitebox", "addr": "Historic District, 8039 Sudley Road, Manassas, VA, USA", "source": "A/E", "ptype": "Competitive Bid", "cost": 311611.0, "prob": 0, "duration": "", "startDate": "", "sf": 4030, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0044", "name": "Diamond Nails Expansion", "addr": "42 St Patricks Dr, Waldorf, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 316478.0, "prob": 0, "duration": "3", "startDate": "2025-03-03", "sf": 1800, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0045", "name": "MESH TAPS GC & Fee", "addr": "3033 Wilson Boulevard, Arlington, VA, USA", "source": "TPI", "ptype": "Competitive Bid", "cost": 275580.0, "prob": 0, "duration": "210", "startDate": "2025-04-01", "sf": 8654, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0046", "name": "Prince George's Hall - St. Mary", "addr": "18952 West Fisher Road, St Marys City, MD, USA", "source": "A/E", "ptype": "Competitive Bid", "cost": 2120500.0, "prob": 0, "duration": "90", "startDate": "2025-05-31", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0047", "name": "Hospice of The Chesapeake - Bldg C ADA", "addr": "90 Ritchie Highway, Pasadena, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 137280.0, "prob": 75, "duration": "3", "startDate": "2025-07-07", "sf": 2149, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0048", "name": "Hospice of The Chesapeake - RFICC MEP", "addr": "90 Ritchie Highway, Pasadena, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 1436749.0, "prob": 50, "duration": "3", "startDate": "2025-10-06", "sf": 14445, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0049", "name": "2111 Emmorton Park - Awning Replacement", "addr": "2111 Emmorton Park Road, Edgewood, MD, USA", "source": "TPM", "ptype": "Competitive Bid", "cost": 75896.0, "prob": 50, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0050", "name": "Pure Green Juice Bar", "addr": "", "source": "TPComm", "ptype": "Competitive Bid", "cost": 239235.18, "prob": 10, "duration": "2", "startDate": "2025-09-01", "sf": 1132, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0051", "name": "188 Main Street Door Replacement", "addr": "188 Main Street, Annapolis, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 10486.0, "prob": 80, "duration": "1", "startDate": "2025-09-02", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0052", "name": "4712 Harford Road Improvements", "addr": "4712 Harford Road, Baltimore, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 241791.0, "prob": 25, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0053", "name": "CapGemini Government Solutions", "addr": "Tysons, VA, USA", "source": "Broker", "ptype": "Competitive Bid", "cost": 1740225.0, "prob": 10, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0054", "name": "Laurel MOB", "addr": "7140 Contee Road, Laurel, MD, USA", "source": "TPI", "ptype": "Competitive Bid", "cost": 378444.0, "prob": 0, "duration": "2", "startDate": "", "sf": 1540, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0055", "name": "151 West Street - Board Of Elections", "addr": "151 West Street, Annapolis, MD, USA", "source": "TPM", "ptype": "Competitive Bid", "cost": 157113.9, "prob": 0, "duration": "2", "startDate": "2026-02-02", "sf": 9900, "dpsf": "", "bidDue": "", "stage": "con_lost", "notes": ""}, {"id": "con0056", "name": "9600 Blackwell Park - Dr. Patel", "addr": "9600 Blackwell Road, Rockville, MD, USA", "source": "Accelerate", "ptype": "Prelim Budget", "cost": 685768.0, "prob": 0, "duration": "3", "startDate": "2025-08-04", "sf": 4337, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0057", "name": "Slippery Hill Salon", "addr": "210 Fallen Horse Circle, Queenstown, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 91615.0, "prob": 0, "duration": "30", "startDate": "2025-02-25", "sf": 1288, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0058", "name": "716 Giddings - Suite 43", "addr": "716 Giddings Avenue, Annapolis, MD, USA", "source": "TPComm", "ptype": "Negotiated", "cost": 114451.0, "prob": 0, "duration": "1.5", "startDate": "2025-03-31", "sf": 3064, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0059", "name": "Waverly Woods - Eye Level Learning", "addr": "10775 Birmingham Way, Woodstock, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 24851.25, "prob": 15, "duration": "1", "startDate": "2025-04-07", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0060", "name": "95 Mayo Road - White Box", "addr": "95 Mayo Road, Edgewater, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 31994.0, "prob": 90, "duration": "1", "startDate": "2025-03-17", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0061", "name": "103 Annapolis Street", "addr": "103 Annapolis Street, Annapolis, MD, USA", "source": "TPI", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "2", "startDate": "2025-07-01", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0062", "name": "150 South Street", "addr": "150 South Street, Annapolis, MD, USA", "source": "A/E", "ptype": "Competitive Bid", "cost": 0, "prob": 0, "duration": "6", "startDate": "2025-04-28", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0063", "name": "1411 K Street", "addr": "", "source": "A/E", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0064", "name": "175 Admiral  Suite 300", "addr": "175 Admiral Cochrane Drive, Annapolis, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 24972.0, "prob": 10, "duration": "30", "startDate": "2025-04-15", "sf": 3700, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0065", "name": "201 Gateway Drive Bel Air, MD", "addr": "201 Gateway Drive, Bel Air, MD, USA", "source": "TPM", "ptype": "Competitive Bid", "cost": 72945.0, "prob": 10, "duration": "60", "startDate": "2025-07-01", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0066", "name": "Ritchie Court Suite 201", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 47587.0, "prob": 30, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0067", "name": "2661 Riva Road - Suite 1001", "addr": "2661 Riva Road, Annapolis, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 100113.0, "prob": 50, "duration": "1", "startDate": "2025-05-13", "sf": 3982, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0068", "name": "5005 Signal Bell Lane - Suite 206", "addr": "5005 Signal Bell Lane, Clarksville, MD, USA", "source": "TPComm", "ptype": "Sole Bidder", "cost": 36849.0, "prob": 25, "duration": "1", "startDate": "2025-07-14", "sf": 915, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0069", "name": "4712 Harford Road - MEP", "addr": "4712 Harford Road, Baltimore, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 5000.0, "prob": 80, "duration": "1", "startDate": "2025-05-06", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0070", "name": "706 Giddings MDSW", "addr": "", "source": "TPI", "ptype": "Sole Bidder", "cost": 8701.4, "prob": 20, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0071", "name": "Charles P Johnson - 175 Admiral", "addr": "175 Admiral Drive, Annapolis, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 251554.0, "prob": 10, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0072", "name": "Charles P Johnson - 716 Giddings", "addr": "716 Giddings Avenue, Annapolis, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 201379.0, "prob": 10, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0073", "name": "5999 Harpers Farm Road - Main Suite", "addr": "5999 Harpers Farm Road, Columbia, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 48756.0, "prob": 10, "duration": "1", "startDate": "2025-04-01", "sf": 2205, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0074", "name": "5999 Harpers Farm Road - Doctor's Suite", "addr": "5999 Harpers Farm Road, Columbia, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 34552.0, "prob": 10, "duration": "1", "startDate": "2025-04-01", "sf": 817, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0075", "name": "877 Balimore Annnapolis - Dentist", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPI", "ptype": "Prelim Budget", "cost": 31854.0, "prob": 10, "duration": "30", "startDate": "2025-11-01", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0076", "name": "MSF DC Office", "addr": "", "source": "", "ptype": "", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0077", "name": "Ritchie Court - Suite 315", "addr": "877 Baltimore Annapolis Boulevard, Severna Park, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 61042.0, "prob": 15, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0078", "name": "115 West St - 1st Floor", "addr": "", "source": "TPComm", "ptype": "Prelim Budget", "cost": 260745.5, "prob": 5, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0079", "name": "175 Admiral - Suite 404", "addr": "175 Admiral Drive, Annapolis, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 48410.0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0080", "name": "BVA Foundry", "addr": "1055 Thomas Jefferson Street Northwest, Washington, DC, USA", "source": "Broker", "ptype": "Prelim Budget", "cost": 688017.0, "prob": 80, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0081", "name": "5999 Harpers Farm Road - Ste E260", "addr": "5999 Harpers Farm Road, Columbia, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0082", "name": "716 Giddings - Connect Wealth", "addr": "716 Giddings Avenue, Annapolis, MD, USA", "source": "TPI", "ptype": "Sole Bidder", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0083", "name": "Wilkins Ave Demo", "addr": "", "source": "TPM", "ptype": "Prelim Budget", "cost": 0, "prob": 0, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0084", "name": "TSM (Bellona) Pool", "addr": "8322 Bellona Avenue, Towson, MD, USA", "source": "TPI", "ptype": "Prelim Budget", "cost": 310397.0, "prob": 10, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0085", "name": "5005 Signal Bell Lane - Suite 207-208", "addr": "5005 Signal Bell Lane, Clarksville, MD, USA", "source": "TPComm", "ptype": "Prelim Budget", "cost": 19577.0, "prob": 15, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0086", "name": "Engleside White Box", "addr": "8630 Richmond Highway, Alexandria, VA, USA", "source": "TPM", "ptype": "Competitive Bid", "cost": 423336.0, "prob": 10, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0087", "name": "Acelor Mittal North America", "addr": "1400 I Street Northwest, Washington, DC, USA", "source": "Broker", "ptype": "Prelim Budget", "cost": 39500.0, "prob": 75, "duration": "", "startDate": "", "sf": 0, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0088", "name": "12030 Sunrise Valley Drive - Suite 210", "addr": "12030 Sunrise Valley Drive, Reston, VA, USA", "source": "Broker", "ptype": "Prelim Budget", "cost": 248930.0, "prob": 33, "duration": "2", "startDate": "2026-04-06", "sf": 6500, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0089", "name": "2661 Riva Road - Suite 1052", "addr": "2661 Riva Road, Annapolis, MD, USA", "source": "TPM", "ptype": "Sole Bidder", "cost": 139549.0, "prob": 10, "duration": "1", "startDate": "2025-07-07", "sf": 4103, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0090", "name": "8500 Executive Park - Gastro Clinic of NOVA", "addr": "8500 Executive Park Avenue, Fairfax, VA, USA", "source": "Accelerate", "ptype": "Prelim Budget", "cost": 403745.0, "prob": 50, "duration": "2", "startDate": "2026-05-04", "sf": 2600, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0091", "name": "3700 Joseph Siewick Drive - Suite 201", "addr": "3700 Joseph Siewick Drive, Fairfax, VA, USA", "source": "Broker", "ptype": "Competitive Bid", "cost": 119078.0, "prob": 20, "duration": "1", "startDate": "2026-03-02", "sf": 1985, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}, {"id": "con0092", "name": "4420 Lottsford Vista", "addr": "4420 Lottsford Vista Road, Lanham, MD, USA", "source": "TPM", "ptype": "Prelim Budget", "cost": 128333.0, "prob": 50, "duration": "", "startDate": "", "sf": 22000, "dpsf": "", "bidDue": "", "stage": "con_dead", "notes": ""}];
+// ============================================================
+// CONSTRUCTION RENDER FUNCTIONS
+// ============================================================
+function rConDash(){
+  const el=document.getElementById('view');
+  el.className='';
+  // KPI calculations
+  const activeJobs=CONST_DATA.filter(d=>d.stage==='active');
+  const preconJobs=CONST_DATA.filter(d=>d.stage==='preconstruction');
+  const pipelineStages=['pricing','pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted','con_monitoring'];
+  const pipeJobs=CONST_DATA.filter(d=>pipelineStages.includes(d.stage));
+  const completedJobs=CONST_DATA.filter(d=>d.stage==='con_completed');
+  const activeVal=activeJobs.reduce((a,d)=>a+d.cost,0);
+  const preconVal=preconJobs.reduce((a,d)=>a+d.cost,0);
+  const pipeVal=pipeJobs.reduce((a,d)=>a+(d.cost*(d.prob/100)||0),0);
+  const completedVal=completedJobs.reduce((a,d)=>a+d.cost,0);
+  // Bar chart
+  const barScale=Math.max(...CONST_STAGES.map(st=>CONST_DATA.filter(d=>d.stage===st.id).length),1);
+  const bar=CONST_STAGES.map(st=>{
+    const n=CONST_DATA.filter(d=>d.stage===st.id).length;
+    const w=Math.min(Math.round(n/barScale*100),100);
+    return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'+
+      '<div style="width:130px;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0" title="'+st.label+'">'+st.label+'</div>'+
+      '<div style="flex:1;background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+w+'%;background:'+st.color+';height:100%;border-radius:3px"></div></div>'+
+      '<div style="width:18px;text-align:right;font-size:10px;font-weight:600;flex-shrink:0">'+n+'</div>'+
+    '</div>';
+  }).join('');
+  // Active jobs list
+  const activeList=activeJobs.map(d=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);gap:8px">'+
+    '<div style="min-width:0"><div style="font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(d.name)+'</div>'+
+    '<div style="font-size:10px;color:var(--muted)">'+esc(d.source||'')+(d.ptype?' · '+esc(d.ptype):'')+'</div></div>'+
+    '<div style="font-size:12px;font-weight:700;color:#10b981;flex-shrink:0">'+fmt$(d.cost)+'</div></div>'
+  ).join('')||'<div style="color:var(--muted);font-size:13px;padding:12px 0">No active construction jobs.</div>';
+  el.innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:16px">'+
+      '<div class="kpi" onclick="navigate(\'con_snap\')" style="border-top:3px solid #10b981;cursor:pointer;grid-column:span 1">'+
+        '<div class="kpi-lbl">Active Jobs</div>'+
+        '<div style="font-size:36px;font-weight:700;color:#10b981;line-height:1;margin:6px 0 2px">'+activeJobs.length+'</div>'+
+        '<div style="font-size:13px;font-weight:700;color:#10b981">'+fmt$(activeVal)+'</div>'+
+        '<div class="kpi-sub">in active construction</div>'+
+      '</div>'+
+      '<div class="kpi" style="border-top:3px solid #059669">'+
+        '<div class="kpi-lbl">Pre-Construction Won</div>'+
+        '<div style="font-size:36px;font-weight:700;color:#059669;line-height:1;margin:6px 0 2px">'+preconJobs.length+'</div>'+
+        '<div style="font-size:13px;font-weight:700;color:#059669">'+fmt$(preconVal)+'</div>'+
+        '<div class="kpi-sub">jobs ready to start</div>'+
+      '</div>'+
+      '<div class="kpi" onclick="navigate(\'con_pipe\')" style="border-top:3px solid #3b82f6;cursor:pointer">'+
+        '<div class="kpi-lbl">Pipeline (Wtd)</div>'+
+        '<div style="font-size:36px;font-weight:700;color:#3b82f6;line-height:1;margin:6px 0 2px">'+pipeJobs.length+'</div>'+
+        '<div style="font-size:13px;font-weight:700;color:#3b82f6">'+fmt$(pipeVal)+'</div>'+
+        '<div class="kpi-sub">in bid / pricing pipeline</div>'+
+      '</div>'+
+      '<div class="kpi" onclick="navigate(\'con_deals\')" style="border-top:3px solid #14b8a6;cursor:pointer">'+
+        '<div class="kpi-lbl">Completed Projects</div>'+
+        '<div style="font-size:36px;font-weight:700;color:#14b8a6;line-height:1;margin:6px 0 2px">'+completedJobs.length+'</div>'+
+        '<div style="font-size:13px;font-weight:700;color:#14b8a6">'+fmt$(completedVal)+'</div>'+
+        '<div class="kpi-sub">total completed value</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:3fr 2fr;gap:16px">'+
+      '<div>'+
+        '<div class="tbl-wrap" style="margin-bottom:16px">'+
+          '<div style="padding:10px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'+
+            'Active Construction Jobs'+
+            '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_snap\')">View All →</span>'+
+          '</div>'+
+          '<div style="padding:4px 14px">'+activeList+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div>'+
+        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px;margin-bottom:12px">'+
+          '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">'+
+            'Jobs by Stage'+
+            '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_deals\')">All Jobs →</span>'+
+          '</div>'+bar+
+        '</div>'+
+      '</div>'+
+    '</div>';
+}
+function rConSnap(){
+  // Active Deal Snapshot: Active + Pre-Construction kanban
+  const el=document.getElementById('view');
+  const snapStages=['active','preconstruction'];
+  const cols=CONST_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
+    const ds=CONST_DATA.filter(d=>d.stage===st.id);
+    const cards=ds.map(d=>'<div class="dcard" style="cursor:default">'+
+      '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
+      '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
+      '<div class="dcard-foot">'+
+        '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">'+esc(d.startDate?fmtD(d.startDate):(d.duration?d.duration+' mo':''))+'</div>'+
+      '</div></div>'
+    ).join('');
+    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div><div class="col-body" style="min-height:80px">'+cards+'</div></div>';
+  }).join('');
+  el.innerHTML='<div id="pipe-wrap" style="grid-template-columns:repeat(2,1fr)">'+cols+'</div>';
+}
+function rConPipe(){
+  // Construction Pipeline: pricing → monitoring kanban (active pipeline)
+  const el=document.getElementById('view');
+  const pipeStages=['pricing','pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted','con_monitoring'];
+  const cols=CONST_STAGES.filter(st=>pipeStages.includes(st.id)).map(st=>{
+    const ds=CONST_DATA.filter(d=>d.stage===st.id);
+    const cards=ds.map(d=>'<div class="dcard" style="cursor:default">'+
+      '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
+      '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
+      '<div class="dcard-foot">'+
+        '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">'+(d.prob?d.prob+'% prob':'')+'</div>'+
+      '</div></div>'
+    ).join('');
+    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div><div class="col-body" style="min-height:60px">'+cards+'</div></div>';
+  }).join('');
+  el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
+}
+function rConDeals(){
+  const el=document.getElementById('view');
+  const sq=((document.getElementById('con-search')||{}).value||'').toLowerCase();
+  const sf=(document.getElementById('con-stage')||{}).value||'';
+  const stageOptions=CONST_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+' ('+CONST_DATA.filter(d=>d.stage===st.id).length+')</option>').join('');
+  const filtered=CONST_DATA.filter(d=>{
+    if(sf&&d.stage!==sf)return false;
+    if(sq){const v=Object.values(d).join(' ').toLowerCase();return v.includes(sq);}
+    return true;
+  });
+  // Group by stage
+  const byStage={};
+  filtered.forEach(d=>{(byStage[d.stage]=byStage[d.stage]||[]).push(d);});
+  const tbody=CONST_STAGES.map(st=>{
+    const rows=byStage[st.id];
+    if(!rows||!rows.length)return'';
+    const rowsHtml=rows.map(d=>'<tr style="cursor:default"><td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(d.name)+'">'+esc(d.name)+'</td>'+
+      '<td style="font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.addr||'--')+'</td>'+
+      '<td>'+cbadge(d.stage)+'</td>'+
+      '<td style="font-size:12px">'+esc(d.source||'--')+'</td>'+
+      '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
+      '<td style="font-size:12px;font-weight:600">'+fmt$(d.cost)+'</td>'+
+      '<td style="font-size:12px;text-align:center">'+(d.prob?d.prob+'%':'--')+'</td>'+
+      '<td style="font-size:12px">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</td>'+
+      '<td style="font-size:12px">'+esc(d.startDate?fmtD(d.startDate):'--')+'</td>'+
+    '</tr>').join('');
+    return '<tr onclick="toggleConGroup(\''+st.id+'\')" style="cursor:pointer"><td colspan="9" style="padding:8px 14px;background:'+st.color+'15;border-left:3px solid '+st.color+'"><div style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px"><div style="width:9px;height:9px;border-radius:50%;background:'+st.color+'"></div>'+st.label+'<span style="background:'+st.color+'20;color:'+st.color+';border-radius:20px;padding:1px 8px;font-size:11px">'+rows.length+'</span></div></td></tr>'+
+      '<tbody id="cg-'+st.id+'">'+rowsHtml+'</tbody>';
+  }).join('');
+  el.innerHTML=
+    '<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">'+
+      '<input id="con-search" type="text" placeholder="Search jobs..." oninput="rConDeals()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;width:220px;font-family:inherit">'+
+      '<select id="con-stage" onchange="rConDeals()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit"><option value="">All Stages</option>'+stageOptions+'</select>'+
+      '<span style="font-size:12px;color:var(--muted)">'+filtered.length+' of '+CONST_DATA.length+' jobs</span>'+
+    '</div>'+
+    '<div class="tbl-wrap"><table><thead><tr>'+
+      '<th>Job Name</th><th>Address</th><th>Stage</th><th>Source</th><th>Type</th><th>Cost</th><th>Prob</th><th>SF</th><th>Start Date</th>'+
+    '</tr></thead>'+tbody+'</table></div>';
+}
+function toggleConGroup(sid){
+  const el=document.getElementById('cg-'+sid);
+  if(el)el.style.display=el.style.display==='none'?'':'none';
 }
 init();
 </script>
