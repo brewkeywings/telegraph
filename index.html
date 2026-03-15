@@ -38,20 +38,21 @@ nav{flex:1;padding:8px 0;overflow-y:auto}
 .btn-danger{background:var(--red);color:#fff}.btn-danger:hover{opacity:.9}
 .btn-sm{padding:5px 10px;font-size:12px}
 #view{flex:1;overflow-y:auto;padding:24px}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+#view.dash-view{overflow:hidden;padding:14px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
 .dash-layout{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start}
 .dash-main{min-width:0}
-.tsy-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:14px 16px;margin-bottom:20px}
-.tsy-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.tsy-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:10px 14px;margin-bottom:10px}
+.tsy-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .tsy-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
 .tsy-badge{font-size:10px;background:#f4f5f7;border-radius:4px;padding:2px 6px;color:var(--muted)}
-.tsy-yield{font-size:32px;font-weight:700;line-height:1;color:var(--text)}
-.tsy-change{font-size:13px;font-weight:600;margin-top:4px}
-.tsy-meta{font-size:10px;color:var(--muted);margin-top:6px}
-.kpi{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);border:1px solid var(--border)}
-.kpi-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.kpi-val{font-size:26px;font-weight:700;line-height:1}
-.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.tsy-yield{font-size:26px;font-weight:700;line-height:1;color:var(--text)}
+.tsy-change{font-size:12px;font-weight:600;margin-top:3px}
+.tsy-meta{font-size:10px;color:var(--muted);margin-top:4px}
+.kpi{background:var(--card);border-radius:var(--r);padding:10px 12px;box-shadow:var(--sh);border:1px solid var(--border)}
+.kpi-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kpi-val{font-size:20px;font-weight:700;line-height:1}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:3px}
 .sec{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .sec h3{font-size:14px;font-weight:600}
 .two-col{display:grid;grid-template-columns:3fr 2fr;gap:20px}
@@ -487,6 +488,8 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function badge(sid){const s=sobj(sid);return '<span class="badge" style="background:'+s.color+'20;color:'+s.color+'">'+s.short+'</span>'}
 function navigate(v){
   S.view=v;
+  const el=document.getElementById('view');
+  if(v!=='dash')el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
   const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'Medical Pipeline',settings:'Settings'};
   document.getElementById('pg-title').textContent=T[v]||v;
@@ -539,49 +542,59 @@ function rDash(){
   // Closing this quarter (deals with closeDate in next 90 days)
   const now=new Date();const q90=new Date(now.getTime()+90*864e5);
   const closingSoon=pipeDeals.filter(d=>{if(!d.closeDate)return false;const dt=new Date(d.closeDate);return dt>=now&&dt<=q90;});
-  const bar=pipeStages.map(st=>{const n=S.deals.filter(d=>d.stage===st.id).length;const w=activeCount?Math.round(n/activeCount*100):0;return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:170px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+st.label+'">'+st.label+'</div><div style="flex:1;background:var(--border);border-radius:4px;height:7px;overflow:hidden"><div style="width:'+w+'%;background:'+st.color+';height:100%;border-radius:4px"></div></div><div style="width:28px;text-align:right;font-size:12px;font-weight:600">'+n+'</div></div>';}).join('');
+  const bar=pipeStages.map(st=>{const n=S.deals.filter(d=>d.stage===st.id).length;const w=activeCount?Math.round(n/activeCount*100):0;return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:110px;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0" title="'+st.label+'">'+st.label+'</div><div style="flex:1;background:var(--border);border-radius:3px;height:5px;overflow:hidden"><div style="width:'+w+'%;background:'+st.color+';height:100%;border-radius:3px"></div></div><div style="width:16px;text-align:right;font-size:10px;font-weight:600;flex-shrink:0">'+n+'</div></div>';}).join('');
   let feed=S.acts.slice(0,10).map(a=>'<div class="act-item"><div class="act-ico">'+a.ico+'</div><div class="act-body"><div>'+a.msg+'</div><div class="act-time">'+fmtDT(a.ts)+'</div></div></div>').join('');
   if(!feed)feed='<div class="empty">No activity yet. Create your first deal above.</div>';
+  el.className='dash-view';
   el.innerHTML=
-    '<div class="dash-layout">'+
-      '<div class="dash-main">'+
-        '<div class="kpi-grid">'+
-          kpi('Active Pipeline',activeCount,'Deals in active stages','#404a57','navigate(\'pipe\')')+
-          kpi('Total Pipeline Value',fmt$(pipeVal),'Active stages combined','#404a57','navigate(\'pipe\')')+
-          kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981','showDealSummary(\'Value Under Contract\',S.deals.filter(d=>d.stage===\'contract\'))')+
-          kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6','showDealSummary(\'LOI Outstanding\',S.deals.filter(d=>d.stage===\'loi\'))')+
-          kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308','showDealSummary(\'In Underwriting\',S.deals.filter(d=>d.stage===\'uw_v1\'||d.stage===\'in_process_uw\'))')+
-          kpi('Closing Next 90 Days',closingSoon.length,closingSoon.length?'Nearest: '+fmtD(closingSoon.sort((a,b)=>new Date(a.closeDate)-new Date(b.closeDate))[0].closeDate):'No close dates set','#f97316')+
-          kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444','showDealSummary(\'NPA / PSA\',S.deals.filter(d=>d.stage===\'psa\'))')+
-          kpi('Closed Portfolio',closedCount,'Owned &amp; previously owned','#6366f1')+
-        '</div>'+
-        '<div class="sec" style="cursor:pointer" onclick="navigate(\'pipe\')"><h3>Pipeline by Stage <span style="font-size:11px;color:var(--tp-blue);font-weight:400;margin-left:6px">View Snapshot →</span></h3></div>'+
-        '<div class="settings-sec" style="padding:16px 20px">'+bar+'</div>'+
+    // Outer: full height flex column
+    '<div style="display:flex;flex-direction:column;height:calc(100vh - 52px - 28px);gap:10px">'+
+      // Row 1: KPI cards (4x2, fixed height)
+      '<div class="kpi-grid">'+
+        kpi('Active Pipeline',activeCount,'Deals in active stages','#404a57','navigate(\'pipe\')')+
+        kpi('Total Pipeline Value',fmt$(pipeVal),'Active stages combined','#404a57','navigate(\'pipe\')')+
+        kpi('Value Under Contract',fmt$(contractVal),contractDeals.length+' deal'+(contractDeals.length!==1?'s':''),'#10b981','showDealSummary(\'Value Under Contract\',S.deals.filter(d=>d.stage===\'contract\'))')+
+        kpi('LOI Outstanding',fmt$(loiVal),loiDeals.length+' LOI'+(loiDeals.length!==1?'s':'')+' active','#3b82f6','showDealSummary(\'LOI Outstanding\',S.deals.filter(d=>d.stage===\'loi\'))')+
+        kpi('In Underwriting',fmt$(uwVal),uwDeals.length+' deal'+(uwDeals.length!==1?'s':'')+' being UW\'d','#eab308','showDealSummary(\'In Underwriting\',S.deals.filter(d=>d.stage===\'uw_v1\'||d.stage===\'in_process_uw\'))')+
+        kpi('Closing Next 90 Days',closingSoon.length,closingSoon.length?'Nearest: '+fmtD(closingSoon.sort((a,b)=>new Date(a.closeDate)-new Date(b.closeDate))[0].closeDate):'No close dates set','#f97316')+
+        kpi('NPA / PSA',fmt$(psaVal),psaDeals.length+' under negotiation','#ef4444','showDealSummary(\'NPA / PSA\',S.deals.filter(d=>d.stage===\'psa\'))')+
+        kpi('Closed Portfolio',closedCount,'Owned &amp; previously owned','#6366f1')+
       '</div>'+
-      '<div>'+
-        '<div class="tsy-card" id="tsy-card">'+
-          '<div class="tsy-header"><span class="tsy-title">10-Year Treasury</span><span class="tsy-badge">US10Y</span></div>'+
-          '<div class="tsy-yield" id="tsy-yield">--</div>'+
-          '<div class="tsy-change" id="tsy-change" style="color:var(--muted)">Loading...</div>'+
-          '<div class="tsy-meta" id="tsy-meta"></div>'+
+      // Row 2: Map (left, flex:1) + Right column (fixed 290px)
+      '<div style="display:grid;grid-template-columns:1fr 290px;gap:10px;flex:1;min-height:0">'+
+        // Left: Map widget
+        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column;min-height:0">'+
+          '<div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
+            '<input id="map-search-input" type="text" placeholder="Search any address…" style="flex:1;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text);background:transparent">'+
+            '<button onclick="toggleMapLayer()" id="map-layer-btn" style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">🛰 Satellite</button>'+
+            '<button onclick="openStreetView()" id="map-sv-btn" style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">👁 Street View</button>'+
+          '</div>'+
+          '<div style="position:relative;flex:1;min-height:0">'+
+            '<div id="dash-map" style="position:absolute;inset:0"></div>'+
+            '<div id="dash-sv" style="position:absolute;inset:0;z-index:2;visibility:hidden"></div>'+
+            '<button id="sv-back-btn" onclick="closeStreetView()" style="display:none;position:absolute;top:10px;left:10px;z-index:10;background:rgba(255,255,255,.95);border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)">← Back to Map</button>'+
+          '</div>'+
         '</div>'+
-        '<div class="sec"><h3>Recent Activity</h3></div>'+
-        '<div class="act-feed">'+feed+'</div>'+
-      '</div>'+
-    '</div>'+
-    '<div style="margin-top:8px">'+
-      '<div class="sec"><h3>Deal Map <span style="font-size:11px;color:var(--muted);font-weight:400">— Active pipeline locations</span></h3></div>'+
-      '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh)">'+
-        '<div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">'+
-          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
-          '<input id="map-search-input" type="text" placeholder="Search any address…" style="flex:1;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text);background:transparent">'+
-          '<button onclick="toggleMapLayer()" id="map-layer-btn" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">🛰 Satellite</button>'+
-          '<button onclick="openStreetView()" id="map-sv-btn" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap" title="Street View of searched or selected location">👁 Street View</button>'+
-        '</div>'+
-        '<div style="position:relative;height:420px">'+
-          '<div id="dash-map" style="position:absolute;inset:0"></div>'+
-          '<div id="dash-sv" style="position:absolute;inset:0;z-index:2;visibility:hidden"></div>'+
-          '<button id="sv-back-btn" onclick="closeStreetView()" style="display:none;position:absolute;top:10px;left:10px;z-index:10;background:rgba(255,255,255,.95);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)">← Back to Map</button>'+
+        // Right column: Pipeline by Stage + Treasury + Recent Activity
+        '<div style="display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden">'+
+          // Pipeline by Stage (compact)
+          '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:10px 12px;flex-shrink:0">'+
+            '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="navigate(\'pipe\')">Pipeline by Stage<span style="color:var(--tp-blue);font-weight:500">View →</span></div>'+
+            bar+
+          '</div>'+
+          // Treasury
+          '<div class="tsy-card" id="tsy-card" style="margin-bottom:0;flex-shrink:0">'+
+            '<div class="tsy-header"><span class="tsy-title">10-Year Treasury</span><span class="tsy-badge">US10Y</span></div>'+
+            '<div class="tsy-yield" id="tsy-yield">--</div>'+
+            '<div class="tsy-change" id="tsy-change" style="color:var(--muted)">Loading...</div>'+
+            '<div class="tsy-meta" id="tsy-meta"></div>'+
+          '</div>'+
+          // Recent Activity (scrollable, fills rest)
+          '<div style="flex:1;min-height:0;overflow-y:auto;background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)">'+
+            '<div style="padding:10px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff">Recent Activity</div>'+
+            '<div class="act-feed" style="padding:0">'+feed+'</div>'+
+          '</div>'+
         '</div>'+
       '</div>'+
     '</div>';
