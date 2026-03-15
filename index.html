@@ -604,35 +604,56 @@ function toggleMapLayer(){
   const btn=document.getElementById('map-layer-btn');
   if(btn){btn.textContent=_isSatellite?'🗺 Map View':'🛰 Satellite';btn.style.color=_isSatellite?'var(--accent)':'var(--muted)';}
 }
-function openStreetView(){
-  const svEl=document.getElementById('dash-sv');
+function _svShowPanel(){
   const mapEl=document.getElementById('dash-map');
+  const svEl=document.getElementById('dash-sv');
   const backBtn=document.getElementById('sv-back-btn');
-  if(!svEl||!_dashMap)return;
-  const pos=_svPos||_dashMap.getCenter();
-  if(!_svPano)_svPano=new google.maps.StreetViewPanorama(svEl,{position:pos,pov:{heading:0,pitch:0},addressControl:true,linksControl:true,enableCloseButton:false,zoomControl:true});
-  else _svPano.setPosition(pos);
-  mapEl.style.display='none';svEl.style.display='block';backBtn.style.display='block';
-  const svBtn=document.getElementById('map-sv-btn');if(svBtn)svBtn.style.color='var(--accent)';
+  const svBtn=document.getElementById('map-sv-btn');
+  if(mapEl)mapEl.style.display='none';
+  if(svEl)svEl.style.display='block';
+  if(backBtn)backBtn.style.display='block';
+  if(svBtn)svBtn.style.color='var(--accent)';
+}
+function openStreetView(pos){
+  if(!_svPano)return;
+  const target=pos||_svPos||(_dashMap&&_dashMap.getCenter());
+  if(target){_svPano.setPosition(target);_svPano.setPov({heading:0,pitch:0});}
+  _svPano.setVisible(true);
+  _svShowPanel();
 }
 function closeStreetView(){
-  const svEl=document.getElementById('dash-sv');
+  if(_svPano)_svPano.setVisible(false);
   const mapEl=document.getElementById('dash-map');
+  const svEl=document.getElementById('dash-sv');
   const backBtn=document.getElementById('sv-back-btn');
+  const svBtn=document.getElementById('map-sv-btn');
   if(svEl)svEl.style.display='none';
   if(mapEl)mapEl.style.display='block';
   if(backBtn)backBtn.style.display='none';
-  const svBtn=document.getElementById('map-sv-btn');if(svBtn)svBtn.style.color='var(--muted)';
+  if(svBtn)svBtn.style.color='var(--muted)';
   if(_dashMap)google.maps.event.trigger(_dashMap,'resize');
 }
 async function initDashMap(){
   const el=document.getElementById('dash-map');
-  if(!el||!window.google)return;
+  const svEl=document.getElementById('dash-sv');
+  if(!el||!svEl||!window.google)return;
   if(_dashMap){google.maps.event.trigger(_dashMap,'resize');return;}
+  // Create panorama first, linked to the map — enables Pegman drag
+  _svPano=new google.maps.StreetViewPanorama(svEl,{
+    pov:{heading:0,pitch:0},visible:false,
+    addressControl:true,linksControl:true,
+    enableCloseButton:false,zoomControl:true,motionTracking:false,
+  });
+  // When Pegman is dragged onto a street, show the panel automatically
+  _svPano.addListener('visible_changed',()=>{
+    if(_svPano.getVisible())_svShowPanel();
+  });
   _dashMap=new google.maps.Map(el,{
     center:{lat:39.5,lng:-98.35},zoom:4,
     styles:[{featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}],
-    mapTypeControl:false,streetViewControl:false,fullscreenControl:true,
+    mapTypeControl:false,streetViewControl:true,
+    streetViewControlOptions:{position:google.maps.ControlPosition.RIGHT_BOTTOM},
+    fullscreenControl:true,streetView:_svPano,
   });
   _infoWin=new google.maps.InfoWindow();
   // Search autocomplete
@@ -644,12 +665,10 @@ async function initDashMap(){
       if(p.geometry){
         _svPos=p.geometry.location;
         _dashMap.panTo(_svPos);_dashMap.setZoom(16);
-        // If street view is open, update it
-        if(_svPano&&document.getElementById('dash-sv').style.display!=='none')_svPano.setPosition(_svPos);
+        if(_svPano.getVisible())_svPano.setPosition(_svPos);
       }
     });
   }
-  // Track map center for street view
   _dashMap.addListener('center_changed',()=>{_svPos=_dashMap.getCenter();});
   // Plot pipeline deals
   const HIDE=['closing','recent_trades','dod','dow','matt','written_loi','disposition'];
@@ -661,12 +680,13 @@ async function initDashMap(){
     if(!pos){pos=await geocodeAddr(deal.addr);if(pos)deal._latlng=pos;}
     if(!pos)continue;
     const st=sobj(deal.stage);
+    const latlng=new google.maps.LatLng(pos.lat,pos.lng);
     const marker=new google.maps.Marker({
-      position:pos,map:_dashMap,title:deal.name,
+      position:latlng,map:_dashMap,title:deal.name,
       icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:st.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2}
     });
     marker.addListener('click',()=>{
-      _svPos=pos;
+      _svPos=latlng;
       _infoWin.setContent(
         '<div style="font-family:\'DM Sans\',sans-serif;min-width:190px;padding:2px">'+
         '<div style="font-weight:600;font-size:13px;margin-bottom:4px">'+esc(deal.name)+'</div>'+
@@ -674,13 +694,13 @@ async function initDashMap(){
         '<div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Stage:</span> '+st.label+'</div>'+
         '<div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Value:</span> '+fmt$(Number(deal.tgt)||Number(deal.ask)||0)+'</div>'+
         (deal.lead?'<div style="font-size:12px;margin-bottom:8px"><span style="color:#888">Lead:</span> '+esc(deal.lead)+'</div>':'')+
-        '<button onclick="openStreetView()" style="margin-top:6px;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer;font-weight:600">👁 Street View</button>'+
+        '<button onclick="openStreetView(new google.maps.LatLng('+pos.lat+','+pos.lng+'))" style="margin-top:6px;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer;font-weight:600">👁 Street View</button>'+
         '</div>'
       );
       _infoWin.open(_dashMap,marker);
     });
     _mapMarkers.push(marker);
-    bounds.extend(pos);hasPin=true;
+    bounds.extend(latlng);hasPin=true;
   }
   if(hasPin)_dashMap.fitBounds(bounds);
 }
