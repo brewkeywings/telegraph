@@ -1189,7 +1189,7 @@ function rConDash(){
 function rConSnap(){
   // Active Deal Snapshot: all stages except completed, lost, dead, monitoring
   const el=document.getElementById('view');
-  const snapStages=['active','preconstruction','pricing','pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted'];
+  const snapStages=['preconstruction','pricing','pursuing_bid','pursuing_budget','bid_pending','budget_submitted'];
   const cols=CONST_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
     const ds=CONST_DATA.filter(d=>d.stage===st.id);
     const cards=ds.map(d=>'<div class="dcard" style="cursor:default">'+
