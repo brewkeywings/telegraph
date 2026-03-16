@@ -1732,16 +1732,16 @@ function renderConDetFt(){
 function bConOv(d,isLive){
   const st=conSobj(d.stage);
   const si=CONST_STAGES.findIndex(s=>s.id===d.stage);
-  const ni=si+1;const nxt=CONST_STAGES[ni];
-  const pct=si>=0?Math.round(ni/CONST_STAGES.length*100):0;
-  const prog=CONST_STAGES.map((s,i)=>'<div class="prog-seg" style="background:'+(i<ni?s.color:'var(--border)')+'"></div>').join('');
+  const scale=si>=0?Math.max(0,10-si):0;const pct=scale*10;
+  const nxt=si>0?CONST_STAGES[si-1]:null;
+  const prog=Array.from({length:10},(_,i)=>'<div class="prog-seg" style="background:'+(i<scale?st.color:'var(--border)')+'"></div>').join('');
   const req=st.req||[];
   const gateState=isLive&&d.gates&&d.gates[d.stage]?d.gates[d.stage]:req.map(()=>false);
   const done=gateState.filter(Boolean).length,total=req.length;
   const gpct=total?Math.round(done/total*100):0;
   const checkItems=req.map((r,i)=>'<label class="gate-item'+(gateState[i]?' checked':'')+'">'+(isLive?'<input type="checkbox" id="cgci-'+d.id+'-'+i+'" '+(gateState[i]?'checked':'')+' onchange="saveConGateInline(\''+d.id+'\',\''+d.stage+'\','+i+')">':'<input type="checkbox" '+(gateState[i]?'checked':'')+' disabled>')+'<span>'+esc(r)+'</span></label>').join('');
   const gateSection=total?'<div class="gate-prog-wrap"><div class="gate-prog-hd" onclick="toggleConGates(\''+d.id+'\')"><span>Stage Requirements</span><div class="gate-prog-bar-track"><div class="gate-prog-bar-fill" id="cgpb-'+d.id+'" style="width:'+gpct+'%"></div></div><span id="cgpl-'+d.id+'">'+done+'/'+total+' complete</span><span id="cga-'+d.id+'">&#9660;</span></div><div class="gate-prog-detail" id="cgd-'+d.id+'"><div class="gate-list">'+checkItems+'</div></div></div>':'';
-  return '<div class="stage-banner" style="background:'+st.color+'15;border:1px solid '+st.color+'40"><div style="font-size:20px;font-weight:800;color:'+st.color+'">'+st.short+'</div><div><div style="color:'+st.color+'">'+st.label+'</div><div style="font-size:11px;color:var(--muted);font-weight:400">Stage '+(si+1)+' of '+CONST_STAGES.length+(nxt?' → '+nxt.label:'')+'</div></div><div style="margin-left:auto;font-size:12px;color:var(--muted)">'+pct+'% through pipeline</div></div>'+
+  return '<div class="stage-banner" style="background:'+st.color+'15;border:1px solid '+st.color+'40"><div style="font-size:20px;font-weight:800;color:'+st.color+'">'+st.short+'</div><div><div style="color:'+st.color+'">'+st.label+'</div><div style="font-size:11px;color:var(--muted);font-weight:400">Scale '+scale+' / 10'+(nxt?' → '+nxt.label:'')+'</div></div><div style="margin-left:auto;font-size:12px;color:var(--muted)">'+pct+'% through pipeline</div></div>'+
     '<div class="prog-bar">'+prog+'</div>'+gateSection+
     '<div class="det-grid">'+
       '<div class="info-block"><h4>Job Info</h4>'+
