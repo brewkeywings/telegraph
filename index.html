@@ -254,7 +254,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="ni ni-sub" onclick="navigate('deals')" data-v="deals">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
-      All Deals
+      Investments Pipeline
     </div>
     <div class="ni ni-sub" onclick="navigate('medical')" data-v="medical">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -271,11 +271,28 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="ni ni-sub" onclick="navigate('con_deals')" data-v="con_deals">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
-      All Jobs Archive
+      Construction Pipeline
     </div>
     <div class="ni ni-sub" onclick="navigate('con_pipe')" data-v="con_pipe">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/></svg>
-      Construction Pipeline
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      All Projects Archive
+    </div>
+    <div class="nav-group-hd">Thomas Park Commercial</div>
+    <div class="ni ni-sub" onclick="navigate('com_dash')" data-v="com_dash">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="ni ni-sub" onclick="navigate('com_snap')" data-v="com_snap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="7" width="5" height="14" rx="1"/><rect x="17" y="5" width="5" height="16" rx="1"/></svg>
+      Active Listing Snapshot
+    </div>
+    <div class="ni ni-sub" onclick="navigate('com_pipe')" data-v="com_pipe">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      Commercial Pipeline
+    </div>
+    <div class="ni ni-sub" onclick="navigate('com_deals')" data-v="com_deals">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      All Listings Archive
     </div>
     <div class="ni" onclick="navigate('settings')" data-v="settings">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -415,19 +432,19 @@ const DOC_T=['Offering Memorandum','Rent Roll','T12 Financials','PSA / Purchase 
 const SB_URL='https://wponbaapholnvfpjmkpw.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwb25iYWFwaG9sbnZmcGpta3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzM2NDksImV4cCI6MjA4OTEwOTY0OX0.E1BmEskHoVFHdaeh2UvVfUQtfjizD9h_V8RT6wLBRg0';
 const sb=supabase.createClient(SB_URL,SB_KEY);
-let S={view:'dash',deals:[],acts:[],con_deals:[],con_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],eid:null,adid:null,did:null,dtab:'ov',drag:null,sort:{col:'name',asc:true},collapsed:{},con_collapsed:{}};
+let S={view:'dash',deals:[],acts:[],con_deals:[],con_acts:[],com_deals:[],com_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],eid:null,adid:null,did:null,dtab:'ov',drag:null,sort:{col:'name',asc:true},collapsed:{},con_collapsed:{}};
 let _saveTimer=null;
 function setSyncDot(state){const d=document.getElementById('sync-dot');if(d){d.className='sync-dot'+(state==='syncing'?' syncing':'');}}
 function save(){
-  try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team}))}catch(e){}
+  try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,settings:S.settings,team:S.team}))}catch(e){}
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>{
     setSyncDot('syncing');
-    sb.from('app_data').upsert({id:'main',deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team,updated_at:new Date().toISOString()})
+    sb.from('app_data').upsert({id:'main',deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,settings:S.settings,team:S.team,updated_at:new Date().toISOString()})
       .then(({error})=>{setSyncDot(error?'':'ok');if(error)console.error('Save error:',error);});
   },600);
 }
-function load(){try{const d=localStorage.getItem('tg9');if(d){const p=JSON.parse(d);S.deals=p.deals||[];S.acts=p.acts||[];S.con_deals=p.con_deals||[];S.con_acts=p.con_acts||[];S.settings=p.settings||{firm:'Thomas Park'};S.team=p.team||['AK','BJ','CR','DL','ES']}}catch(e){}}
+function load(){try{const d=localStorage.getItem('tg9');if(d){const p=JSON.parse(d);S.deals=p.deals||[];S.acts=p.acts||[];S.con_deals=p.con_deals||[];S.con_acts=p.con_acts||[];S.com_deals=p.com_deals||[];S.com_acts=p.com_acts||[];S.settings=p.settings||{firm:'Thomas Park'};S.team=p.team||['AK','BJ','CR','DL','ES']}}catch(e){}}
 // ============================================================
 // ALLOWED USERS — remove this block once self-signup is enabled
 const ALLOWED_EMAILS=[
@@ -495,7 +512,7 @@ async function onSignedIn(session){
   document.getElementById('auth-screen').style.display='none';
   const {data}=await sb.from('app_data').select('*').eq('id','main').single();
   if(data&&data.deals&&data.deals.length){
-    S.deals=data.deals||[];S.acts=data.acts||[];S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
+    S.deals=data.deals||[];S.acts=data.acts||[];S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.com_deals=data.com_deals||[];S.com_acts=data.com_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
   } else {
     load();
     if(!S.deals.length)initSample();
@@ -503,7 +520,7 @@ async function onSignedIn(session){
   }
   // Real-time sync
   sb.channel('app_data').on('postgres_changes',{event:'UPDATE',schema:'public',table:'app_data',filter:'id=eq.main'},payload=>{
-    const d=payload.new;S.deals=d.deals||S.deals;S.acts=d.acts||S.acts;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
+    const d=payload.new;S.deals=d.deals||S.deals;S.acts=d.acts||S.acts;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.com_deals=d.com_deals||S.com_deals;S.com_acts=d.com_acts||S.com_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
     navigate(S.view);
   }).subscribe();
   navigate('dash');
@@ -528,9 +545,9 @@ function navigate(v){
   const el=document.getElementById('view');
   if(v!=='dash')el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'All Deals',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Deal Snapshot',con_deals:'All Jobs Archive',con_pipe:'Construction Pipeline'};
+  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'Investments Pipeline',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Deal Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',com_dash:'Commercial Dashboard',com_snap:'Active Listing Snapshot',com_pipe:'Commercial Pipeline',com_deals:'All Listings Archive'};
   document.getElementById('pg-title').textContent=T[v]||v;
-  ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe})[v]();
+  ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,com_dash:rComDash,com_snap:rComSnap,com_pipe:rComPipe,com_deals:rComDeals})[v]();
   const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
 }
 function kpi(lbl,val,sub,accent,onclick){const click=onclick?'onclick="'+onclick+'" style="border-top:3px solid '+accent+';cursor:pointer" title="Click to view details"':'style="border-top:3px solid '+accent+'"';return '<div class="kpi" '+click+'><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val" style="color:'+accent+';font-size:'+(String(val).length>8?'18px':'26px')+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';}
@@ -1206,7 +1223,7 @@ function rConDash(){
         '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px;margin-bottom:12px">'+
           '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">'+
             'Jobs by Stage'+
-            '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_deals\')">All Jobs →</span>'+
+            '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_deals\')">View Pipeline →</span>'+
           '</div>'+bar+
         '</div>'+
       '</div>'+
@@ -1230,31 +1247,50 @@ function rConSnap(){
   }).join('');
   el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
 }
-// ---- CONSTRUCTION PIPELINE (live CRM — S.con_deals) ----
+// ---- ALL PROJECTS ARCHIVE (CONST_DATA + live S.con_deals combined) ----
 function conSobj(sid){return CONST_STAGES.find(s=>s.id===sid)||{id:sid,label:sid,color:'#6c7a8d',short:'?'};}
 function rConPipe(){
   const el=document.getElementById('view');
-  const ALL_CON_STAGES=CONST_STAGES.map(s=>s.id);
-  const cols=CONST_STAGES.map(st=>{
-    const ds=S.con_deals.filter(d=>d.stage===st.id);
-    const cards=ds.map(d=>
-      '<div class="dcard" draggable="true" ondragstart="conDst(event,\''+d.id+'\')" onclick="openConDet(\''+d.id+'\')">'+
-        '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
-        '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
-        '<div class="dcard-foot">'+
-          '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
-          '<div style="font-size:10px;color:var(--muted)">'+(d.prob?d.prob+'%':'')+'</div>'+
-        '</div></div>'
-    ).join('');
-    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div>'+
-      '<div class="col-body" ondragover="dov(event)" ondragleave="dlv(event)" ondrop="conDdr(event,\''+st.id+'\')">'+cards+'</div></div>';
-  }).join('');
+  const sq=((document.getElementById('cap-search')||{}).value||'').toLowerCase();
+  const sf=(document.getElementById('cap-stage')||{}).value||'';
+  const liveRows=S.con_deals.map(d=>({...d,_live:true}));
+  const allRows=[...CONST_DATA,...liveRows];
+  const stageOptions=CONST_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+'</option>').join('');
+  const filtered=allRows.filter(d=>{
+    if(sf&&d.stage!==sf)return false;
+    if(sq){const v=Object.values(d).join(' ').toLowerCase();return v.includes(sq);}
+    return true;
+  });
+  const byStage={};
+  filtered.forEach(d=>{(byStage[d.stage]=byStage[d.stage]||[]).push(d);});
+  const thHtml=['Project Name','Address','Type','Source','Cost','SF','Start Date'].map(c=>'<th style="padding:8px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:2px solid var(--border);background:#fafbfc">'+c+'</th>').join('');
+  let tbody='';
+  CONST_STAGES.forEach(st=>{
+    const rows=byStage[st.id];if(!rows||!rows.length)return;
+    tbody+='<thead onclick="toggleCapGroup(\'cap-'+st.id+'\')" style="cursor:pointer"><tr style="background:'+st.color+'18"><td colspan="7" style="padding:8px 12px;font-size:12px;font-weight:600"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+st.color+';margin-right:8px;vertical-align:middle"></span>'+st.label+' <span style="font-weight:400;opacity:.6">('+rows.length+')</span></td></tr></thead>'+
+      '<tbody id="cap-'+st.id+'">';
+    rows.forEach(d=>{
+      tbody+='<tr style="cursor:default">'+
+        '<td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
+        '<td style="font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.addr||'--')+'</td>'+
+        '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
+        '<td style="font-size:12px">'+esc(d.source||'--')+'</td>'+
+        '<td style="font-size:12px;font-weight:600">'+fmt$(d.cost)+'</td>'+
+        '<td style="font-size:12px">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</td>'+
+        '<td style="font-size:12px">'+fmtD(d.startDate)+'</td>'+
+      '</tr>';
+    });
+    tbody+='</tbody>';
+  });
   el.innerHTML=
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:10px">'+
-      '<button class="btn btn-primary btn-sm" onclick="openConForm()">+ New Job</button>'+
+    '<div class="med-hd"><h2>All Projects Archive</h2><span class="med-total">'+filtered.length+' of '+allRows.length+' projects</span></div>'+
+    '<div class="med-filters">'+
+      '<input id="cap-search" type="text" placeholder="Search projects..." value="'+esc(sq)+'" oninput="rConPipe()">'+
+      '<select id="cap-stage" onchange="rConPipe()"><option value="">All Stages</option>'+stageOptions+'</select>'+
     '</div>'+
-    '<div id="pipe-wrap">'+cols+'</div>';
+    '<div class="med-tbl-wrap"><table class="med-tbl"><thead><tr>'+thHtml+'</tr></thead>'+tbody+'</table></div>';
 }
+function toggleCapGroup(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'':'none';}
 function conDst(e,id){S.drag=id;e.dataTransfer.effectAllowed='move';}
 function conDdr(e,sid){
   e.preventDefault();e.currentTarget.classList.remove('drag-over');
@@ -1395,6 +1431,270 @@ function toggleConGroup(sid){
   const el=document.getElementById('cg-'+sid);
   if(el)el.style.display=el.style.display==='none'?'':'none';
 }
+// ============================================================
+// THOMAS PARK COMMERCIAL
+// ============================================================
+const COM_STAGES=[
+  {id:'com_prospect',label:'Prospect',color:'#0ea5e9',short:'PRO'},
+  {id:'com_active',label:'Active Listing',color:'#10b981',short:'ACT'},
+  {id:'com_loi',label:'LOI / Offer Received',color:'#8b5cf6',short:'LOI'},
+  {id:'com_contract',label:'Under Contract',color:'#f59e0b',short:'UC'},
+  {id:'com_closed_sale',label:'Closed – Sale',color:'#059669',short:'SALE'},
+  {id:'com_closed_lease',label:'Closed – Lease',color:'#14b8a6',short:'LEASE'},
+  {id:'com_expired',label:'Expired / Withdrawn',color:'#ef4444',short:'EXP'},
+  {id:'com_monitoring',label:'Off Market – Monitoring',color:'#64748b',short:'MON'},
+];
+const COM_DATA=[
+  {id:'c001',name:'Midtown Office Tower',type:'Sale',ptype:'Office',addr:'1200 Main St, Columbus, OH 43215',market:'Columbus',ask:12500000,sf:45000,yr:1998,lead:'BB',stage:'com_loi',closeDate:'2026-06-15',source:'Off Market',tenant:'TechCorp Inc.',notes:'Multi-tenant office. Lead interest from TechCorp for full-building purchase.'},
+  {id:'c002',name:'Westpark Retail Center',type:'Sale',ptype:'Retail',addr:'8800 Westpark Dr, Dublin, OH 43017',market:'Columbus',ask:8200000,sf:28000,yr:2005,lead:'MP',stage:'com_active',closeDate:'2026-07-30',source:'JLL',tenant:'',notes:'Anchored strip center with two vacant end-caps. Strong foot traffic.'},
+  {id:'c003',name:'Northside Industrial Park',type:'Sale',ptype:'Industrial',addr:'4400 Industrial Pkwy, Westerville, OH 43081',market:'Columbus',ask:18700000,sf:120000,yr:2003,lead:'BB',stage:'com_contract',closeDate:'2026-05-01',source:'CBRE',tenant:'',notes:'Clear-height 32\'. Buyer due diligence in progress. Environmental Phase I ordered.'},
+  {id:'c004',name:'Downtown Medical Suites',type:'Lease',ptype:'Medical Office',addr:'580 S High St, Columbus, OH 43215',market:'Columbus',ask:32,sf:8500,yr:2015,lead:'CM',stage:'com_prospect',closeDate:'2026-09-01',source:'Direct',tenant:'OhioHealth Group',notes:'OhioHealth evaluating for satellite clinic. Decision Q3 2026.'},
+  {id:'c005',name:'Harbor View Mixed-Use',type:'Sale',ptype:'Mixed-Use',addr:'200 W Broad St, Columbus, OH 43215',market:'Columbus',ask:22000000,sf:35000,yr:2018,lead:'BB',stage:'com_active',closeDate:'2026-08-15',source:'Off Market',tenant:'',notes:'Ground-floor retail + 4 floors office. New construction, fully permitted.'},
+  {id:'c006',name:'Lakewood Corporate Center',type:'Sale',ptype:'Office',addr:'6600 Lakewood Dr, Worthington, OH 43085',market:'Columbus',ask:15300000,sf:68000,yr:1995,lead:'MP',stage:'com_closed_sale',closeDate:'2025-11-20',source:'Marcus & Millichap',tenant:'',notes:'Closed Nov 2025. Suburban office campus. Buyer: regional REIT.'},
+  {id:'c007',name:'Eastgate Shopping Plaza',type:'Sale',ptype:'Retail',addr:'1100 Eastgate Blvd, Gahanna, OH 43230',market:'Columbus',ask:11800000,sf:42000,yr:2001,lead:'CM',stage:'com_active',closeDate:'2026-09-30',source:'CBRE',tenant:'',notes:'Power center with national tenants. Cap rate 6.4%.'},
+  {id:'c008',name:'Tech District Flex Space',type:'Lease',ptype:'Industrial/Flex',addr:'3300 Technology Dr, Hilliard, OH 43026',market:'Columbus',ask:18,sf:25000,yr:2010,lead:'BB',stage:'com_loi',closeDate:'2026-05-15',source:'Off Market',tenant:'DataDrive LLC',notes:'DataDrive LOI received 3/10/26. 5-year term proposed.'},
+  {id:'c009',name:'Greenfield Business Park',type:'Lease',ptype:'Office',addr:'7500 Greenfield Dr, New Albany, OH 43054',market:'Columbus',ask:26,sf:15000,yr:2019,lead:'MP',stage:'com_prospect',closeDate:'2026-10-01',source:'JLL',tenant:'Apex Advisors',notes:'Class A suburban office. Prospect on 3-year deal.'},
+  {id:'c010',name:'Summit Tower Suite 2200',type:'Sale',ptype:'Office',addr:'41 S High St, Columbus, OH 43215',market:'Columbus',ask:4200000,sf:12000,yr:2008,lead:'CM',stage:'com_contract',closeDate:'2026-04-30',source:'Off Market',tenant:'',notes:'Condo unit sale. PSA executed. Closing targeted end of April.'},
+  {id:'c011',name:'Riverside Retail Strip',type:'Lease',ptype:'Retail',addr:'2200 Riverside Dr, Columbus, OH 43221',market:'Columbus',ask:28,sf:8000,yr:2006,lead:'BB',stage:'com_closed_lease',closeDate:'2025-12-01',source:'Direct',tenant:'Urban Outfitters',notes:'Closed Dec 2025. 10-year NNN lease executed.'},
+  {id:'c012',name:'Airport Industrial Complex',type:'Sale',ptype:'Industrial',addr:'5000 Airway Rd, Columbus, OH 43219',market:'Columbus',ask:9500000,sf:85000,yr:1997,lead:'MP',stage:'com_prospect',closeDate:'2026-11-15',source:'CBRE',tenant:'',notes:'Near CMH. Logistics user preferred. Early stage outreach.'},
+  {id:'c013',name:'Short North Creative Office',type:'Lease',ptype:'Office',addr:'800 N High St, Columbus, OH 43215',market:'Columbus',ask:35,sf:6200,yr:2016,lead:'CM',stage:'com_active',closeDate:'2026-06-01',source:'Off Market',tenant:'Studio Alpha Creative',notes:'Listed March 2026. Multiple touring interest.'},
+  {id:'c014',name:'Polaris Medical Office',type:'Sale',ptype:'Medical Office',addr:'9100 Polaris Pkwy, Columbus, OH 43240',market:'Columbus',ask:6800000,sf:18500,yr:2012,lead:'BB',stage:'com_monitoring',closeDate:'',source:'Direct',tenant:'',notes:'Owner not yet ready to list. Revisit Q4 2026.'},
+  {id:'c015',name:'Grandview Warehouse',type:'Sale',ptype:'Industrial',addr:'1400 Grandview Ave, Columbus, OH 43212',market:'Columbus',ask:3200000,sf:32000,yr:1985,lead:'MP',stage:'com_expired',closeDate:'2026-01-15',source:'CoStar',tenant:'',notes:'Listing expired Jan 2026. Owner relisting at reduced price in 2027.'},
+];
+function comSobj(sid){return COM_STAGES.find(s=>s.id===sid)||{id:sid,label:sid,color:'#6c7a8d',short:'?'};}
+function fmtCom(d){if(d.type==='Lease')return d.ask?'$'+d.ask+'/SF':'--';return fmt$(d.ask);}
+// ---- COMMERCIAL DASHBOARD ----
+function rComDash(){
+  const el=document.getElementById('view');
+  el.className='';
+  const allDeals=[...COM_DATA,...S.com_deals];
+  const activeStages=['com_prospect','com_active','com_loi','com_contract'];
+  const activeDeals=allDeals.filter(d=>activeStages.includes(d.stage));
+  const contractDeals=allDeals.filter(d=>d.stage==='com_contract');
+  const closedSale=allDeals.filter(d=>d.stage==='com_closed_sale');
+  const closedLease=allDeals.filter(d=>d.stage==='com_closed_lease');
+  const closedAll=[...closedSale,...closedLease];
+  const activeVal=activeDeals.filter(d=>d.type==='Sale').reduce((a,d)=>a+(Number(d.ask)||0),0);
+  const contractVal=contractDeals.filter(d=>d.type==='Sale').reduce((a,d)=>a+(Number(d.ask)||0),0);
+  const closedVal=closedSale.reduce((a,d)=>a+(Number(d.ask)||0),0);
+  const sfLeases=allDeals.filter(d=>d.type==='Lease'&&activeStages.includes(d.stage));
+  const sfTotal=sfLeases.reduce((a,d)=>a+(Number(d.sf)||0),0);
+  const barScale=Math.max(...COM_STAGES.map(st=>allDeals.filter(d=>d.stage===st.id).length),1);
+  const bar=COM_STAGES.map(st=>{
+    const n=allDeals.filter(d=>d.stage===st.id).length;
+    const w=Math.min(Math.round(n/barScale*100),100);
+    return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'+
+      '<div style="width:150px;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0" title="'+st.label+'">'+st.label+'</div>'+
+      '<div style="flex:1;background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+w+'%;background:'+st.color+';height:100%;border-radius:3px"></div></div>'+
+      '<div style="width:18px;text-align:right;font-size:10px;font-weight:600;flex-shrink:0">'+n+'</div>'+
+    '</div>';
+  }).join('');
+  let feed=S.com_acts.slice(0,8).map(a=>'<div class="act-item"><div class="act-ico">'+a.ico+'</div><div class="act-body"><div>'+a.msg+'</div><div class="act-time">'+fmtDT(a.ts)+'</div></div></div>').join('');
+  if(!feed)feed='<div class="empty">No activity yet. Add your first listing above.</div>';
+  el.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+      '<div><h2 style="font-size:17px;font-weight:700">Commercial Dashboard</h2><div style="font-size:12px;color:var(--muted);margin-top:2px">Leasing &amp; Sales Brokerage</div></div>'+
+      '<button class="btn btn-primary btn-sm" onclick="openComForm()">+ New Listing</button>'+
+    '</div>'+
+    '<div class="kpi-grid" style="margin-bottom:14px">'+
+      '<div class="kpi" onclick="navigate(\'com_snap\')" style="border-top:3px solid #10b981;cursor:pointer">'+
+        '<div class="kpi-lbl">Active Listings</div>'+
+        '<div style="font-size:32px;font-weight:700;color:#10b981;line-height:1;margin:6px 0 2px">'+activeDeals.length+'</div>'+
+        '<div style="font-size:11px;color:var(--muted)">in active stages</div>'+
+        '<div style="font-size:16px;font-weight:700;color:#10b981;margin-top:6px">'+fmt$(activeVal)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">sale listing value</div>'+
+      '</div>'+
+      '<div class="kpi" onclick="navigate(\'com_pipe\')" style="border-top:3px solid #f59e0b;cursor:pointer">'+
+        '<div class="kpi-lbl">Under Contract</div>'+
+        '<div style="font-size:32px;font-weight:700;color:#f59e0b;line-height:1;margin:6px 0 2px">'+contractDeals.length+'</div>'+
+        '<div style="font-size:11px;color:var(--muted)">deals in contract</div>'+
+        '<div style="font-size:16px;font-weight:700;color:#f59e0b;margin-top:6px">'+fmt$(contractVal)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">combined value</div>'+
+      '</div>'+
+      '<div class="kpi" onclick="navigate(\'com_deals\')" style="border-top:3px solid #059669;cursor:pointer">'+
+        '<div class="kpi-lbl">Closed</div>'+
+        '<div style="font-size:32px;font-weight:700;color:#059669;line-height:1;margin:6px 0 2px">'+closedAll.length+'</div>'+
+        '<div style="font-size:11px;color:var(--muted)">'+closedSale.length+' sales · '+closedLease.length+' leases</div>'+
+        '<div style="font-size:16px;font-weight:700;color:#059669;margin-top:6px">'+fmt$(closedVal)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">closed sales volume</div>'+
+      '</div>'+
+      '<div class="kpi" style="border-top:3px solid #8b5cf6">'+
+        '<div class="kpi-lbl">Lease Pipeline</div>'+
+        '<div style="font-size:32px;font-weight:700;color:#8b5cf6;line-height:1;margin:6px 0 2px">'+sfLeases.length+'</div>'+
+        '<div style="font-size:11px;color:var(--muted)">active lease deals</div>'+
+        '<div style="font-size:16px;font-weight:700;color:#8b5cf6;margin-top:6px">'+(sfTotal?Number(sfTotal).toLocaleString()+' SF':'--')+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">square feet in play</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 280px;gap:14px">'+
+      '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px">'+
+        '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">'+
+          'Listings by Stage<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'com_deals\')">All Listings →</span>'+
+        '</div>'+bar+
+      '</div>'+
+      '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow-y:auto;max-height:360px">'+
+        '<div style="padding:10px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff">Recent Activity</div>'+
+        '<div class="act-feed" style="padding:0">'+feed+'</div>'+
+      '</div>'+
+    '</div>';
+}
+// ---- COMMERCIAL ACTIVE LISTING SNAPSHOT (Kanban) ----
+function rComSnap(){
+  const el=document.getElementById('view');
+  const snapStages=['com_prospect','com_active','com_loi','com_contract'];
+  const allDeals=[...COM_DATA,...S.com_deals];
+  const cols=COM_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
+    const ds=allDeals.filter(d=>d.stage===st.id);
+    const cards=ds.map(d=>
+      '<div class="dcard" style="cursor:default">'+
+        '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
+        '<div class="dcard-type">'+esc(d.ptype||'')+(d.type?' · '+d.type:'')+'</div>'+
+        '<div class="dcard-foot">'+
+          '<div class="dcard-price">'+fmtCom(d)+'</div>'+
+          '<div style="font-size:10px;color:var(--muted)">'+esc(d.sf?Number(d.sf).toLocaleString()+' SF':'')+'</div>'+
+        '</div>'+
+      '</div>'
+    ).join('');
+    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div><div class="col-body" style="min-height:80px">'+cards+'</div></div>';
+  }).join('');
+  el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
+}
+// ---- COMMERCIAL PIPELINE (editable table) ----
+function rComPipe(){
+  const el=document.getElementById('view');
+  const allDeals=[...COM_DATA,...S.com_deals];
+  const sq=((document.getElementById('cof-search')||{}).value||'').toLowerCase();
+  const st_f=(document.getElementById('cof-stage')||{}).value||'';
+  const tp_f=(document.getElementById('cof-type')||{}).value||'';
+  const filtered=allDeals.filter(d=>{
+    if(st_f&&d.stage!==st_f)return false;
+    if(tp_f&&d.type!==tp_f)return false;
+    if(sq){const v=Object.values(d).join(' ').toLowerCase();return v.includes(sq);}
+    return true;
+  });
+  const stageOpts=COM_STAGES.map(s=>'<option value="'+s.id+'"'+(st_f===s.id?' selected':'')+'>'+s.label+'</option>').join('');
+  const rows=filtered.map(d=>{
+    const st=comSobj(d.stage);
+    return '<tr>'+
+      '<td style="font-weight:600;font-size:13px">'+esc(d.name)+'<div style="font-size:11px;color:var(--muted)">'+esc(d.addr||'')+'</div></td>'+
+      '<td style="font-size:12px"><span class="badge" style="background:'+(d.type==='Lease'?'#8b5cf620;color:#8b5cf6':'#10b98120;color:#10b981')+'">'+esc(d.type||'--')+'</span></td>'+
+      '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
+      '<td><span class="badge" style="background:'+st.color+'20;color:'+st.color+'">'+st.short+'</span></td>'+
+      '<td style="font-size:12px;font-weight:600">'+fmtCom(d)+'</td>'+
+      '<td style="font-size:12px">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</td>'+
+      '<td style="font-size:12px">'+esc(d.lead||'--')+'</td>'+
+      '<td style="font-size:12px">'+fmtD(d.closeDate)+'</td>'+
+      '<td onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm" onclick="openComForm(\''+d.id+'\')">Edit</button></td>'+
+    '</tr>';
+  }).join('');
+  el.innerHTML=
+    '<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">'+
+      '<input id="cof-search" type="text" placeholder="Search..." oninput="rComPipe()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;width:200px;font-family:inherit" value="'+esc(sq)+'">'+
+      '<select id="cof-stage" onchange="rComPipe()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit"><option value="">All Stages</option>'+stageOpts+'</select>'+
+      '<select id="cof-type" onchange="rComPipe()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit"><option value="">Sale &amp; Lease</option><option value="Sale"'+(tp_f==='Sale'?' selected':'')+'>Sale Only</option><option value="Lease"'+(tp_f==='Lease'?' selected':'')+'>Lease Only</option></select>'+
+      '<span style="font-size:12px;color:var(--muted)">'+filtered.length+' of '+allDeals.length+' listings</span>'+
+      '<button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="openComForm()">+ New Listing</button>'+
+    '</div>'+
+    '<div class="tbl-wrap"><table><thead><tr>'+
+      '<th>Property</th><th>Deal Type</th><th>Prop. Type</th><th>Stage</th><th>Price / Rate</th><th>Size</th><th>Lead</th><th>Target Close</th><th></th>'+
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+// ---- ALL LISTINGS ARCHIVE (grouped, like All Deal Archive) ----
+function rComDeals(){
+  const el=document.getElementById('view');
+  const sq=((document.getElementById('cod-search')||{}).value||'').toLowerCase();
+  const sf=(document.getElementById('cod-stage')||{}).value||'';
+  const allDeals=[...COM_DATA,...S.com_deals];
+  const stageOpts=COM_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+'</option>').join('');
+  const filtered=allDeals.filter(d=>{
+    if(sf&&d.stage!==sf)return false;
+    if(sq){const v=Object.values(d).join(' ').toLowerCase();return v.includes(sq);}
+    return true;
+  });
+  const byStage={};
+  filtered.forEach(d=>{(byStage[d.stage]=byStage[d.stage]||[]).push(d);});
+  const thHtml=['Property','Deal Type','Prop. Type','Price / Rate','Size','Market','Lead','Close Date'].map(c=>'<th style="padding:8px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:2px solid var(--border);background:#fafbfc">'+c+'</th>').join('');
+  let tbody='';
+  COM_STAGES.forEach(st=>{
+    const rows=byStage[st.id];if(!rows||!rows.length)return;
+    tbody+='<thead onclick="toggleComGroup(\'cod-'+st.id+'\')" style="cursor:pointer"><tr style="background:'+st.color+'18"><td colspan="8" style="padding:8px 12px;font-size:12px;font-weight:600"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+st.color+';margin-right:8px;vertical-align:middle"></span>'+st.label+' <span style="font-weight:400;opacity:.6">('+rows.length+')</span></td></tr></thead>'+
+      '<tbody id="cod-'+st.id+'">';
+    rows.forEach(d=>{
+      tbody+='<tr class="med-row">'+
+        '<td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
+        '<td style="font-size:12px"><span class="badge" style="background:'+(d.type==='Lease'?'#8b5cf620;color:#8b5cf6':'#10b98120;color:#10b981')+'">'+esc(d.type||'--')+'</span></td>'+
+        '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
+        '<td style="font-size:12px;font-weight:600">'+fmtCom(d)+'</td>'+
+        '<td style="font-size:12px">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</td>'+
+        '<td style="font-size:12px">'+esc(d.market||'--')+'</td>'+
+        '<td style="font-size:12px">'+esc(d.lead||'--')+'</td>'+
+        '<td style="font-size:12px">'+fmtD(d.closeDate)+'</td>'+
+      '</tr>';
+    });
+    tbody+='</tbody>';
+  });
+  el.innerHTML=
+    '<div class="med-hd"><h2>All Listings Archive</h2><span class="med-total">'+filtered.length+' of '+allDeals.length+' listings</span></div>'+
+    '<div class="med-filters">'+
+      '<input id="cod-search" type="text" placeholder="Search all fields..." value="'+esc(sq)+'" oninput="rComDeals()">'+
+      '<select id="cod-stage" onchange="rComDeals()"><option value="">All Stages</option>'+stageOpts+'</select>'+
+    '</div>'+
+    '<div class="med-tbl-wrap"><table class="med-tbl"><thead><tr>'+thHtml+'</tr></thead>'+tbody+'</table></div>';
+}
+function toggleComGroup(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'':'none';}
+// ---- COMMERCIAL FORM ----
+function openComForm(did){
+  const allDeals=[...COM_DATA,...S.com_deals];
+  const d=did?allDeals.find(x=>x.id===did):null;
+  const stOpts=COM_STAGES.map(s=>'<option value="'+s.id+'"'+(d&&d.stage===s.id?' selected':'')+'>'+s.label+'</option>').join('');
+  document.getElementById('summo-title').textContent=did?'Edit Listing':'New Commercial Listing';
+  document.getElementById('summo-body').innerHTML=
+    '<form onsubmit="sComForm(event,\''+( did||'')+'\')">'+
+    '<div class="form-grid">'+
+      '<div class="form-group full"><label>Property Name *</label><input type="text" id="comf-name" required value="'+esc(d?d.name:'')+'" placeholder="e.g. Midtown Office Tower"></div>'+
+      '<div class="form-group"><label>Deal Type</label><select id="comf-type"><option value="Sale"'+(d&&d.type==='Sale'?' selected':'')+'>Sale</option><option value="Lease"'+(d&&d.type==='Lease'?' selected':'')+'>Lease</option></select></div>'+
+      '<div class="form-group"><label>Stage</label><select id="comf-stage">'+stOpts+'</select></div>'+
+      '<div class="form-group"><label>Property Type</label><input type="text" id="comf-ptype" value="'+esc(d?d.ptype:'')+'" placeholder="Office, Retail, Industrial..."></div>'+
+      '<div class="form-group"><label>Market</label><input type="text" id="comf-market" value="'+esc(d?d.market:'')+'" placeholder="Columbus, Cincinnati..."></div>'+
+      '<div class="form-group full"><label>Address</label><input type="text" id="comf-addr" value="'+esc(d?d.addr:'')+'"></div>'+
+      '<div class="form-group"><label>Asking Price (Sale $) / Rate (Lease $/SF)</label><input type="number" id="comf-ask" min="0" step="0.01" value="'+(d?d.ask:'')+'"></div>'+
+      '<div class="form-group"><label>Square Feet</label><input type="number" id="comf-sf" min="0" value="'+(d?d.sf:'')+'"></div>'+
+      '<div class="form-group"><label>Year Built</label><input type="number" id="comf-yr" min="1800" max="2030" value="'+(d?d.yr:'')+'"></div>'+
+      '<div class="form-group"><label>Deal Lead</label><select id="comf-lead">'+S.team.map(m=>'<option value="'+m+'"'+(d&&d.lead===m?' selected':'')+'>'+m+'</option>').join('')+'</select></div>'+
+      '<div class="form-group"><label>Source</label><input type="text" id="comf-source" value="'+esc(d?d.source:'')+'" placeholder="CBRE, JLL, Direct..."></div>'+
+      '<div class="form-group"><label>Tenant / Buyer</label><input type="text" id="comf-tenant" value="'+esc(d?d.tenant:'')+'" placeholder="Leave blank if unknown"></div>'+
+      '<div class="form-group"><label>Target Close Date</label><input type="date" id="comf-close" value="'+(d?d.closeDate:'')+'"></div>'+
+      '<div class="form-group full"><label>Notes</label><textarea id="comf-notes" rows="3">'+esc(d?d.notes:'')+'</textarea></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById(\'summo\').style.display=\'none\'">Cancel</button>'+
+      '<button type="submit" class="btn btn-primary btn-sm">'+(did?'Save Changes':'Create Listing')+'</button>'+
+    '</div></form>';
+  document.getElementById('summo').style.display='flex';
+}
+function sComForm(e,did){
+  e.preventDefault();
+  const now=new Date().toISOString();
+  let d=did?S.com_deals.find(x=>x.id===did):{id:uid(),createdAt:now,stageEnteredAt:now,notes:''};
+  if(!did)S.com_deals.push(d);
+  d.name=document.getElementById('comf-name').value.trim();
+  d.type=document.getElementById('comf-type').value;
+  d.stage=document.getElementById('comf-stage').value;
+  d.ptype=document.getElementById('comf-ptype').value.trim();
+  d.market=document.getElementById('comf-market').value.trim();
+  d.addr=document.getElementById('comf-addr').value.trim();
+  d.ask=Number(document.getElementById('comf-ask').value)||0;
+  d.sf=Number(document.getElementById('comf-sf').value)||0;
+  d.yr=document.getElementById('comf-yr').value;
+  d.lead=document.getElementById('comf-lead').value;
+  d.source=document.getElementById('comf-source').value.trim();
+  d.tenant=document.getElementById('comf-tenant').value.trim();
+  d.closeDate=document.getElementById('comf-close').value;
+  d.notes=document.getElementById('comf-notes').value.trim();
+  addComAct('&#9733;','<strong>'+esc(d.name)+'</strong> '+(did?'updated':'added to '+comSobj(d.stage).label));
+  save();document.getElementById('summo').style.display='none';navigate('com_dash');toast(did?'Listing updated':'Listing created');
+}
+function addComAct(ico,msg){S.com_acts.unshift({ico,msg,ts:new Date().toISOString()});if(S.com_acts.length>100)S.com_acts.pop();}
 init();
 </script>
 </body>
