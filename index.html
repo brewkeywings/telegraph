@@ -658,6 +658,8 @@ function rDash(){
   if(window._mapsReady)initDashMap();else{const t=setInterval(()=>{if(window._mapsReady){clearInterval(t);initDashMap();}},200);}
 }
 let _dashMap=null,_mapMarkers=[],_infoWin=null,_svPano=null,_svPos=null,_isSatellite=false;
+let _conMap=null,_conMapMarkers=[],_conInfoWin=null,_conPano=null,_conSvPos=null,_conSatellite=false;
+let _comMap=null,_comMapMarkers=[],_comInfoWin=null,_comPano=null,_comSvPos=null,_comSatellite=false;
 async function geocodeAddr(addr){
   try{
     const r=await fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key=AIzaSyAiPB5pq89eHUq3BIMU6gvoPklJUAbXJng');
@@ -768,6 +770,70 @@ async function initDashMap(){
     bounds.extend(latlng);hasPin=true;
   }
   if(hasPin)_dashMap.fitBounds(bounds);
+}
+async function initConMap(){
+  const el=document.getElementById('con-dash-map');
+  const svEl=document.getElementById('con-dash-sv');
+  if(!el||!svEl||!window.google)return;
+  if(_conMap){google.maps.event.trigger(_conMap,'resize');return;}
+  _conPano=new google.maps.StreetViewPanorama(svEl,{pov:{heading:0,pitch:0},visible:false,addressControl:true,linksControl:true,enableCloseButton:false,zoomControl:true,motionTracking:false});
+  _conPano.addListener('visible_changed',()=>{if(_conPano.getVisible()){const sv2=document.getElementById('con-dash-sv');const bb=document.getElementById('con-sv-back');if(sv2)sv2.style.visibility='visible';if(bb)bb.style.display='block';}});
+  _conMap=new google.maps.Map(el,{center:{lat:39.5,lng:-98.35},zoom:4,styles:[{featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}],mapTypeControl:false,streetViewControl:true,streetViewControlOptions:{position:google.maps.ControlPosition.RIGHT_BOTTOM},fullscreenControl:true,streetView:_conPano});
+  _conInfoWin=new google.maps.InfoWindow();
+  const inp=document.getElementById('con-map-search');
+  if(inp){const ac=new google.maps.places.Autocomplete(inp,{types:['geocode','establishment']});ac.addListener('place_changed',()=>{const p=ac.getPlace();if(p.geometry){_conSvPos=p.geometry.location;_conMap.panTo(_conSvPos);_conMap.setZoom(16);}});}
+  _conMap.addListener('center_changed',()=>{_conSvPos=_conMap.getCenter();});
+  const plotJobs=CONST_DATA.filter(d=>d.addr);
+  _conMapMarkers.forEach(m=>m.setMap(null));_conMapMarkers=[];
+  const bounds=new google.maps.LatLngBounds();let hasPin=false;
+  for(const job of plotJobs){
+    let pos=job._latlng;
+    if(!pos){pos=await geocodeAddr(job.addr);if(pos)job._latlng=pos;}
+    if(!pos)continue;
+    const st=conSobj(job.stage);
+    const latlng=new google.maps.LatLng(pos.lat,pos.lng);
+    const marker=new google.maps.Marker({position:latlng,map:_conMap,title:job.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:st.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2}});
+    marker.addListener('click',()=>{
+      _conSvPos=latlng;
+      _conInfoWin.setContent('<div style="font-family:\'DM Sans\',sans-serif;min-width:180px;padding:2px"><div style="font-weight:600;font-size:13px;margin-bottom:4px">'+esc(job.name)+'</div><div style="color:#666;font-size:11px;margin-bottom:6px">'+esc(job.addr)+'</div><div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Stage:</span> '+st.label+'</div><div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Cost:</span> '+fmt$(job.cost)+'</div>'+(job.pm?'<div style="font-size:12px;margin-bottom:2px"><span style="color:#888">PM:</span> '+esc(job.pm)+'</div>':'')+
+      '<button onclick="(()=>{_conPano.setPosition(new google.maps.LatLng('+pos.lat+','+pos.lng+'));_conPano.setPov({heading:0,pitch:0});_conPano.setVisible(true);})()" style="margin-top:6px;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer;font-weight:600">👁 Street View</button></div>');
+      _conInfoWin.open(_conMap,marker);
+    });
+    _conMapMarkers.push(marker);bounds.extend(latlng);hasPin=true;
+  }
+  if(hasPin)_conMap.fitBounds(bounds);
+}
+async function initComMap(){
+  const el=document.getElementById('com-dash-map');
+  const svEl=document.getElementById('com-dash-sv');
+  if(!el||!svEl||!window.google)return;
+  if(_comMap){google.maps.event.trigger(_comMap,'resize');return;}
+  _comPano=new google.maps.StreetViewPanorama(svEl,{pov:{heading:0,pitch:0},visible:false,addressControl:true,linksControl:true,enableCloseButton:false,zoomControl:true,motionTracking:false});
+  _comPano.addListener('visible_changed',()=>{if(_comPano.getVisible()){const sv2=document.getElementById('com-dash-sv');const bb=document.getElementById('com-sv-back');if(sv2)sv2.style.visibility='visible';if(bb)bb.style.display='block';}});
+  _comMap=new google.maps.Map(el,{center:{lat:39.5,lng:-98.35},zoom:4,styles:[{featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}],mapTypeControl:false,streetViewControl:true,streetViewControlOptions:{position:google.maps.ControlPosition.RIGHT_BOTTOM},fullscreenControl:true,streetView:_comPano});
+  _comInfoWin=new google.maps.InfoWindow();
+  const inp=document.getElementById('com-map-search');
+  if(inp){const ac=new google.maps.places.Autocomplete(inp,{types:['geocode','establishment']});ac.addListener('place_changed',()=>{const p=ac.getPlace();if(p.geometry){_comSvPos=p.geometry.location;_comMap.panTo(_comSvPos);_comMap.setZoom(16);}});}
+  _comMap.addListener('center_changed',()=>{_comSvPos=_comMap.getCenter();});
+  const allDeals=[...COM_DATA,...S.com_deals].filter(d=>d.addr);
+  _comMapMarkers.forEach(m=>m.setMap(null));_comMapMarkers=[];
+  const bounds=new google.maps.LatLngBounds();let hasPin=false;
+  for(const deal of allDeals){
+    let pos=deal._latlng;
+    if(!pos){pos=await geocodeAddr(deal.addr);if(pos)deal._latlng=pos;}
+    if(!pos)continue;
+    const st=COM_STAGES.find(s=>s.id===deal.stage)||{color:'#6c7a8d',label:deal.stage};
+    const latlng=new google.maps.LatLng(pos.lat,pos.lng);
+    const marker=new google.maps.Marker({position:latlng,map:_comMap,title:deal.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:st.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2}});
+    marker.addListener('click',()=>{
+      _comSvPos=latlng;
+      _comInfoWin.setContent('<div style="font-family:\'DM Sans\',sans-serif;min-width:180px;padding:2px"><div style="font-weight:600;font-size:13px;margin-bottom:4px">'+esc(deal.name)+'</div><div style="color:#666;font-size:11px;margin-bottom:6px">'+esc(deal.addr)+'</div><div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Stage:</span> '+st.label+'</div><div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Type:</span> '+esc(deal.type||'--')+'</div><div style="font-size:12px;margin-bottom:2px"><span style="color:#888">Ask:</span> '+fmtCom(deal)+'</div>'+
+      '<button onclick="(()=>{_comPano.setPosition(new google.maps.LatLng('+pos.lat+','+pos.lng+'));_comPano.setPov({heading:0,pitch:0});_comPano.setVisible(true);})()" style="margin-top:6px;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #ddd;background:#f9f9f9;cursor:pointer;font-weight:600">👁 Street View</button></div>');
+      _comInfoWin.open(_comMap,marker);
+    });
+    _comMapMarkers.push(marker);bounds.extend(latlng);hasPin=true;
+  }
+  if(hasPin)_comMap.fitBounds(bounds);
 }
 function fetchTsy(){
   const yEl=document.getElementById('tsy-yield');
@@ -1209,18 +1275,30 @@ function rConDash(){
         '<div class="kpi-sub">total completed value</div>'+
       '</div>'+
     '</div>'+
-    '<div style="display:grid;grid-template-columns:3fr 2fr;gap:16px">'+
-      '<div>'+
-        '<div class="tbl-wrap" style="margin-bottom:16px">'+
+    '<div style="display:grid;grid-template-columns:1fr 280px;gap:16px">'+
+      '<div style="display:flex;flex-direction:column;gap:12px">'+
+        '<div class="tbl-wrap">'+
           '<div style="padding:10px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'+
             'Active Construction Jobs'+
             '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_snap\')">View All →</span>'+
           '</div>'+
           '<div style="padding:4px 14px">'+activeList+'</div>'+
         '</div>'+
+        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;min-height:300px">'+
+          '<div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
+            '<input id="con-map-search" type="text" placeholder="Search any address…" style="flex:1;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text);background:transparent">'+
+            '<button onclick="(()=>{if(!_conMap)return;_conSatellite=!_conSatellite;_conMap.setMapTypeId(_conSatellite?google.maps.MapTypeId.HYBRID:google.maps.MapTypeId.ROADMAP);this.textContent=_conSatellite?\'🗺 Map View\':\'🛰 Satellite\';})(this)" style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">🛰 Satellite</button>'+
+          '</div>'+
+          '<div style="position:relative;flex:1;min-height:260px">'+
+            '<div id="con-dash-map" style="position:absolute;inset:0"></div>'+
+            '<div id="con-dash-sv" style="position:absolute;inset:0;z-index:2;visibility:hidden"></div>'+
+            '<button id="con-sv-back" onclick="(()=>{if(_conPano)_conPano.setVisible(false);document.getElementById(\'con-dash-sv\').style.visibility=\'hidden\';document.getElementById(\'con-sv-back\').style.display=\'none\';if(_conMap)google.maps.event.trigger(_conMap,\'resize\');})()" style="display:none;position:absolute;top:10px;left:10px;z-index:10;background:rgba(255,255,255,.95);border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)">← Back to Map</button>'+
+          '</div>'+
+        '</div>'+
       '</div>'+
       '<div>'+
-        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px;margin-bottom:12px">'+
+        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px">'+
           '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">'+
             'Jobs by Stage'+
             '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_deals\')">View Pipeline →</span>'+
@@ -1228,6 +1306,7 @@ function rConDash(){
         '</div>'+
       '</div>'+
     '</div>';
+  if(window._mapsReady)initConMap();else{const t=setInterval(()=>{if(window._mapsReady){clearInterval(t);initConMap();}},200);}
 }
 function rConSnap(){
   // Active Deal Snapshot: all stages except completed, lost, dead, monitoring
@@ -1346,6 +1425,8 @@ function openConForm(did){
       '<div class="form-group"><label>Est. Start Date</label><input type="date" id="cf-start" value="'+(d?d.startDate:'')+'"></div>'+
       '<div class="form-group"><label>Duration (months)</label><input type="text" id="cf-dur" value="'+esc(d?d.duration:'')+'"></div>'+
       '<div class="form-group"><label>Bid Due Date</label><input type="date" id="cf-bid" value="'+(d?d.bidDue:'')+'"></div>'+
+      '<div class="form-group"><label>Project Manager</label><input type="text" id="cf-pm" value="'+esc(d?d.pm||'':'')+'"></div>'+
+      '<div class="form-group"><label>Superintendent</label><input type="text" id="cf-super" value="'+esc(d?d.superintendent||'':'')+'"></div>'+
       '<div class="form-group full"><label>Notes</label><textarea id="cf-notes" rows="3">'+esc(d?d.notes:'')+'</textarea></div>'+
     '</div>'+
     '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'+
@@ -1370,6 +1451,8 @@ function sConForm(e,did){
   d.startDate=document.getElementById('cf-start').value;
   d.duration=document.getElementById('cf-dur').value.trim();
   d.bidDue=document.getElementById('cf-bid').value;
+  d.pm=document.getElementById('cf-pm').value.trim();
+  d.superintendent=document.getElementById('cf-super').value.trim();
   d.notes=document.getElementById('cf-notes').value.trim();
   addConAct('&#9733;','<strong>'+esc(d.name)+'</strong> '+(did?'updated':'added to '+conSobj(d.stage).label));
   saveCon();document.getElementById('summo').style.display='none';navigate('con_pipe');toast(did?'Job updated':'Job created');
@@ -1527,16 +1610,31 @@ function rComDash(){
       '</div>'+
     '</div>'+
     '<div style="display:grid;grid-template-columns:1fr 280px;gap:14px">'+
-      '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px">'+
-        '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">'+
-          'Listings by Stage<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'com_deals\')">All Listings →</span>'+
-        '</div>'+bar+
+      '<div style="display:flex;flex-direction:column;gap:12px">'+
+        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px">'+
+          '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">'+
+            'Listings by Stage<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'com_deals\')">All Listings →</span>'+
+          '</div>'+bar+
+        '</div>'+
+        '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;min-height:300px">'+
+          '<div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
+            '<input id="com-map-search" type="text" placeholder="Search any address…" style="flex:1;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text);background:transparent">'+
+            '<button onclick="(()=>{if(!_comMap)return;_comSatellite=!_comSatellite;_comMap.setMapTypeId(_comSatellite?google.maps.MapTypeId.HYBRID:google.maps.MapTypeId.ROADMAP);this.textContent=_comSatellite?\'🗺 Map View\':\'🛰 Satellite\';})(this)" style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);white-space:nowrap">🛰 Satellite</button>'+
+          '</div>'+
+          '<div style="position:relative;flex:1;min-height:260px">'+
+            '<div id="com-dash-map" style="position:absolute;inset:0"></div>'+
+            '<div id="com-dash-sv" style="position:absolute;inset:0;z-index:2;visibility:hidden"></div>'+
+            '<button id="com-sv-back" onclick="(()=>{if(_comPano)_comPano.setVisible(false);document.getElementById(\'com-dash-sv\').style.visibility=\'hidden\';document.getElementById(\'com-sv-back\').style.display=\'none\';if(_comMap)google.maps.event.trigger(_comMap,\'resize\');})()" style="display:none;position:absolute;top:10px;left:10px;z-index:10;background:rgba(255,255,255,.95);border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)">← Back to Map</button>'+
+          '</div>'+
+        '</div>'+
       '</div>'+
       '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow-y:auto;max-height:360px">'+
         '<div style="padding:10px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff">Recent Activity</div>'+
         '<div class="act-feed" style="padding:0">'+feed+'</div>'+
       '</div>'+
     '</div>';
+  if(window._mapsReady)initComMap();else{const t=setInterval(()=>{if(window._mapsReady){clearInterval(t);initComMap();}},200);}
 }
 // ---- COMMERCIAL ACTIVE LISTING SNAPSHOT (Kanban) ----
 function rComSnap(){
@@ -1751,6 +1849,8 @@ function bConOv(d,isLive){
         '<div class="info-row"><span class="lbl">Bid Due</span><span class="val">'+fmtD(d.bidDue)+'</span></div>'+
         '<div class="info-row"><span class="lbl">Est. Start</span><span class="val">'+fmtD(d.startDate)+'</span></div>'+
         '<div class="info-row"><span class="lbl">Duration</span><span class="val">'+(d.duration?d.duration+' months':'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Project Manager</span><span class="val">'+esc(d.pm||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Superintendent</span><span class="val">'+esc(d.superintendent||'--')+'</span></div>'+
       '</div>'+
       '<div class="info-block"><h4>Project Economics</h4>'+
         '<div class="info-row"><span class="lbl">Project Cost</span><span class="val" style="font-weight:700;color:var(--accent)">'+fmt$(d.cost)+'</span></div>'+
