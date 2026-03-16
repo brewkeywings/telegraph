@@ -413,18 +413,18 @@ const STAGES=[
 ];
 const STRATEGY=['Core Plus','Value Add','Development'];
 const CONST_STAGES=[
-  {id:'active',label:'Active Construction',color:'#10b981',short:'AC'},
-  {id:'preconstruction',label:'Pre-Construction (Won)',color:'#059669',short:'PC'},
-  {id:'pricing',label:'Pipeline - Pricing',color:'#84cc16',short:'PRI'},
-  {id:'pursuing_bid',label:'Pursuing - Bidding',color:'#3b82f6',short:'PB'},
-  {id:'pursuing_budget',label:'Pursuing - Budgeting',color:'#6366f1',short:'PBG'},
-  {id:'bid_pending',label:'Bid Submitted - Pending Award',color:'#f59e0b',short:'BPA'},
-  {id:'bid_hold',label:'Bid Submitted (On Hold)',color:'#f97316',short:'BOH'},
-  {id:'budget_submitted',label:'Budget Submitted',color:'#a855f7',short:'BS'},
-  {id:'con_monitoring',label:'Monitoring',color:'#0ea5e9',short:'MON'},
-  {id:'con_completed',label:'Completed Projects',color:'#14b8a6',short:'CMP'},
-  {id:'con_lost',label:'Lost',color:'#ef4444',short:'LST'},
-  {id:'con_dead',label:'Dead',color:'#64748b',short:'DED'},
+  {id:'active',label:'Active Construction',color:'#10b981',short:'AC',req:['Notice to Proceed issued','Contract fully executed','Insurance certificates on file','Site mobilization complete','Schedule baseline approved']},
+  {id:'preconstruction',label:'Pre-Construction (Won)',color:'#059669',short:'PC',req:['Contract awarded','Subcontractors selected','Permits submitted','Shop drawings approved','Material procurement started']},
+  {id:'pricing',label:'Pipeline - Pricing',color:'#84cc16',short:'PRI',req:['Plans & specs received','Site visit completed','Subcontractor quotes obtained','Estimate prepared']},
+  {id:'pursuing_bid',label:'Pursuing - Bidding',color:'#3b82f6',short:'PB',req:['Go/No-Go decision made','Bid team assigned','Full RFP reviewed']},
+  {id:'pursuing_budget',label:'Pursuing - Budgeting',color:'#6366f1',short:'PBG',req:['Scope confirmed','Preliminary estimate issued','Budget narrative prepared']},
+  {id:'bid_pending',label:'Bid Submitted - Pending Award',color:'#f59e0b',short:'BPA',req:['Bid submitted on time','All addenda addressed','Follow-up with owner scheduled']},
+  {id:'bid_hold',label:'Bid Submitted (On Hold)',color:'#f97316',short:'BOH',req:[]},
+  {id:'budget_submitted',label:'Budget Submitted',color:'#a855f7',short:'BS',req:['Budget submitted to owner','Clarifications list sent','Scope review meeting held']},
+  {id:'con_monitoring',label:'Monitoring',color:'#0ea5e9',short:'MON',req:[]},
+  {id:'con_completed',label:'Completed Projects',color:'#14b8a6',short:'CMP',req:['Final walkthrough complete','Punch list fully resolved','Close-out documents submitted','Final billing issued','Lien waivers collected']},
+  {id:'con_lost',label:'Lost',color:'#ef4444',short:'LST',req:[]},
+  {id:'con_dead',label:'Dead',color:'#64748b',short:'DED',req:[]},
 ];
 function csobj(sid){return CONST_STAGES.find(s=>s.id===sid)||{id:sid,label:sid,color:'#6c7a8d',short:'?'};}
 function cbadge(sid){const s=csobj(sid);return '<span class="badge" style="background:'+s.color+'20;color:'+s.color+'">'+s.short+'</span>';}
@@ -432,7 +432,7 @@ const DOC_T=['Offering Memorandum','Rent Roll','T12 Financials','PSA / Purchase 
 const SB_URL='https://wponbaapholnvfpjmkpw.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwb25iYWFwaG9sbnZmcGpta3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzM2NDksImV4cCI6MjA4OTEwOTY0OX0.E1BmEskHoVFHdaeh2UvVfUQtfjizD9h_V8RT6wLBRg0';
 const sb=supabase.createClient(SB_URL,SB_KEY);
-let S={view:'dash',deals:[],acts:[],con_deals:[],con_acts:[],com_deals:[],com_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],eid:null,adid:null,did:null,dtab:'ov',drag:null,sort:{col:'name',asc:true},collapsed:{},con_collapsed:{}};
+let S={view:'dash',deals:[],acts:[],con_deals:[],con_acts:[],com_deals:[],com_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],eid:null,adid:null,did:null,dtab:'ov',con_did:null,con_dtab:'ov',con_live:false,com_did:null,com_dtab:'ov',com_live:false,drag:null,sort:{col:'name',asc:true},collapsed:{},con_collapsed:{}};
 let _saveTimer=null;
 function setSyncDot(state){const d=document.getElementById('sync-dot');if(d){d.className='sync-dot'+(state==='syncing'?' syncing':'');}}
 function save(){
@@ -1235,7 +1235,7 @@ function rConSnap(){
   const snapStages=['preconstruction','pricing','pursuing_bid','pursuing_budget','bid_pending','budget_submitted'];
   const cols=CONST_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
     const ds=CONST_DATA.filter(d=>d.stage===st.id);
-    const cards=ds.map(d=>'<div class="dcard" style="cursor:default">'+
+    const cards=ds.map(d=>'<div class="dcard" style="cursor:pointer" onclick="openConDetFull(\''+d.id+'\')">'+
       '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
       '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
       '<div class="dcard-foot">'+
@@ -1270,7 +1270,7 @@ function rConPipe(){
     tbody+='<thead onclick="toggleCapGroup(\'cap-'+st.id+'\')" style="cursor:pointer"><tr style="background:'+st.color+'18"><td colspan="7" style="padding:8px 12px;font-size:12px;font-weight:600"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+st.color+';margin-right:8px;vertical-align:middle"></span>'+st.label+' <span style="font-weight:400;opacity:.6">('+rows.length+')</span></td></tr></thead>'+
       '<tbody id="cap-'+st.id+'">';
     rows.forEach(d=>{
-      tbody+='<tr style="cursor:default">'+
+      tbody+='<tr style="cursor:pointer" onclick="openConDetFull(\''+d.id+'\')">'+
         '<td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
         '<td style="font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.addr||'--')+'</td>'+
         '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
@@ -1404,7 +1404,7 @@ function rConDeals(){
   filtered.forEach(d=>{(byStage[d.stage]=byStage[d.stage]||[]).push(d);});
   const tbody=CONST_STAGES.map(st=>{
     const rows=byStage[st.id];if(!rows||!rows.length)return'';
-    const rowsHtml=rows.map(d=>'<tr style="cursor:default"'+(d._live?' title="Live CRM job"':'')+'><td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
+    const rowsHtml=rows.map(d=>'<tr style="cursor:pointer" onclick="openConDetFull(\''+d.id+'\')"'+(d._live?' title="Live CRM job"':'')+'><td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
       '<td style="font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.addr||'--')+'</td>'+
       '<td>'+cbadge(d.stage)+'</td>'+
       '<td style="font-size:12px">'+esc(d.source||'--')+'</td>'+
@@ -1435,14 +1435,14 @@ function toggleConGroup(sid){
 // THOMAS PARK COMMERCIAL
 // ============================================================
 const COM_STAGES=[
-  {id:'com_prospect',label:'Prospect',color:'#0ea5e9',short:'PRO'},
-  {id:'com_active',label:'Active Listing',color:'#10b981',short:'ACT'},
-  {id:'com_loi',label:'LOI / Offer Received',color:'#8b5cf6',short:'LOI'},
-  {id:'com_contract',label:'Under Contract',color:'#f59e0b',short:'UC'},
-  {id:'com_closed_sale',label:'Closed – Sale',color:'#059669',short:'SALE'},
-  {id:'com_closed_lease',label:'Closed – Lease',color:'#14b8a6',short:'LEASE'},
-  {id:'com_expired',label:'Expired / Withdrawn',color:'#ef4444',short:'EXP'},
-  {id:'com_monitoring',label:'Off Market – Monitoring',color:'#64748b',short:'MON'},
+  {id:'com_prospect',label:'Prospect',color:'#0ea5e9',short:'PRO',req:['Property tour complete','Seller/landlord qualified','Preliminary valuation prepared']},
+  {id:'com_active',label:'Active Listing',color:'#10b981',short:'ACT',req:['Listing agreement executed','Professional photography arranged','MLS/CoStar listing live','Marketing materials prepared','Property disclosures complete']},
+  {id:'com_loi',label:'LOI / Offer Received',color:'#8b5cf6',short:'LOI',req:['LOI reviewed by counsel','Buyer/tenant financials reviewed','Negotiation terms documented']},
+  {id:'com_contract',label:'Under Contract',color:'#f59e0b',short:'UC',req:['PSA/Lease agreement executed','Earnest money received','Due diligence timeline confirmed','Title ordered','Inspection scheduled']},
+  {id:'com_closed_sale',label:'Closed – Sale',color:'#059669',short:'SALE',req:['Closing statement approved','Wire instructions confirmed','Deed recorded','Commission invoice submitted']},
+  {id:'com_closed_lease',label:'Closed – Lease',color:'#14b8a6',short:'LEASE',req:['Lease fully executed','Tenant move-in confirmed','Commission invoice submitted']},
+  {id:'com_expired',label:'Expired / Withdrawn',color:'#ef4444',short:'EXP',req:[]},
+  {id:'com_monitoring',label:'Off Market – Monitoring',color:'#64748b',short:'MON',req:[]},
 ];
 const COM_DATA=[
   {id:'c001',name:'Midtown Office Tower',type:'Sale',ptype:'Office',addr:'1200 Main St, Columbus, OH 43215',market:'Columbus',ask:12500000,sf:45000,yr:1998,lead:'BB',stage:'com_loi',closeDate:'2026-06-15',source:'Off Market',tenant:'TechCorp Inc.',notes:'Multi-tenant office. Lead interest from TechCorp for full-building purchase.'},
@@ -1546,7 +1546,7 @@ function rComSnap(){
   const cols=COM_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
     const ds=allDeals.filter(d=>d.stage===st.id);
     const cards=ds.map(d=>
-      '<div class="dcard" style="cursor:default">'+
+      '<div class="dcard" style="cursor:pointer" onclick="openComDetFull(\''+d.id+'\')">'+
         '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
         '<div class="dcard-type">'+esc(d.ptype||'')+(d.type?' · '+d.type:'')+'</div>'+
         '<div class="dcard-foot">'+
@@ -1575,7 +1575,7 @@ function rComPipe(){
   const stageOpts=COM_STAGES.map(s=>'<option value="'+s.id+'"'+(st_f===s.id?' selected':'')+'>'+s.label+'</option>').join('');
   const rows=filtered.map(d=>{
     const st=comSobj(d.stage);
-    return '<tr>'+
+    return '<tr style="cursor:pointer" onclick="openComDetFull(\''+d.id+'\')">'+
       '<td style="font-weight:600;font-size:13px">'+esc(d.name)+'<div style="font-size:11px;color:var(--muted)">'+esc(d.addr||'')+'</div></td>'+
       '<td style="font-size:12px"><span class="badge" style="background:'+(d.type==='Lease'?'#8b5cf620;color:#8b5cf6':'#10b98120;color:#10b981')+'">'+esc(d.type||'--')+'</span></td>'+
       '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
@@ -1620,7 +1620,7 @@ function rComDeals(){
     tbody+='<thead onclick="toggleComGroup(\'cod-'+st.id+'\')" style="cursor:pointer"><tr style="background:'+st.color+'18"><td colspan="8" style="padding:8px 12px;font-size:12px;font-weight:600"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+st.color+';margin-right:8px;vertical-align:middle"></span>'+st.label+' <span style="font-weight:400;opacity:.6">('+rows.length+')</span></td></tr></thead>'+
       '<tbody id="cod-'+st.id+'">';
     rows.forEach(d=>{
-      tbody+='<tr class="med-row">'+
+      tbody+='<tr class="med-row" style="cursor:pointer" onclick="openComDetFull(\''+d.id+'\')">'+
         '<td style="font-weight:600;font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d.name)+(d._live?'<span style="font-size:9px;margin-left:5px;background:#10b98120;color:#10b981;border-radius:3px;padding:1px 4px">LIVE</span>':'')+'</td>'+
         '<td style="font-size:12px"><span class="badge" style="background:'+(d.type==='Lease'?'#8b5cf620;color:#8b5cf6':'#10b98120;color:#10b981')+'">'+esc(d.type||'--')+'</span></td>'+
         '<td style="font-size:12px">'+esc(d.ptype||'--')+'</td>'+
@@ -1695,6 +1695,205 @@ function sComForm(e,did){
   save();document.getElementById('summo').style.display='none';navigate('com_dash');toast(did?'Listing updated':'Listing created');
 }
 function addComAct(ico,msg){S.com_acts.unshift({ico,msg,ts:new Date().toISOString()});if(S.com_acts.length>100)S.com_acts.pop();}
+// ============================================================
+// CONSTRUCTION DETAIL MODAL (full tabbed — reuses detMo)
+// ============================================================
+const CON_DOC_T=['Plans & Specifications','Bid Package / RFP','Subcontractor Quotes','Contract / Agreement','Insurance Certificates','Building Permits','Lien Waivers','Change Orders Log','Notice to Proceed','Certificate of Completion'];
+function openConDetFull(did){
+  const live=S.con_deals.find(x=>x.id===did);
+  const stat=CONST_DATA.find(x=>x.id===did);
+  const d=live||stat;if(!d)return;
+  S.con_did=did;S.con_dtab='ov';S.con_live=!!live;
+  document.getElementById('det-title').textContent=d.name;
+  renderConDetTabs();renderConDetBody();renderConDetFt();
+  document.getElementById('detMo').classList.add('show');
+}
+function renderConDetTabs(){
+  const tabs=[{id:'ov',label:'Overview'},...(S.con_live?[{id:'ms',label:'Milestones'},{id:'docs',label:'Documents'},{id:'notes',label:'Notes'}]:[{id:'notes',label:'Notes'}])];
+  document.getElementById('det-tabs').innerHTML=tabs.map(t=>'<div class="tab'+(S.con_dtab===t.id?' active':'')+'" onclick="S.con_dtab=\''+t.id+'\';renderConDetTabs();renderConDetBody()">'+t.label+'</div>').join('');
+}
+function renderConDetBody(){
+  const live=S.con_deals.find(x=>x.id===S.con_did);
+  const stat=CONST_DATA.find(x=>x.id===S.con_did);
+  const d=live||stat;if(!d)return;
+  const el=document.getElementById('det-body');
+  if(S.con_dtab==='ov')el.innerHTML=bConOv(d,S.con_live);
+  else if(S.con_dtab==='ms')el.innerHTML=bConMs(d);
+  else if(S.con_dtab==='docs')el.innerHTML=bConDocs(d);
+  else el.innerHTML=bConNotes(d,S.con_live);
+}
+function renderConDetFt(){
+  const did=S.con_did;
+  document.getElementById('det-ft').innerHTML=S.con_live?
+    '<button class="btn btn-ghost btn-sm" onclick="closeMo(\'detMo\');openConForm(\''+did+'\')">Edit</button>'+
+    '<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="closeMo(\'detMo\');confirmDelCon(\''+did+'\')">Delete</button>':
+    '<span style="font-size:12px;color:var(--muted)">Imported record — read only</span>';
+}
+function bConOv(d,isLive){
+  const st=conSobj(d.stage);
+  const si=CONST_STAGES.findIndex(s=>s.id===d.stage);
+  const ni=si+1;const nxt=CONST_STAGES[ni];
+  const pct=si>=0?Math.round(ni/CONST_STAGES.length*100):0;
+  const prog=CONST_STAGES.map((s,i)=>'<div class="prog-seg" style="background:'+(i<ni?s.color:'var(--border)')+'"></div>').join('');
+  const req=st.req||[];
+  const gateState=isLive&&d.gates&&d.gates[d.stage]?d.gates[d.stage]:req.map(()=>false);
+  const done=gateState.filter(Boolean).length,total=req.length;
+  const gpct=total?Math.round(done/total*100):0;
+  const checkItems=req.map((r,i)=>'<label class="gate-item'+(gateState[i]?' checked':'')+'">'+(isLive?'<input type="checkbox" id="cgci-'+d.id+'-'+i+'" '+(gateState[i]?'checked':'')+' onchange="saveConGateInline(\''+d.id+'\',\''+d.stage+'\','+i+')">':'<input type="checkbox" '+(gateState[i]?'checked':'')+' disabled>')+'<span>'+esc(r)+'</span></label>').join('');
+  const gateSection=total?'<div class="gate-prog-wrap"><div class="gate-prog-hd" onclick="toggleConGates(\''+d.id+'\')"><span>Stage Requirements</span><div class="gate-prog-bar-track"><div class="gate-prog-bar-fill" id="cgpb-'+d.id+'" style="width:'+gpct+'%"></div></div><span id="cgpl-'+d.id+'">'+done+'/'+total+' complete</span><span id="cga-'+d.id+'">&#9660;</span></div><div class="gate-prog-detail" id="cgd-'+d.id+'"><div class="gate-list">'+checkItems+'</div></div></div>':'';
+  return '<div class="stage-banner" style="background:'+st.color+'15;border:1px solid '+st.color+'40"><div style="font-size:20px;font-weight:800;color:'+st.color+'">'+st.short+'</div><div><div style="color:'+st.color+'">'+st.label+'</div><div style="font-size:11px;color:var(--muted);font-weight:400">Stage '+(si+1)+' of '+CONST_STAGES.length+(nxt?' → '+nxt.label:'')+'</div></div><div style="margin-left:auto;font-size:12px;color:var(--muted)">'+pct+'% through pipeline</div></div>'+
+    '<div class="prog-bar">'+prog+'</div>'+gateSection+
+    '<div class="det-grid">'+
+      '<div class="info-block"><h4>Job Info</h4>'+
+        '<div class="info-row"><span class="lbl">Type</span><span class="val">'+esc(d.ptype||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Address</span><span class="val">'+esc(d.addr||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Source</span><span class="val">'+esc(d.source||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Bid Due</span><span class="val">'+fmtD(d.bidDue)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Est. Start</span><span class="val">'+fmtD(d.startDate)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Duration</span><span class="val">'+(d.duration?d.duration+' months':'--')+'</span></div>'+
+      '</div>'+
+      '<div class="info-block"><h4>Project Economics</h4>'+
+        '<div class="info-row"><span class="lbl">Project Cost</span><span class="val" style="font-weight:700;color:var(--accent)">'+fmt$(d.cost)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Win Probability</span><span class="val">'+(d.prob?d.prob+'%':'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Square Feet</span><span class="val">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Stage Since</span><span class="val">'+fmtD(d.stageEnteredAt)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Added</span><span class="val">'+fmtD(d.createdAt)+'</span></div>'+
+      '</div>'+
+    '</div>';
+}
+function bConMs(d){
+  const ms=(d.milestones||[]).slice().reverse();
+  if(!ms.length)return'<div class="empty">No milestones yet. Update the job stage to begin the timeline.</div>';
+  return'<div class="timeline">'+ms.map(m=>'<div class="tl-item"><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-title">'+esc(m.label)+'</div><div class="tl-meta">'+fmtDT(m.ts)+(m.by?' · '+m.by:'')+'</div></div></div>').join('')+'</div>';
+}
+function bConDocs(d){
+  if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));
+  const ico={received:'<span style="color:var(--green)">&#10003;</span>',pending:'<span style="color:var(--amber)">&#9679;</span>',na:'<span style="color:var(--muted);font-size:12px">N/A</span>'};
+  return'<div class="doc-list">'+d.con_docs.map((doc,i)=>'<div class="doc-item"><span>'+esc(doc.type)+'</span><div style="display:flex;align-items:center;gap:8px">'+(ico[doc.status]||'')+'<select style="font-size:12px;padding:3px 6px;width:auto" onchange="setConDocSt('+i+',this.value)"><option value="pending"'+(doc.status==='pending'?' selected':'')+'>Pending</option><option value="received"'+(doc.status==='received'?' selected':'')+'>Received</option><option value="na"'+(doc.status==='na'?' selected':'')+'>N/A</option></select></div></div>').join('')+'</div><div style="margin-top:14px"><button class="btn btn-ghost btn-sm" onclick="addConDoc()">+ Add Document</button></div>';
+}
+function bConNotes(d,isLive){
+  if(!isLive)return'<div class="empty">Notes are not available for imported records.</div>';
+  return'<div class="form-group"><label>Job Notes</label><textarea id="con-notes-ta" rows="10" style="width:100%">'+esc(d.notes||'')+'</textarea></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveConNote()">Save Notes</button></div>';
+}
+function saveConNote(){const d=S.con_deals.find(x=>x.id===S.con_did);if(!d)return;d.notes=document.getElementById('con-notes-ta').value||'';save();toast('Notes saved');}
+function setConDocSt(i,v){const d=S.con_deals.find(x=>x.id===S.con_did);if(!d)return;if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.con_docs[i].status=v;save();renderConDetBody();}
+function addConDoc(){const n=prompt('Document name:');if(!n)return;const d=S.con_deals.find(x=>x.id===S.con_did);if(!d)return;if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.con_docs.push({type:n,status:'pending'});save();renderConDetBody();}
+function saveConGateInline(did,stage,idx){
+  const d=S.con_deals.find(x=>x.id===did);if(!d)return;
+  if(!d.gates)d.gates={};const st=conSobj(stage);
+  if(!d.gates[stage])d.gates[stage]=(st.req||[]).map(()=>false);
+  const cb=document.getElementById('cgci-'+did+'-'+idx);
+  if(cb)d.gates[stage][idx]=cb.checked;
+  const item=cb?cb.closest('.gate-item'):null;if(item)item.classList.toggle('checked',d.gates[stage][idx]);
+  const done=d.gates[stage].filter(Boolean).length,total=d.gates[stage].length;
+  const pct=total?Math.round(done/total*100):0;
+  const pb=document.getElementById('cgpb-'+did);const pl=document.getElementById('cgpl-'+did);
+  if(pb)pb.style.width=pct+'%';if(pl)pl.textContent=done+'/'+total+' complete';save();
+}
+function toggleConGates(did){const el=document.getElementById('cgd-'+did);const arr=document.getElementById('cga-'+did);if(!el)return;const open=el.style.display==='block';el.style.display=open?'none':'block';if(arr)arr.innerHTML=open?'&#9654;':'&#9660;';}
+// ============================================================
+// COMMERCIAL DETAIL MODAL (full tabbed — reuses detMo)
+// ============================================================
+const COM_DOC_T=['Listing Agreement','Marketing Materials / Brochure','Offering Memorandum','Letter of Intent (LOI)','Purchase & Sale Agreement','Due Diligence Checklist','Environmental Report','Title Report / Commitment','Survey','Lease Agreement','Commission Agreement'];
+function openComDetFull(did){
+  const live=S.com_deals.find(x=>x.id===did);
+  const stat=COM_DATA.find(x=>x.id===did);
+  const d=live||stat;if(!d)return;
+  S.com_did=did;S.com_dtab='ov';S.com_live=!!live;
+  document.getElementById('det-title').textContent=d.name;
+  renderComDetTabs();renderComDetBody();renderComDetFt();
+  document.getElementById('detMo').classList.add('show');
+}
+function renderComDetTabs(){
+  const tabs=[{id:'ov',label:'Overview'},...(S.com_live?[{id:'ms',label:'Timeline'},{id:'docs',label:'Documents'},{id:'notes',label:'Notes'}]:[{id:'notes',label:'Notes'}])];
+  document.getElementById('det-tabs').innerHTML=tabs.map(t=>'<div class="tab'+(S.com_dtab===t.id?' active':'')+'" onclick="S.com_dtab=\''+t.id+'\';renderComDetTabs();renderComDetBody()">'+t.label+'</div>').join('');
+}
+function renderComDetBody(){
+  const live=S.com_deals.find(x=>x.id===S.com_did);
+  const stat=COM_DATA.find(x=>x.id===S.com_did);
+  const d=live||stat;if(!d)return;
+  const el=document.getElementById('det-body');
+  if(S.com_dtab==='ov')el.innerHTML=bComOv(d,S.com_live);
+  else if(S.com_dtab==='ms')el.innerHTML=bComMs(d);
+  else if(S.com_dtab==='docs')el.innerHTML=bComDocs(d);
+  else el.innerHTML=bComNotes(d,S.com_live);
+}
+function renderComDetFt(){
+  const did=S.com_did;
+  document.getElementById('det-ft').innerHTML=
+    '<button class="btn btn-ghost btn-sm" onclick="closeMo(\'detMo\');openComForm(\''+did+'\')">Edit</button>'+
+    (S.com_live?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="closeMo(\'detMo\');confirmDelCom(\''+did+'\')">Delete</button>':'');
+}
+function bComOv(d,isLive){
+  const st=comSobj(d.stage);
+  const si=COM_STAGES.findIndex(s=>s.id===d.stage);
+  const ni=si+1;const nxt=COM_STAGES[ni];
+  const pct=si>=0?Math.round(ni/COM_STAGES.length*100):0;
+  const prog=COM_STAGES.map((s,i)=>'<div class="prog-seg" style="background:'+(i<ni?s.color:'var(--border)')+'"></div>').join('');
+  const req=st.req||[];
+  const gateState=isLive&&d.gates&&d.gates[d.stage]?d.gates[d.stage]:req.map(()=>false);
+  const done=gateState.filter(Boolean).length,total=req.length;
+  const gpct=total?Math.round(done/total*100):0;
+  const checkItems=req.map((r,i)=>'<label class="gate-item'+(gateState[i]?' checked':'')+'">'+(isLive?'<input type="checkbox" id="comgci-'+d.id+'-'+i+'" '+(gateState[i]?'checked':'')+' onchange="saveComGateInline(\''+d.id+'\',\''+d.stage+'\','+i+')">':'<input type="checkbox" '+(gateState[i]?'checked':'')+' disabled>')+'<span>'+esc(r)+'</span></label>').join('');
+  const gateSection=total?'<div class="gate-prog-wrap"><div class="gate-prog-hd" onclick="toggleComGates(\''+d.id+'\')"><span>Stage Requirements</span><div class="gate-prog-bar-track"><div class="gate-prog-bar-fill" id="comgpb-'+d.id+'" style="width:'+gpct+'%"></div></div><span id="comgpl-'+d.id+'">'+done+'/'+total+' complete</span><span id="comga-'+d.id+'">&#9660;</span></div><div class="gate-prog-detail" id="comgd-'+d.id+'"><div class="gate-list">'+checkItems+'</div></div></div>':'';
+  return '<div class="stage-banner" style="background:'+st.color+'15;border:1px solid '+st.color+'40"><div style="font-size:20px;font-weight:800;color:'+st.color+'">'+st.short+'</div><div><div style="color:'+st.color+'">'+st.label+'</div><div style="font-size:11px;color:var(--muted);font-weight:400">Stage '+(si+1)+' of '+COM_STAGES.length+(nxt?' → '+nxt.label:'')+'</div></div><div style="margin-left:auto;font-size:12px;color:var(--muted)">'+pct+'% through pipeline</div></div>'+
+    '<div class="prog-bar">'+prog+'</div>'+gateSection+
+    '<div class="det-grid">'+
+      '<div class="info-block"><h4>Property Info</h4>'+
+        '<div class="info-row"><span class="lbl">Deal Type</span><span class="val"><span class="badge" style="background:'+(d.type==='Lease'?'#8b5cf620;color:#8b5cf6':'#10b98120;color:#10b981')+'">'+esc(d.type||'--')+'</span></span></div>'+
+        '<div class="info-row"><span class="lbl">Property Type</span><span class="val">'+esc(d.ptype||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Address</span><span class="val">'+esc(d.addr||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Market</span><span class="val">'+esc(d.market||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Building Size</span><span class="val">'+(d.sf?Number(d.sf).toLocaleString()+' SF':'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Year Built</span><span class="val">'+esc(d.yr||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Source</span><span class="val">'+esc(d.source||'--')+'</span></div>'+
+      '</div>'+
+      '<div class="info-block"><h4>Deal Economics</h4>'+
+        '<div class="info-row"><span class="lbl">'+(d.type==='Lease'?'Asking Rate':'Asking Price')+'</span><span class="val" style="font-weight:700;color:var(--accent)">'+fmtCom(d)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Tenant / Buyer</span><span class="val">'+esc(d.tenant||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Deal Lead</span><span class="val">'+esc(d.lead||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Target Close</span><span class="val">'+fmtD(d.closeDate)+'</span></div>'+
+        (d.notes?'<div class="info-row"><span class="lbl">Notes</span><span class="val" style="font-style:italic;font-size:12px">'+esc(d.notes.slice(0,80))+(d.notes.length>80?'…':'')+'</span></div>':'')+
+      '</div>'+
+    '</div>';
+}
+function bComMs(d){
+  const ms=(d.milestones||[]).slice().reverse();
+  if(!ms.length)return'<div class="empty">No timeline entries yet. Update the listing stage to start the timeline.</div>';
+  return'<div class="timeline">'+ms.map(m=>'<div class="tl-item"><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-title">'+esc(m.label)+'</div><div class="tl-meta">'+fmtDT(m.ts)+(m.by?' · '+m.by:'')+'</div></div></div>').join('')+'</div>';
+}
+function bComDocs(d){
+  if(!d.com_docs)d.com_docs=COM_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));
+  const ico={received:'<span style="color:var(--green)">&#10003;</span>',pending:'<span style="color:var(--amber)">&#9679;</span>',na:'<span style="color:var(--muted);font-size:12px">N/A</span>'};
+  return'<div class="doc-list">'+d.com_docs.map((doc,i)=>'<div class="doc-item"><span>'+esc(doc.type)+'</span><div style="display:flex;align-items:center;gap:8px">'+(ico[doc.status]||'')+'<select style="font-size:12px;padding:3px 6px;width:auto" onchange="setComDocSt('+i+',this.value)"><option value="pending"'+(doc.status==='pending'?' selected':'')+'>Pending</option><option value="received"'+(doc.status==='received'?' selected':'')+'>Received</option><option value="na"'+(doc.status==='na'?' selected':'')+'>N/A</option></select></div></div>').join('')+'</div><div style="margin-top:14px"><button class="btn btn-ghost btn-sm" onclick="addComDoc()">+ Add Document</button></div>';
+}
+function bComNotes(d,isLive){
+  if(!isLive)return'<div style="padding:12px;background:var(--bg);border-radius:var(--r);font-size:13px;line-height:1.6">'+esc(d.notes||'No notes on record.')+'</div>';
+  return'<div class="form-group"><label>Deal Notes</label><textarea id="com-notes-ta" rows="10" style="width:100%">'+esc(d.notes||'')+'</textarea></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveComNote()">Save Notes</button></div>';
+}
+function saveComNote(){const d=S.com_deals.find(x=>x.id===S.com_did);if(!d)return;d.notes=document.getElementById('com-notes-ta').value||'';save();toast('Notes saved');}
+function setComDocSt(i,v){const d=S.com_deals.find(x=>x.id===S.com_did);if(!d)return;if(!d.com_docs)d.com_docs=COM_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.com_docs[i].status=v;save();renderComDetBody();}
+function addComDoc(){const n=prompt('Document name:');if(!n)return;const d=S.com_deals.find(x=>x.id===S.com_did);if(!d)return;if(!d.com_docs)d.com_docs=COM_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.com_docs.push({type:n,status:'pending'});save();renderComDetBody();}
+function saveComGateInline(did,stage,idx){
+  const d=S.com_deals.find(x=>x.id===did);if(!d)return;
+  if(!d.gates)d.gates={};const st=comSobj(stage);
+  if(!d.gates[stage])d.gates[stage]=(st.req||[]).map(()=>false);
+  const cb=document.getElementById('comgci-'+did+'-'+idx);
+  if(cb)d.gates[stage][idx]=cb.checked;
+  const item=cb?cb.closest('.gate-item'):null;if(item)item.classList.toggle('checked',d.gates[stage][idx]);
+  const done=d.gates[stage].filter(Boolean).length,total=d.gates[stage].length;
+  const pct=total?Math.round(done/total*100):0;
+  const pb=document.getElementById('comgpb-'+did);const pl=document.getElementById('comgpl-'+did);
+  if(pb)pb.style.width=pct+'%';if(pl)pl.textContent=done+'/'+total+' complete';save();
+}
+function toggleComGates(did){const el=document.getElementById('comgd-'+did);const arr=document.getElementById('comga-'+did);if(!el)return;const open=el.style.display==='block';el.style.display=open?'none':'block';if(arr)arr.innerHTML=open?'&#9654;':'&#9660;';}
+function confirmDelCom(did){
+  const d=S.com_deals.find(x=>x.id===did);if(!d)return;
+  document.getElementById('conf-title').textContent='Delete Listing';
+  document.getElementById('conf-msg').textContent='Delete "'+d.name+'"? This cannot be undone.';
+  document.getElementById('conf-ok').onclick=()=>{S.com_deals=S.com_deals.filter(x=>x.id!==did);save();closeMo('confMo');toast('Listing deleted');navigate('com_dash');};
+  document.getElementById('confMo').classList.add('show');
+}
 init();
 </script>
 </body>
