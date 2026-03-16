@@ -413,16 +413,16 @@ const STAGES=[
 ];
 const STRATEGY=['Core Plus','Value Add','Development'];
 const CONST_STAGES=[
+  {id:'con_completed',label:'Completed Projects',color:'#14b8a6',short:'CMP',req:['Final walkthrough complete','Punch list fully resolved','Close-out documents submitted','Final billing issued','Lien waivers collected']},
   {id:'active',label:'Active Construction',color:'#10b981',short:'AC',req:['Notice to Proceed issued','Contract fully executed','Insurance certificates on file','Site mobilization complete','Schedule baseline approved']},
   {id:'preconstruction',label:'Pre-Construction (Won)',color:'#059669',short:'PC',req:['Contract awarded','Subcontractors selected','Permits submitted','Shop drawings approved','Material procurement started']},
-  {id:'pricing',label:'Pipeline - Pricing',color:'#84cc16',short:'PRI',req:['Plans & specs received','Site visit completed','Subcontractor quotes obtained','Estimate prepared']},
-  {id:'pursuing_bid',label:'Pursuing - Bidding',color:'#3b82f6',short:'PB',req:['Go/No-Go decision made','Bid team assigned','Full RFP reviewed']},
-  {id:'pursuing_budget',label:'Pursuing - Budgeting',color:'#6366f1',short:'PBG',req:['Scope confirmed','Preliminary estimate issued','Budget narrative prepared']},
   {id:'bid_pending',label:'Bid Submitted - Pending Award',color:'#f59e0b',short:'BPA',req:['Bid submitted on time','All addenda addressed','Follow-up with owner scheduled']},
+  {id:'pursuing_bid',label:'Pursuing - Bidding',color:'#3b82f6',short:'PB',req:['Go/No-Go decision made','Bid team assigned','Full RFP reviewed']},
+  {id:'pricing',label:'Pipeline - Pricing',color:'#84cc16',short:'PRI',req:['Plans & specs received','Site visit completed','Subcontractor quotes obtained','Estimate prepared']},
+  {id:'pursuing_budget',label:'Pursuing - Budgeting',color:'#6366f1',short:'PBG',req:['Scope confirmed','Preliminary estimate issued','Budget narrative prepared']},
   {id:'bid_hold',label:'Bid Submitted (On Hold)',color:'#f97316',short:'BOH',req:[]},
   {id:'budget_submitted',label:'Budget Submitted',color:'#a855f7',short:'BS',req:['Budget submitted to owner','Clarifications list sent','Scope review meeting held']},
   {id:'con_monitoring',label:'Monitoring',color:'#0ea5e9',short:'MON',req:[]},
-  {id:'con_completed',label:'Completed Projects',color:'#14b8a6',short:'CMP',req:['Final walkthrough complete','Punch list fully resolved','Close-out documents submitted','Final billing issued','Lien waivers collected']},
   {id:'con_lost',label:'Lost',color:'#ef4444',short:'LST',req:[]},
   {id:'con_dead',label:'Dead',color:'#64748b',short:'DED',req:[]},
 ];
