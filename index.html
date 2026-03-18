@@ -1419,7 +1419,7 @@ function openConDet(did){
   document.getElementById('summo').style.display='flex';
 }
 function openConForm(did){
-  const d=did?S.con_deals.find(x=>x.id===did):null;
+  const d=did?(S.con_deals.find(x=>x.id===did)||CONST_DATA.find(x=>x.id===did)):null;
   const stOpts=CONST_STAGES.map(s=>'<option value="'+s.id+'"'+(d&&d.stage===s.id?' selected':'')+'>'+s.label+'</option>').join('');
   document.getElementById('summo-title').textContent=did?'Edit Job':'New Construction Job';
   document.getElementById('summo-body').innerHTML=
@@ -1449,8 +1449,9 @@ function openConForm(did){
 function sConForm(e,did){
   e.preventDefault();
   const now=new Date().toISOString();
-  let d=did?S.con_deals.find(x=>x.id===did):{id:uid(),createdAt:now,stageEnteredAt:now,notes:''};
-  if(!did)S.con_deals.push(d);
+  let d=did?S.con_deals.find(x=>x.id===did):null;
+  if(did&&!d){const stat=CONST_DATA.find(x=>x.id===did);d=Object.assign({},stat||{},{id:did,createdAt:now,stageEnteredAt:now,notes:''});S.con_deals.push(d);}
+  if(!did){d={id:uid(),createdAt:now,stageEnteredAt:now,notes:''};S.con_deals.push(d);}
   d.name=document.getElementById('cf-name').value.trim();
   d.stage=document.getElementById('cf-stage').value;
   d.ptype=document.getElementById('cf-ptype').value.trim();
@@ -2555,7 +2556,9 @@ const LEASE_DATA = [
   {id: '8550936186', name: 'Tim Hogan', use: 'Office', brokerDirect: '', client: 'MRE', dateInquired: '2025-02-24', sf: 0, suite: '', status: 'Inquired', estCommission: 0, closingProb: 0, notes: '', email: '', phone: '', leaseExpDate: ''}
 ];
 function rComLease(){
-  const allLeads=[...LEASE_DATA,...S.lease_deals];
+  const liveIds=new Set(S.lease_deals.map(x=>x.id));
+  const liveRows=S.lease_deals.map(d=>({...d,_live:true}));
+  const allLeads=[...LEASE_DATA.filter(d=>!liveIds.has(d.id)),...liveRows];
   const sq=(document.getElementById('cl-search')||{}).value||'';
   const sf=(document.getElementById('cl-status')||{}).value||'';
   const bf=(document.getElementById('cl-broker')||{}).value||'';
