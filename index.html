@@ -387,6 +387,12 @@ textarea{resize:vertical;min-height:80px}
     </div>
   </div>
 </div>
+<div class="mo-over" id="mo" onclick="closeMo('mo',event)">
+  <div class="mo" id="moIn">
+    <div class="mo-hd"><h2 id="moTitle">Detail</h2><button class="mo-close" onclick="closeMo('mo')">&times;</button></div>
+    <div class="mo-body" id="moBody"></div>
+  </div>
+</div>
 <div id="toast-wrap"></div>
 <div id="summo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8000;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:#fff;border-radius:10px;width:min(860px,95vw);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)">
