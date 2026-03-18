@@ -1332,8 +1332,9 @@ function rConPipe(){
   const el=document.getElementById('view');
   const sq=((document.getElementById('cap-search')||{}).value||'').toLowerCase();
   const sf=(document.getElementById('cap-stage')||{}).value||'';
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
   const liveRows=S.con_deals.map(d=>({...d,_live:true}));
-  const allRows=[...CONST_DATA,...liveRows];
+  const allRows=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...liveRows];
   const stageOptions=CONST_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+'</option>').join('');
   const filtered=allRows.filter(d=>{
     if(sf&&d.stage!==sf)return false;
@@ -1474,9 +1475,10 @@ function rConDeals(){
   const el=document.getElementById('view');
   const sq=((document.getElementById('con-search')||{}).value||'').toLowerCase();
   const sf=(document.getElementById('con-stage')||{}).value||'';
-  // Combine archive + live
+  // Combine archive + live (promoted records take precedence over static)
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
   const liveRows=S.con_deals.map(d=>({...d,_live:true}));
-  const allRows=[...CONST_DATA,...liveRows];
+  const allRows=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...liveRows];
   const stageOptions=CONST_STAGES.map(st=>'<option value="'+st.id+'"'+(sf===st.id?' selected':'')+'>'+st.label+'</option>').join('');
   const filtered=allRows.filter(d=>{
     if(sf&&d.stage!==sf)return false;
@@ -1825,7 +1827,16 @@ function renderConDetFt(){
   document.getElementById('det-ft').innerHTML=S.con_live?
     '<button class="btn btn-ghost btn-sm" onclick="closeMo(\'detMo\');openConForm(\''+did+'\')">Edit</button>'+
     '<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="closeMo(\'detMo\');confirmDelCon(\''+did+'\')">Delete</button>':
-    '<span style="font-size:12px;color:var(--muted)">Imported record — read only</span>';
+    '<button class="btn btn-ghost btn-sm" onclick="promoteAndEditCon(\''+did+'\')">Edit</button>';
+}
+function promoteAndEditCon(did){
+  if(S.con_deals.find(x=>x.id===did)){closeMo('detMo');openConForm(did);return;}
+  const stat=CONST_DATA.find(x=>x.id===did);if(!stat)return;
+  const now=new Date().toISOString();
+  const d=Object.assign({},stat,{createdAt:stat.createdAt||now,stageEnteredAt:stat.stageEnteredAt||now});
+  S.con_deals.push(d);
+  addConAct('&#9998;','<strong>'+esc(d.name)+'</strong> unlocked for editing');
+  saveCon();closeMo('detMo');openConForm(did);
 }
 function bConOv(d,isLive){
   const st=conSobj(d.stage);
