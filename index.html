@@ -1322,8 +1322,11 @@ function rConSnap(){
   // Active Deal Snapshot: all stages except completed, lost, dead, monitoring
   const el=document.getElementById('view');
   const snapStages=['preconstruction','pricing','pursuing_bid','pursuing_budget','bid_pending','budget_submitted'];
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
+  const liveRows=S.con_deals.map(d=>({...d,_live:true}));
+  const allConRows=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...liveRows];
   const cols=CONST_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
-    const ds=CONST_DATA.filter(d=>d.stage===st.id);
+    const ds=allConRows.filter(d=>d.stage===st.id);
     const cards=ds.map(d=>'<div class="dcard" style="cursor:pointer" onclick="openConDetFull(\''+d.id+'\')">'+
       '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
       '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
