@@ -1470,7 +1470,7 @@ function sConForm(e,did){
   d.superintendent=document.getElementById('cf-super').value.trim();
   d.notes=document.getElementById('cf-notes').value.trim();
   addConAct('&#9733;','<strong>'+esc(d.name)+'</strong> '+(did?'updated':'added to '+conSobj(d.stage).label));
-  saveCon();document.getElementById('summo').style.display='none';navigate('con_pipe');toast(did?'Job updated':'Job created');
+  saveCon();document.getElementById('summo').style.display='none';navigate(S.view);toast(did?'Job updated':'Job created');
 }
 function confirmDelCon(did){
   const d=S.con_deals.find(x=>x.id===did);if(!d)return;
