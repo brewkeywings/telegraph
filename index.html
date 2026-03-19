@@ -520,13 +520,20 @@ async function doLogout(){await sb.auth.signOut();document.getElementById('auth-
 async function onSignedIn(session){
   document.getElementById('user-email').textContent=session.user.email;
   document.getElementById('auth-screen').style.display='none';
-  const {data}=await sb.from('app_data').select('*').eq('id','main').single();
-  if(data&&data.deals&&data.deals.length){
+  const {data,error}=await sb.from('app_data').select('*').eq('id','main').single();
+  if(data){
+    // Supabase row exists — always use it as source of truth for all sections
     S.deals=data.deals||[];S.acts=data.acts||[];S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.com_deals=data.com_deals||[];S.com_acts=data.com_acts||[];S.lease_deals=data.lease_deals||[];S.lease_acts=data.lease_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
-  } else {
+    localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team}));
+  } else if(!error||(error&&error.code==='PGRST116')){
+    // No row yet (first time setup) — seed from localStorage or sample data, then create the row
     load();
     if(!S.deals.length)initSample();
     save();
+  } else {
+    // Supabase fetch failed (network/auth error) — fall back to localStorage only, do NOT save back
+    console.warn('Supabase fetch failed, using local cache:',error);
+    load();
   }
   // Real-time sync
   sb.channel('app_data').on('postgres_changes',{event:'UPDATE',schema:'public',table:'app_data',filter:'id=eq.main'},payload=>{
@@ -1917,8 +1924,13 @@ function bConNotes(d,isLive){
   return'<div class="form-group"><label>Job Notes</label><textarea id="con-notes-ta" rows="10" style="width:100%">'+esc(d.notes||'')+'</textarea></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveConNote()">Save Notes</button></div>';
 }
 function saveConNote(){const d=S.con_deals.find(x=>x.id===S.con_did);if(!d)return;d.notes=document.getElementById('con-notes-ta').value||'';save();toast('Notes saved');}
-function setConDocSt(i,v){const d=S.con_deals.find(x=>x.id===S.con_did);if(!d)return;if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.con_docs[i].status=v;save();renderConDetBody();}
-function addConDoc(){const n=prompt('Document name:');if(!n)return;const d=S.con_deals.find(x=>x.id===S.con_did);if(!d)return;if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.con_docs.push({type:n,status:'pending'});save();renderConDetBody();}
+function ensureConLive(did){
+  let d=S.con_deals.find(x=>x.id===did);
+  if(!d){const stat=CONST_DATA.find(x=>x.id===did);if(!stat)return null;const now=new Date().toISOString();d=Object.assign({},stat,{createdAt:stat.createdAt||now,stageEnteredAt:stat.stageEnteredAt||now});S.con_deals.push(d);S.con_live=true;renderConDetFt();}
+  return d;
+}
+function setConDocSt(i,v){const d=ensureConLive(S.con_did);if(!d)return;if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.con_docs[i].status=v;save();renderConDetBody();}
+function addConDoc(){const n=prompt('Document name:');if(!n)return;const d=ensureConLive(S.con_did);if(!d)return;if(!d.con_docs)d.con_docs=CON_DOC_T.slice(0,7).map(t=>({type:t,status:'pending'}));d.con_docs.push({type:n,status:'pending'});save();renderConDetBody();}
 function saveConGateInline(did,stage,idx){
   const d=S.con_deals.find(x=>x.id===did);if(!d)return;
   if(!d.gates)d.gates={};const st=conSobj(stage);
