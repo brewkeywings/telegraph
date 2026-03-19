@@ -267,7 +267,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="ni ni-sub" onclick="navigate('con_snap')" data-v="con_snap">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="7" width="5" height="14" rx="1"/><rect x="17" y="5" width="5" height="16" rx="1"/></svg>
-      Active Deal Snapshot
+      Active Pursuits Snapshot
     </div>
     <div class="ni ni-sub" onclick="navigate('con_deals')" data-v="con_deals">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
@@ -555,7 +555,7 @@ function navigate(v){
   const el=document.getElementById('view');
   if(v!=='dash')el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'Investments Pipeline',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Deal Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',com_dash:'Commercial Dashboard',com_snap:'Active Listing Snapshot',com_pipe:'Commercial Pipeline',com_deals:'All Listings Archive',com_lease:'Leasing Prospects'};
+  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'Investments Pipeline',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Pursuits Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',com_dash:'Commercial Dashboard',com_snap:'Active Listing Snapshot',com_pipe:'Commercial Pipeline',com_deals:'All Listings Archive',com_lease:'Leasing Prospects'};
   document.getElementById('pg-title').textContent=T[v]||v;
   ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,com_dash:rComDash,com_snap:rComSnap,com_pipe:rComPipe,com_deals:rComDeals,com_lease:rComLease})[v]();
   const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
@@ -1319,7 +1319,7 @@ function rConDash(){
   if(window._mapsReady)initConMap();else{const t=setInterval(()=>{if(window._mapsReady){clearInterval(t);initConMap();}},200);}
 }
 function rConSnap(){
-  // Active Deal Snapshot: all stages except completed, lost, dead, monitoring
+  // Active Pursuits Snapshot: all stages except completed, lost, dead, monitoring
   const el=document.getElementById('view');
   const snapStages=['preconstruction','pricing','pursuing_bid','pursuing_budget','bid_pending','budget_submitted'];
   const liveIds=new Set(S.con_deals.map(x=>x.id));
@@ -1327,15 +1327,23 @@ function rConSnap(){
   const allConRows=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...liveRows];
   const cols=CONST_STAGES.filter(st=>snapStages.includes(st.id)).map(st=>{
     const ds=allConRows.filter(d=>d.stage===st.id);
-    const cards=ds.map(d=>'<div class="dcard" style="cursor:pointer" onclick="openConDetFull(\''+d.id+'\')">'+
-      '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
-      '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
-      '<div class="dcard-foot">'+
-        '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
-        '<div style="font-size:10px;color:var(--muted)">'+esc(d.startDate?fmtD(d.startDate):(d.duration?d.duration+' mo':''))+'</div>'+
-      '</div></div>'
+    const cards=ds.map(d=>
+      '<div class="dcard" draggable="true" style="cursor:grab" '+
+        'ondragstart="conDst(event,\''+d.id+'\')" '+
+        'onclick="openConDetFull(\''+d.id+'\')">'+
+        '<div class="dcard-name" title="'+esc(d.name)+'">'+esc(d.name)+'</div>'+
+        '<div class="dcard-type">'+esc(d.ptype||'')+(d.source?' · '+esc(d.source):'')+'</div>'+
+        '<div class="dcard-foot">'+
+          '<div class="dcard-price">'+fmt$(d.cost)+'</div>'+
+          '<div style="font-size:10px;color:var(--muted)">'+esc(d.startDate?fmtD(d.startDate):(d.duration?d.duration+' mo':''))+'</div>'+
+        '</div></div>'
     ).join('');
-    return '<div class="col"><div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div><div class="col-body" style="min-height:80px">'+cards+'</div></div>';
+    return '<div class="col">'+
+      '<div class="col-hd"><div class="dot" style="background:'+st.color+'"></div>'+st.label+'<span class="cnt">'+ds.length+'</span></div>'+
+      '<div class="col-body" style="min-height:80px" '+
+        'ondragover="event.preventDefault();this.classList.add(\'drag-over\')" '+
+        'ondragleave="this.classList.remove(\'drag-over\')" '+
+        'ondrop="conDdr(event,\''+st.id+'\')">'+cards+'</div></div>';
   }).join('');
   el.innerHTML='<div id="pipe-wrap">'+cols+'</div>';
 }
@@ -1387,11 +1395,19 @@ function toggleCapGroup(id){const el=document.getElementById(id);if(el)el.style.
 function conDst(e,id){S.drag=id;e.dataTransfer.effectAllowed='move';}
 function conDdr(e,sid){
   e.preventDefault();e.currentTarget.classList.remove('drag-over');
-  const d=S.con_deals.find(x=>x.id===S.drag);
-  if(!d||d.stage===sid)return;
+  let d=S.con_deals.find(x=>x.id===S.drag);
+  if(!d){
+    // deal is from CONST_DATA — copy into live deals so we can update its stage
+    const src=CONST_DATA.find(x=>x.id===S.drag);
+    if(!src)return;
+    d={...src};
+    S.con_deals.push(d);
+  }
+  if(d.stage===sid)return;
   d.stage=sid;d.stageEnteredAt=new Date().toISOString();
   addConAct('&#8594;','<strong>'+esc(d.name)+'</strong> moved to <strong>'+conSobj(sid).label+'</strong>');
-  saveCon();rConPipe();
+  saveCon();
+  if(S.view==='con_snap')rConSnap();else rConPipe();
 }
 function openConDet(did){
   const d=S.con_deals.find(x=>x.id===did);if(!d)return;
