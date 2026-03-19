@@ -446,11 +446,12 @@ let S={view:'dash',deals:[],acts:[],con_deals:[],con_acts:[],com_deals:[],com_ac
 let _saveTimer=null;
 function setSyncDot(state){const d=document.getElementById('sync-dot');if(d){d.className='sync-dot'+(state==='syncing'?' syncing':'');}}
 function save(){
-  try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team}))}catch(e){}
+  const ts=new Date().toISOString();
+  try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team,_updated_at:ts}))}catch(e){}
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>{
     setSyncDot('syncing');
-    sb.from('app_data').upsert({id:'main',deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team,updated_at:new Date().toISOString()})
+    sb.from('app_data').upsert({id:'main',deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team,updated_at:ts})
       .then(({error})=>{setSyncDot(error?'':'ok');if(error)console.error('Save error:',error);});
   },600);
 }
@@ -521,17 +522,22 @@ async function onSignedIn(session){
   document.getElementById('user-email').textContent=session.user.email;
   document.getElementById('auth-screen').style.display='none';
   const {data,error}=await sb.from('app_data').select('*').eq('id','main').single();
-  if(data){
-    // Supabase row exists — always use it as source of truth for all sections
+  let local=null;try{const r=localStorage.getItem('tg9');if(r)local=JSON.parse(r);}catch(e){}
+  const localTs=local&&local._updated_at?local._updated_at:'';
+  const remoteTs=data&&data.updated_at?data.updated_at:'';
+  if(data&&remoteTs>=localTs){
+    // Supabase is current or newer — use it and sync to localStorage
     S.deals=data.deals||[];S.acts=data.acts||[];S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.com_deals=data.com_deals||[];S.com_acts=data.com_acts||[];S.lease_deals=data.lease_deals||[];S.lease_acts=data.lease_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
-    localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team}));
-  } else if(!error||(error&&error.code==='PGRST116')){
-    // No row yet (first time setup) — seed from localStorage or sample data, then create the row
-    load();
-    if(!S.deals.length)initSample();
+    try{localStorage.setItem('tg9',JSON.stringify({deals:S.deals,acts:S.acts,con_deals:S.con_deals,con_acts:S.con_acts,com_deals:S.com_deals,com_acts:S.com_acts,lease_deals:S.lease_deals,lease_acts:S.lease_acts,settings:S.settings,team:S.team,_updated_at:remoteTs}));}catch(e){}
+  } else if(local&&localTs>remoteTs){
+    // localStorage is newer (e.g. Supabase write pending) — use it and flush to Supabase now
+    S.deals=local.deals||[];S.acts=local.acts||[];S.con_deals=local.con_deals||[];S.con_acts=local.con_acts||[];S.com_deals=local.com_deals||[];S.com_acts=local.com_acts||[];S.lease_deals=local.lease_deals||[];S.lease_acts=local.lease_acts||[];S.settings=local.settings||{firm:'Thomas Park'};S.team=local.team||['AK','BJ','CR','DL','ES'];
     save();
+  } else if(!error||(error&&error.code==='PGRST116')){
+    // No row anywhere — seed from localStorage or sample data and create the row
+    load();if(!S.deals.length)initSample();save();
   } else {
-    // Supabase fetch failed (network/auth error) — fall back to localStorage only, do NOT save back
+    // Supabase fetch failed — use localStorage only, do NOT write back
     console.warn('Supabase fetch failed, using local cache:',error);
     load();
   }
