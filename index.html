@@ -1261,9 +1261,13 @@ function rConDash(){
   const pipeVal=pipeJobs.reduce((a,d)=>a+(d.cost*(d.prob/100)||0),0);
   const completedVal=completedJobs.reduce((a,d)=>a+d.cost,0);
   // Bar chart
-  const barScale=Math.max(...CONST_STAGES.map(st=>CONST_DATA.filter(d=>d.stage===st.id).length),1);
-  const bar=CONST_STAGES.map(st=>{
-    const n=CONST_DATA.filter(d=>d.stage===st.id).length;
+  const barHideStages=['con_completed','con_lost','con_dead'];
+  const barStages=CONST_STAGES.filter(st=>!barHideStages.includes(st.id));
+  const liveBarIds=new Set(S.con_deals.map(x=>x.id));
+  const allBarRows=[...CONST_DATA.filter(d=>!liveBarIds.has(d.id)),...S.con_deals];
+  const barScale=Math.max(...barStages.map(st=>allBarRows.filter(d=>d.stage===st.id).length),1);
+  const bar=barStages.map(st=>{
+    const n=allBarRows.filter(d=>d.stage===st.id).length;
     const w=Math.min(Math.round(n/barScale*100),100);
     return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'+
       '<div style="width:130px;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0" title="'+st.label+'">'+st.label+'</div>'+
