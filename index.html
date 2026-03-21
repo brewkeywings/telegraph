@@ -276,6 +276,10 @@ textarea{resize:vertical;min-height:80px}
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       All Projects Archive
     </div>
+    <div class="ni ni-sub" onclick="navigate('con_cal')" data-v="con_cal">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Bid Calendar
+    </div>
     <div class="nav-group-hd">Thomas Park Commercial</div>
     <div class="ni ni-sub" onclick="navigate('com_dash')" data-v="com_dash">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -567,11 +571,11 @@ function navigate(v){
   const el=document.getElementById('view');
   if(v!=='dash')el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'Investments Pipeline',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Pursuits Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',com_dash:'Commercial Dashboard',com_snap:'Active Listing Snapshot',com_pipe:'Commercial Pipeline',com_deals:'All Listings Archive',com_lease:'Leasing Prospects'};
+  const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'Investments Pipeline',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Pursuits Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',con_cal:'Bid Calendar',com_dash:'Commercial Dashboard',com_snap:'Active Listing Snapshot',com_pipe:'Commercial Pipeline',com_deals:'All Listings Archive',com_lease:'Leasing Prospects'};
   document.getElementById('pg-title').textContent=T[v]||v;
   const btn=document.getElementById('topbar-new-btn');
-  if(btn)btn.textContent=(v==='con_deals'||v==='con_snap'||v==='con_dash'||v==='con_pipe')?'+ New Job':'+ New Deal';
-  ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,com_dash:rComDash,com_snap:rComSnap,com_pipe:rComPipe,com_deals:rComDeals,com_lease:rComLease})[v]();
+  if(btn)btn.textContent=(v==='con_deals'||v==='con_snap'||v==='con_dash'||v==='con_pipe'||v==='con_cal')?'+ New Job':'+ New Deal';
+  ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,con_cal:rConCal,com_dash:rComDash,com_snap:rComSnap,com_pipe:rComPipe,com_deals:rComDeals,com_lease:rComLease})[v]();
   const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
 }
 function kpi(lbl,val,sub,accent,onclick){const click=onclick?'onclick="'+onclick+'" style="border-top:3px solid '+accent+';cursor:pointer" title="Click to view details"':'style="border-top:3px solid '+accent+'"';return '<div class="kpi" '+click+'><div class="kpi-lbl">'+lbl+'</div><div class="kpi-val" style="color:'+accent+';font-size:'+(String(val).length>8?'18px':'26px')+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';}
@@ -1042,7 +1046,7 @@ function setDocSt(i,v){const d=S.deals.find(x=>x.id===S.did);if(!d)return;if(!d.
 function addDoc(){const n=prompt('Document name:');if(!n)return;const d=S.deals.find(x=>x.id===S.did);if(!d)return;if(!d.docs)d.docs=DOC_T.slice(0,6).map(t=>({type:t,status:'pending'}));d.docs.push({type:n,status:'pending'});save();renderDetBody()}
 function bNotes(d){return'<div class="form-group"><label>Deal Notes</label><textarea id="notes-ta" rows="10" style="width:100%">'+esc(d.notes||'')+'</textarea></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveNote()">Save Notes</button></div>'}
 function saveNote(){const d=S.deals.find(x=>x.id===S.did);if(!d)return;d.notes=(document.getElementById('notes-ta').value||'');save();toast('Notes saved')}
-function topNewBtn(){const iscon=S.view==='con_deals'||S.view==='con_snap'||S.view==='con_dash'||S.view==='con_pipe';if(iscon)openConForm();else openForm();}
+function topNewBtn(){const iscon=S.view==='con_deals'||S.view==='con_snap'||S.view==='con_dash'||S.view==='con_pipe'||S.view==='con_cal';if(iscon)openConForm();else openForm();}
 function openForm(did){
   S.eid=did||null;const d=did?S.deals.find(x=>x.id===did):null;
   document.getElementById('form-title').textContent=did?'Edit Deal':'New Deal';
@@ -1470,6 +1474,8 @@ function openConForm(did){
       '<div class="form-group"><label>Est. Start Date</label><input type="date" id="cf-start" value="'+(d?d.startDate:'')+'"></div>'+
       '<div class="form-group"><label>Duration (months)</label><input type="text" id="cf-dur" value="'+esc(d?d.duration:'')+'"></div>'+
       '<div class="form-group"><label>Bid Due Date</label><input type="date" id="cf-bid" value="'+(d?d.bidDue:'')+'"></div>'+
+      '<div class="form-group"><label>Sub Numbers Due</label><input type="date" id="cf-subdue" value="'+(d?d.subDue||'':'')+'"></div>'+
+      '<div class="form-group"><label>Drawings Sent</label><input type="date" id="cf-drawings" value="'+(d?d.drawingsSent||'':'')+'"></div>'+
       '<div class="form-group"><label>Project Manager</label><input type="text" id="cf-pm" value="'+esc(d?d.pm||'':'')+'"></div>'+
       '<div class="form-group"><label>Superintendent</label><input type="text" id="cf-super" value="'+esc(d?d.superintendent||'':'')+'"></div>'+
       '<div class="form-group full"><label>Notes</label><textarea id="cf-notes" rows="3">'+esc(d?d.notes:'')+'</textarea></div>'+
@@ -1497,6 +1503,8 @@ function sConForm(e,did){
   d.startDate=document.getElementById('cf-start').value;
   d.duration=document.getElementById('cf-dur').value.trim();
   d.bidDue=document.getElementById('cf-bid').value;
+  d.subDue=document.getElementById('cf-subdue').value;
+  d.drawingsSent=document.getElementById('cf-drawings').value;
   d.pm=document.getElementById('cf-pm').value.trim();
   d.superintendent=document.getElementById('cf-super').value.trim();
   d.notes=document.getElementById('cf-notes').value.trim();
@@ -2766,6 +2774,137 @@ function confirmDelLease(id){
   document.getElementById('conf-msg').textContent='Delete "'+d.name+'"? This cannot be undone.';
   document.getElementById('conf-ok').onclick=()=>{S.lease_deals=S.lease_deals.filter(x=>x.id!==id);save();closeMo('confMo');closeMo('mo');toast('Prospect deleted');rComLease();};
   document.getElementById('confMo').classList.add('show');
+}
+
+// ---- BID CALENDAR ----
+function rConCal(){
+  const el=document.getElementById('view');
+  if(!S.con_cal_tab)S.con_cal_tab='bid_sched';
+  const n=new Date();
+  if(S.con_cal_month===undefined)S.con_cal_month=n.getFullYear()*12+n.getMonth();
+  const tabs=[{id:'bid_sched',label:'Bid Schedule'},{id:'lookahead',label:'6 Month Look Ahead'}];
+  const tabHtml=tabs.map(t=>'<div class="tab'+(S.con_cal_tab===t.id?' active':'')+'" onclick="S.con_cal_tab=\''+t.id+'\';rConCal()">'+t.label+'</div>').join('');
+  const body=S.con_cal_tab==='bid_sched'?bCalBidSched():bCalLookAhead();
+  el.innerHTML='<div class="tabs" style="margin-bottom:20px">'+tabHtml+'</div>'+body;
+}
+
+function bCalBidSched(){
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
+  const jobs=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...S.con_deals.map(d=>({...d,_live:true}))];
+  const yr=Math.floor(S.con_cal_month/12);
+  const mo=S.con_cal_month%12;
+  const firstDay=new Date(yr,mo,1);
+  const daysInMonth=new Date(yr,mo+1,0).getDate();
+  const monthName=firstDay.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const monthKey=yr+'-'+String(mo+1).padStart(2,'0');
+  const evts={};
+  function ae(iso,lbl,color,id){
+    if(!iso)return;
+    const k=iso.slice(0,10);
+    if(k.slice(0,7)!==monthKey)return;
+    if(!evts[k])evts[k]=[];
+    evts[k].push({lbl,color,id});
+  }
+  jobs.forEach(d=>{
+    ae(d.bidDue,d.name,'#ef4444',d.id);
+    ae(d.subDue,d.name,'#3b82f6',d.id);
+    ae(d.drawingsSent,d.name,'#14b8a6',d.id);
+    ae(d.startDate,d.name,'#8b5cf6',d.id);
+  });
+  const startDow=firstDay.getDay();
+  const todayStr=new Date().toISOString().slice(0,10);
+  let cells='';
+  for(let i=0;i<startDow;i++)cells+='<div style="min-height:90px;border:1px solid transparent;border-radius:4px;background:var(--bg)"></div>';
+  for(let day=1;day<=daysInMonth;day++){
+    const k=monthKey+'-'+String(day).padStart(2,'0');
+    const isToday=k===todayStr;
+    const dayEvts=evts[k]||[];
+    const evtHtml=dayEvts.map(e=>'<div style="font-size:9px;padding:2px 4px;border-radius:3px;margin-bottom:2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;background:'+e.color+'18;color:'+e.color+';border-left:2px solid '+e.color+'" onclick="event.stopPropagation();openConDetFull(\''+e.id+'\')" title="'+esc(e.lbl)+'">'+esc(e.lbl.length>22?e.lbl.slice(0,21)+'…':e.lbl)+'</div>').join('');
+    const dayNum=isToday
+      ?'<span style="background:#404a57;color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px">'+day+'</span>'
+      :'<span style="font-size:11px;font-weight:600;color:var(--muted)">'+day+'</span>';
+    cells+='<div style="min-height:90px;border:1px solid '+(isToday?'#92cff2':'var(--border)')+';border-radius:4px;padding:4px;background:'+(isToday?'#f0f8ff':'#fff')+';overflow:hidden">'+
+      '<div style="display:flex;justify-content:flex-end;margin-bottom:3px">'+dayNum+'</div>'+
+      evtHtml+
+    '</div>';
+  }
+  const dowHtml=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>'<div style="text-align:center;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;padding:4px 0 6px">'+d+'</div>').join('');
+  const legend=[{color:'#ef4444',lbl:'Bid Due'},{color:'#3b82f6',lbl:'Sub Numbers Due'},{color:'#14b8a6',lbl:'Drawings Sent'},{color:'#8b5cf6',lbl:'Est. Start Date'}]
+    .map(l=>'<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:50%;background:'+l.color+';flex-shrink:0"></span>'+l.lbl+'</span>').join('');
+  return '<div style="background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:16px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
+      '<button class="btn btn-ghost btn-sm" onclick="S.con_cal_month--;rConCal()">&#8592; Prev</button>'+
+      '<span style="font-size:15px;font-weight:600">'+monthName+'</span>'+
+      '<button class="btn btn-ghost btn-sm" onclick="S.con_cal_month++;rConCal()">Next &#8594;</button>'+
+    '</div>'+
+    '<div style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap">'+legend+'</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'+dowHtml+cells+'</div>'+
+  '</div>';
+}
+
+function bCalLookAhead(){
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
+  const allJobs=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...S.con_deals.map(d=>({...d,_live:true}))];
+  const bidStages=['pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted','pricing','preconstruction','active'];
+  const jobs=allJobs.filter(d=>bidStages.includes(d.stage)&&(d.startDate||d.bidDue||d.subDue));
+  if(!jobs.length)return'<div style="padding:40px;text-align:center;color:var(--muted);background:var(--card);border-radius:var(--r);border:1px solid var(--border)">No active projects with schedule data. Add start dates or bid dates to jobs to see them here.</div>';
+  const today=new Date();today.setHours(0,0,0,0);
+  const startRange=new Date(today.getFullYear(),today.getMonth(),1);
+  const endRange=new Date(today.getFullYear(),today.getMonth()+6,0);
+  const totalMs=endRange-startRange;
+  const pct=d=>Math.max(0,Math.min(100,((d-startRange)/totalMs)*100));
+  const todayPct=pct(today);
+  // Month header cells
+  let mhdHtml='';
+  for(let i=0;i<6;i++){
+    const md=new Date(today.getFullYear(),today.getMonth()+i,1);
+    const me=new Date(today.getFullYear(),today.getMonth()+i+1,0);
+    const l=pct(md).toFixed(2);
+    const w=(pct(me)-pct(md)).toFixed(2);
+    mhdHtml+='<div style="position:absolute;left:'+l+'%;width:'+w+'%;text-align:center;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;border-right:1px solid var(--border);padding:7px 4px;box-sizing:border-box;white-space:nowrap;overflow:hidden">'+md.toLocaleDateString('en-US',{month:'short',year:'2-digit'})+'</div>';
+  }
+  const rows=jobs.map(d=>{
+    const st=conSobj(d.stage);
+    let trackHtml='<div style="position:absolute;left:'+todayPct.toFixed(2)+'%;top:0;bottom:0;width:1px;background:#ef444450;pointer-events:none;z-index:1"></div>';
+    if(d.startDate){
+      const sD=new Date(d.startDate);sD.setHours(0,0,0,0);
+      const durMo=parseFloat(d.duration)||0;
+      const eD=durMo?new Date(sD.getFullYear(),sD.getMonth()+Math.floor(durMo),sD.getDate()):new Date(sD.getFullYear(),sD.getMonth()+1,sD.getDate());
+      if(sD<=endRange&&eD>=startRange){
+        const barL=pct(sD<startRange?startRange:sD);
+        const barR=pct(eD>endRange?endRange:eD);
+        const barW=Math.max(0.8,barR-barL);
+        trackHtml+='<div style="position:absolute;left:'+barL.toFixed(2)+'%;width:'+barW.toFixed(2)+'%;top:50%;transform:translateY(-50%);height:16px;border-radius:8px;background:'+st.color+';opacity:.75;z-index:2" title="'+esc(d.name)+': '+fmtD(d.startDate)+(durMo?' – '+durMo+' mo':'')+'"></div>';
+      }
+    }
+    if(d.bidDue){const bD=new Date(d.bidDue);bD.setHours(0,0,0,0);if(bD>=startRange&&bD<=endRange)trackHtml+='<div style="position:absolute;left:'+pct(bD).toFixed(2)+'%;top:3px;transform:translateX(-50%);font-size:13px;color:#ef4444;z-index:3;cursor:pointer;line-height:1" title="Bid Due: '+fmtD(d.bidDue)+'">&#9660;</div>';}
+    if(d.subDue){const sD=new Date(d.subDue);sD.setHours(0,0,0,0);if(sD>=startRange&&sD<=endRange)trackHtml+='<div style="position:absolute;left:'+pct(sD).toFixed(2)+'%;bottom:3px;transform:translateX(-50%);font-size:13px;color:#3b82f6;z-index:3;cursor:pointer;line-height:1" title="Sub #s Due: '+fmtD(d.subDue)+'">&#9650;</div>';}
+    if(d.drawingsSent){const dD=new Date(d.drawingsSent);dD.setHours(0,0,0,0);if(dD>=startRange&&dD<=endRange)trackHtml+='<div style="position:absolute;left:'+pct(dD).toFixed(2)+'%;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#14b8a6;border:2px solid #fff;z-index:3;cursor:pointer" title="Drawings Sent: '+fmtD(d.drawingsSent)+'"></div>';}
+    return '<div style="display:flex;align-items:stretch;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseenter="this.style.background=\'var(--bg)\'" onmouseleave="this.style.background=\'\'" onclick="openConDetFull(\''+d.id+'\')">'+
+      '<div style="width:200px;min-width:200px;padding:8px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center">'+
+        '<div style="font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(d.name)+'</div>'+
+        '<div style="display:flex;gap:5px;align-items:center;margin-top:3px;flex-wrap:wrap">'+
+          '<span class="badge" style="font-size:9px;background:'+st.color+'20;color:'+st.color+'">'+st.short+'</span>'+
+          (d.pm?'<span style="font-size:10px;color:var(--muted)">'+esc(d.pm)+'</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div style="flex:1;position:relative;height:46px">'+trackHtml+'</div>'+
+    '</div>';
+  }).join('');
+  return '<div style="background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden">'+
+    '<div style="display:flex;border-bottom:2px solid var(--border);background:var(--bg)">'+
+      '<div style="width:200px;min-width:200px;padding:8px 12px;border-right:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Project</div>'+
+      '<div style="flex:1;position:relative;height:32px">'+mhdHtml+'</div>'+
+    '</div>'+
+    rows+
+    '<div style="padding:8px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;align-items:center">'+
+      '<span style="font-size:11px;color:var(--muted)">Bar = project duration</span>'+
+      '<span style="font-size:11px;color:#ef4444">&#9660; Bid due</span>'+
+      '<span style="font-size:11px;color:#3b82f6">&#9650; Sub #s due</span>'+
+      '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span style="width:8px;height:8px;border-radius:50%;background:#14b8a6;display:inline-block"></span> Drawings sent</span>'+
+      '<span style="font-size:11px;color:var(--muted)">Faint line = today</span>'+
+    '</div>'+
+  '</div>';
 }
 
 init();
