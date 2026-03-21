@@ -325,7 +325,7 @@ textarea{resize:vertical;min-height:80px}
 <div id="main">
   <div id="topbar">
     <h2 id="pg-title">Dashboard</h2>
-    <button class="btn btn-primary btn-sm" onclick="openForm()">+ New Deal</button>
+    <button class="btn btn-primary btn-sm" id="topbar-new-btn" onclick="topNewBtn()">+ New Deal</button>
   </div>
   <div id="view"></div>
 </div>
@@ -570,6 +570,8 @@ function navigate(v){
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
   const T={dash:'Dashboard',pipe:'Active Deal Snapshot',deals:'Investments Pipeline',medical:'All Deal Archive',settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Pursuits Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',com_dash:'Commercial Dashboard',com_snap:'Active Listing Snapshot',com_pipe:'Commercial Pipeline',com_deals:'All Listings Archive',com_lease:'Leasing Prospects'};
   document.getElementById('pg-title').textContent=T[v]||v;
+  const btn=document.getElementById('topbar-new-btn');
+  if(btn)btn.textContent=(v==='con_deals'||v==='con_snap'||v==='con_dash'||v==='con_pipe')?'+ New Job':'+ New Deal';
   ({dash:rDash,pipe:rPipe,deals:rDeals,medical:rMedical,settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,com_dash:rComDash,com_snap:rComSnap,com_pipe:rComPipe,com_deals:rComDeals,com_lease:rComLease})[v]();
   const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
 }
@@ -1041,6 +1043,7 @@ function setDocSt(i,v){const d=S.deals.find(x=>x.id===S.did);if(!d)return;if(!d.
 function addDoc(){const n=prompt('Document name:');if(!n)return;const d=S.deals.find(x=>x.id===S.did);if(!d)return;if(!d.docs)d.docs=DOC_T.slice(0,6).map(t=>({type:t,status:'pending'}));d.docs.push({type:n,status:'pending'});save();renderDetBody()}
 function bNotes(d){return'<div class="form-group"><label>Deal Notes</label><textarea id="notes-ta" rows="10" style="width:100%">'+esc(d.notes||'')+'</textarea></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveNote()">Save Notes</button></div>'}
 function saveNote(){const d=S.deals.find(x=>x.id===S.did);if(!d)return;d.notes=(document.getElementById('notes-ta').value||'');save();toast('Notes saved')}
+function topNewBtn(){const iscon=S.view==='con_deals'||S.view==='con_snap'||S.view==='con_dash'||S.view==='con_pipe';if(iscon)openConForm();else openForm();}
 function openForm(did){
   S.eid=did||null;const d=did?S.deals.find(x=>x.id===did):null;
   document.getElementById('form-title').textContent=did?'Edit Deal':'New Deal';
