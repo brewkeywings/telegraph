@@ -1333,6 +1333,7 @@ function rConDash(){
             '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_deals\')">View Pipeline →</span>'+
           '</div>'+bar+
         '</div>'+
+        bConBidSchedWidget()+
       '</div>'+
     '</div>';
   if(window._mapsReady)initConMap();else{const t=setInterval(()=>{if(window._mapsReady){clearInterval(t);initConMap();}},200);}
@@ -2774,6 +2775,48 @@ function confirmDelLease(id){
   document.getElementById('conf-msg').textContent='Delete "'+d.name+'"? This cannot be undone.';
   document.getElementById('conf-ok').onclick=()=>{S.lease_deals=S.lease_deals.filter(x=>x.id!==id);save();closeMo('confMo');closeMo('mo');toast('Prospect deleted');rComLease();};
   document.getElementById('confMo').classList.add('show');
+}
+
+// ---- BID SCHEDULE WIDGET (dashboard) ----
+function bConBidSchedWidget(){
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
+  const jobs=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...S.con_deals.map(d=>({...d,_live:true}))];
+  const today=new Date();today.setHours(0,0,0,0);
+  const cutoff=new Date(today);cutoff.setDate(today.getDate()+60);
+  const evts=[];
+  jobs.forEach(d=>{
+    if(d.bidDue){const dt=new Date(d.bidDue);dt.setHours(0,0,0,0);if(dt>=today&&dt<=cutoff)evts.push({dt,label:'Bid Due',color:'#ef4444',name:d.name,id:d.id});}
+    if(d.subDue){const dt=new Date(d.subDue);dt.setHours(0,0,0,0);if(dt>=today&&dt<=cutoff)evts.push({dt,label:'Sub #s Due',color:'#3b82f6',name:d.name,id:d.id});}
+    if(d.drawingsSent){const dt=new Date(d.drawingsSent);dt.setHours(0,0,0,0);if(dt>=today&&dt<=cutoff)evts.push({dt,label:'Drawings Sent',color:'#14b8a6',name:d.name,id:d.id});}
+    if(d.startDate){const dt=new Date(d.startDate);dt.setHours(0,0,0,0);if(dt>=today&&dt<=cutoff)evts.push({dt,label:'Est. Start',color:'#8b5cf6',name:d.name,id:d.id});}
+  });
+  evts.sort((a,b)=>a.dt-b.dt);
+  const rows=evts.length?evts.map(e=>{
+    const isToday=e.dt.getTime()===today.getTime();
+    const diffDays=Math.round((e.dt-today)/(1000*60*60*24));
+    const when=isToday?'Today':diffDays===1?'Tomorrow':e.dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return '<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openConDetFull(\''+e.id+'\')">'+
+      '<div style="flex-shrink:0;text-align:center;min-width:38px">'+
+        '<div style="font-size:10px;font-weight:700;color:'+(isToday?'#ef4444':'var(--text)')+'">'+when+'</div>'+
+        '<div style="font-size:9px;color:var(--muted)">'+( diffDays===0?'':(diffDays+'d'))+'</div>'+
+      '</div>'+
+      '<div style="min-width:0;flex:1">'+
+        '<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">'+
+          '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+e.color+';flex-shrink:0"></span>'+
+          '<span style="font-size:10px;font-weight:600;color:'+e.color+'">'+e.label+'</span>'+
+        '</div>'+
+        '<div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)">'+esc(e.name)+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join(''):'<div style="color:var(--muted);font-size:12px;padding:12px 0;text-align:center">No upcoming schedule events in the next 60 days.</div>';
+  return '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:12px 14px;margin-top:12px">'+
+    '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;display:flex;justify-content:space-between;align-items:center">'+
+      'Upcoming Bid Schedule'+
+      '<span style="color:var(--tp-blue);cursor:pointer;font-weight:500" onclick="navigate(\'con_cal\')">Full Calendar →</span>'+
+    '</div>'+
+    '<div style="font-size:10px;color:var(--muted);margin-bottom:8px">Next 60 days</div>'+
+    rows+
+  '</div>';
 }
 
 // ---- BID CALENDAR ----
