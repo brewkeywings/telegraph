@@ -2846,7 +2846,15 @@ function bCalLookAhead(){
   const liveIds=new Set(S.con_deals.map(x=>x.id));
   const allJobs=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...S.con_deals.map(d=>({...d,_live:true}))];
   const bidStages=['pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted','pricing','preconstruction','active'];
-  const jobs=allJobs.filter(d=>bidStages.includes(d.stage)&&(d.startDate||d.bidDue||d.subDue));
+  const jobs=allJobs.filter(d=>bidStages.includes(d.stage)&&(d.startDate||d.bidDue||d.subDue))
+    .sort((a,b)=>{
+      const aActive=a.stage==='active'?0:1;
+      const bActive=b.stage==='active'?0:1;
+      if(aActive!==bActive)return aActive-bActive;
+      const aDate=a.startDate||a.bidDue||'9999';
+      const bDate=b.startDate||b.bidDue||'9999';
+      return aDate<bDate?-1:aDate>bDate?1:0;
+    });
   if(!jobs.length)return'<div style="padding:40px;text-align:center;color:var(--muted);background:var(--card);border-radius:var(--r);border:1px solid var(--border)">No active projects with schedule data. Add start dates or bid dates to jobs to see them here.</div>';
   const today=new Date();today.setHours(0,0,0,0);
   const startRange=new Date(today.getFullYear(),today.getMonth(),1);
