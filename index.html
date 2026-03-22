@@ -470,6 +470,34 @@ const ALLOWED_EMAILS=[
   'ej.rumpke@thomas-park.com',
   'matthew.merz@thomas-park.com',
 ];
+// Per-user section restrictions. If an email is listed here, they can ONLY
+// see the specified views. Omitting an email = full access.
+const USER_SECTION_PERMS={
+  'matthew.merz@thomas-park.com':['con_dash','con_snap','con_deals','con_pipe','con_cal'],
+};
+function applyNavPerms(email){
+  const allowed=USER_SECTION_PERMS[email];
+  if(!allowed)return;// full access
+  document.querySelectorAll('.ni[data-v]').forEach(el=>{
+    el.style.display=allowed.includes(el.dataset.v)?'':'none';
+  });
+  // Also hide section headers that have no visible children
+  document.querySelectorAll('.nav-group-hd').forEach(hd=>{
+    let sib=hd.nextElementSibling;let hasVisible=false;
+    while(sib&&!sib.classList.contains('nav-group-hd')){
+      if(sib.style.display!=='none'&&sib.dataset.v)hasVisible=true;
+      sib=sib.nextElementSibling;
+    }
+    hd.style.display=hasVisible?'':'none';
+  });
+  // Hide settings if not allowed
+  document.querySelectorAll('.ni[data-v="settings"]').forEach(el=>el.style.display='none');
+}
+function isViewAllowed(email,v){
+  const allowed=USER_SECTION_PERMS[email];
+  if(!allowed)return true;
+  return allowed.includes(v);
+}
 // ============================================================
 // SECURITY — geo-block + alert topic (ntfy.sh push notifications)
 const ALERT_TOPIC='tptelegrph-sec-k7x2m9';// subscribe at ntfy.sh/tptelegrph-sec-k7x2m9
@@ -522,8 +550,10 @@ async function doAuth(){
 }
 async function doLogout(){await sb.auth.signOut();document.getElementById('auth-screen').style.display='flex';document.getElementById('user-email').textContent='—';}
 async function onSignedIn(session){
+  S.userEmail=session.user.email;
   document.getElementById('user-email').textContent=session.user.email;
   document.getElementById('auth-screen').style.display='none';
+  applyNavPerms(session.user.email);
   const {data,error}=await sb.from('app_data').select('*').eq('id','main').single();
   let local=null;try{const r=localStorage.getItem('tg9');if(r)local=JSON.parse(r);}catch(e){}
   const localTs=local&&local._updated_at?local._updated_at:'';
@@ -549,7 +579,8 @@ async function onSignedIn(session){
     const d=payload.new;S.deals=d.deals||S.deals;S.acts=d.acts||S.acts;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.com_deals=d.com_deals||S.com_deals;S.com_acts=d.com_acts||S.com_acts;S.lease_deals=d.lease_deals||S.lease_deals;S.lease_acts=d.lease_acts||S.lease_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
     navigate(S.view);
   }).subscribe();
-  navigate('dash');
+  const startView=USER_SECTION_PERMS[session.user.email]?USER_SECTION_PERMS[session.user.email][0]:'dash';
+  navigate(startView);
 }
 async function init(){
   const {data:{session}}=await sb.auth.getSession();
@@ -567,6 +598,7 @@ function sobj(sid){return STAGES.find(s=>s.id===sid)||STAGES[0]}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function badge(sid){const s=sobj(sid);return '<span class="badge" style="background:'+s.color+'20;color:'+s.color+'">'+s.short+'</span>'}
 function navigate(v){
+  if(S.userEmail&&!isViewAllowed(S.userEmail,v))return;
   S.view=v;
   const el=document.getElementById('view');
   if(v!=='dash')el.className='';
