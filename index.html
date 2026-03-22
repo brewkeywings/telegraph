@@ -3070,7 +3070,7 @@ function buildReportUI(sectionKey,cfg){
   // ---- Filter panel HTML ----
   const filterRows=cfg.filterDefs.map(fd=>{
     if(fd.type==='stages'){
-      const checks=fd.options.map(o=>'<label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;margin-bottom:4px"><input type="checkbox" '+((!st.filters[fd.key]||st.filters[fd.key].includes(o.id))?'checked':'')+' onchange="rptToggleStage(\''+sectionKey+'\',\''+fd.key+'\',\''+o.id+'\')" style="accent-color:'+o.color+'"><span class="badge" style="background:'+o.color+'20;color:'+o.color+';font-size:10px">'+esc(o.label)+'</span></label>').join('');
+      const checks=fd.options.map(o=>'<label style="display:flex;align-items:flex-start;gap:7px;font-size:12px;cursor:pointer;margin-bottom:6px;line-height:1.4"><input type="checkbox" '+((!st.filters[fd.key]||st.filters[fd.key].includes(o.id))?'checked':'')+' onchange="rptToggleStage(\''+sectionKey+'\',\''+fd.key+'\',\''+o.id+'\')" style="accent-color:'+o.color+';margin-top:2px;flex-shrink:0"><span style="color:var(--text)">'+esc(o.label)+'</span></label>').join('');
       return '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+fd.label+'</div>'+checks+'</div>';
     }
     if(fd.type==='daterange'){
@@ -3099,7 +3099,7 @@ function buildReportUI(sectionKey,cfg){
   }).join('');
 
   // ---- Fields panel HTML ----
-  const fieldChecks=cfg.fields.map(f=>'<label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;margin-bottom:5px"><input type="checkbox" '+(st.fields.includes(f.key)?'checked':'')+' onchange="rptToggleField(\''+sectionKey+'\',\''+f.key+'\')"><span>'+esc(f.label)+'</span></label>').join('');
+  const fieldChecks=cfg.fields.map(f=>'<label style="display:flex;align-items:flex-start;gap:7px;font-size:12px;cursor:pointer;margin-bottom:6px;line-height:1.4"><input type="checkbox" '+(st.fields.includes(f.key)?'checked':'')+' onchange="rptToggleField(\''+sectionKey+'\',\''+f.key+'\')" style="margin-top:2px;flex-shrink:0"><span style="color:var(--text)">'+esc(f.label)+'</span></label>').join('');
 
   // ---- Preview ----
   let previewHtml='<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px 0">Configure filters and click <strong>Run Report</strong> to preview results.</div>';
