@@ -319,10 +319,23 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <h2 id="auth-title">Sign in to your account</h2>
     <div id="auth-err" class="auth-err"></div>
-    <div class="form-group"><label>Email</label><input type="email" id="auth-email" placeholder="you@thomas-park.com" autocomplete="email"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="auth-pw" placeholder="••••••••" autocomplete="current-password"></div>
-    <button class="btn btn-primary" style="width:100%;margin-top:4px" id="auth-btn" onclick="doAuth()">Sign In</button>
-    <div class="auth-switch" style="color:rgba(255,255,255,.35);font-size:12px;text-align:center;margin-top:8px">Contact your admin to get access.</div>
+    <!-- Sign-in panel -->
+    <div id="auth-signin-panel">
+      <div class="form-group"><label>Email</label><input type="email" id="auth-email" placeholder="you@thomas-park.com" autocomplete="email"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="auth-pw" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px" id="auth-btn" onclick="doAuth()">Sign In</button>
+      <div style="text-align:center;margin-top:10px">
+        <button onclick="showForgotPw()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">Forgot your password?</button>
+      </div>
+    </div>
+    <!-- Forgot password panel -->
+    <div id="auth-forgot-panel" style="display:none">
+      <div class="form-group"><label>Email</label><input type="email" id="reset-email" placeholder="you@thomas-park.com" autocomplete="email"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px" id="reset-btn" onclick="doResetPw()">Send Reset Link</button>
+      <div style="text-align:center;margin-top:10px">
+        <button onclick="showSignIn()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">Back to sign in</button>
+      </div>
+    </div>
   </div>
 </div>
 <div id="main">
@@ -557,7 +570,32 @@ async function doAuth(){
   if(error){errEl.textContent=error.message;document.getElementById('auth-btn').textContent='Sign In';return;}
   await onSignedIn(data.session);
 }
-async function doLogout(){await sb.auth.signOut();document.getElementById('auth-screen').style.display='flex';document.getElementById('user-email').textContent='—';}
+async function doLogout(){await sb.auth.signOut();showSignIn();document.getElementById('auth-screen').style.display='flex';document.getElementById('user-email').textContent='—';}
+function showForgotPw(){
+  document.getElementById('auth-signin-panel').style.display='none';
+  document.getElementById('auth-forgot-panel').style.display='block';
+  document.getElementById('auth-title').textContent='Reset your password';
+  document.getElementById('auth-err').textContent='';
+  const e=document.getElementById('auth-email').value;
+  if(e)document.getElementById('reset-email').value=e;
+}
+function showSignIn(){
+  document.getElementById('auth-forgot-panel').style.display='none';
+  document.getElementById('auth-signin-panel').style.display='block';
+  document.getElementById('auth-title').textContent='Sign in to your account';
+  document.getElementById('auth-err').textContent='';
+}
+async function doResetPw(){
+  const email=document.getElementById('reset-email').value.trim().toLowerCase();
+  const errEl=document.getElementById('auth-err');
+  errEl.textContent='';
+  if(!email){errEl.textContent='Please enter your email.';return;}
+  document.getElementById('reset-btn').textContent='Sending…';
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+  document.getElementById('reset-btn').textContent='Send Reset Link';
+  if(error){errEl.textContent=error.message;}
+  else{errEl.style.color='#10b981';errEl.textContent='Reset link sent — check your email.';document.getElementById('reset-btn').disabled=true;}
+}
 async function onSignedIn(session){
   S.userEmail=session.user.email;
   document.getElementById('user-email').textContent=session.user.email;
