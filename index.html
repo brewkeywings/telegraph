@@ -475,6 +475,10 @@ const ALLOWED_EMAILS=[
 const USER_SECTION_PERMS={
   'matthew.merz@thomas-park.com':['con_dash','con_snap','con_deals','con_pipe','con_cal'],
 };
+// Per-user landing page overrides (full-access users who want a custom start view).
+const USER_DEFAULT_VIEW={
+  'bryan.borucki@thomas-park.com':'con_dash',
+};
 function applyNavPerms(email){
   const allowed=USER_SECTION_PERMS[email];
   if(!allowed)return;// full access
@@ -579,7 +583,7 @@ async function onSignedIn(session){
     const d=payload.new;S.deals=d.deals||S.deals;S.acts=d.acts||S.acts;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.com_deals=d.com_deals||S.com_deals;S.com_acts=d.com_acts||S.com_acts;S.lease_deals=d.lease_deals||S.lease_deals;S.lease_acts=d.lease_acts||S.lease_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
     navigate(S.view);
   }).subscribe();
-  const startView=USER_SECTION_PERMS[session.user.email]?USER_SECTION_PERMS[session.user.email][0]:'dash';
+  const startView=USER_SECTION_PERMS[session.user.email]?USER_SECTION_PERMS[session.user.email][0]:(USER_DEFAULT_VIEW[session.user.email]||'dash');
   navigate(startView);
 }
 async function init(){
