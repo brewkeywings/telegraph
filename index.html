@@ -3067,39 +3067,36 @@ function buildReportUI(sectionKey,cfg){
   if(!RPT[sectionKey])RPT[sectionKey]={filters:{},fields:cfg.fields.filter(f=>f.default!==false).map(f=>f.key),preview:null};
   const st=RPT[sectionKey];
 
-  // ---- Filter panel HTML ----
-  const filterRows=cfg.filterDefs.map(fd=>{
+  // ---- Filter columns (horizontal) ----
+  const filterCols=cfg.filterDefs.map(fd=>{
+    const hd='<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;white-space:nowrap">'+fd.label+'</div>';
+    let body='';
     if(fd.type==='stages'){
-      const checks=fd.options.map(o=>'<label style="display:flex;align-items:flex-start;gap:7px;font-size:12px;cursor:pointer;margin-bottom:6px;line-height:1.4"><input type="checkbox" '+((!st.filters[fd.key]||st.filters[fd.key].includes(o.id))?'checked':'')+' onchange="rptToggleStage(\''+sectionKey+'\',\''+fd.key+'\',\''+o.id+'\')" style="accent-color:'+o.color+';margin-top:2px;flex-shrink:0"><span style="color:var(--text)">'+esc(o.label)+'</span></label>').join('');
-      return '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+fd.label+'</div>'+checks+'</div>';
-    }
-    if(fd.type==='daterange'){
+      const items=fd.options.map(o=>'<label style="display:flex;align-items:flex-start;gap:7px;font-size:12px;cursor:pointer;margin-bottom:7px;line-height:1.4;white-space:nowrap"><input type="checkbox" '+((!st.filters[fd.key]||st.filters[fd.key].includes(o.id))?'checked':'')+' onchange="rptToggleStage(\''+sectionKey+'\',\''+fd.key+'\',\''+o.id+'\')" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0"><span>'+esc(o.label)+'</span></label>').join('');
+      body='<div style="overflow-y:auto;max-height:200px;padding-right:4px">'+items+'</div>';
+    } else if(fd.type==='daterange'){
       const v=st.filters[fd.key]||{};
-      return '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+fd.label+'</div>'+
-        '<div style="display:flex;flex-direction:column;gap:4px">'+
-        '<input type="date" value="'+(v.from||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'from\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit">'+
-        '<input type="date" value="'+(v.to||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'to\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit">'+
-        '</div></div>';
-    }
-    if(fd.type==='range'){
+      body='<div style="display:flex;flex-direction:column;gap:5px">'+
+        '<span style="font-size:10px;color:var(--muted)">From</span>'+
+        '<input type="date" value="'+(v.from||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'from\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;width:100%">'+
+        '<span style="font-size:10px;color:var(--muted)">To</span>'+
+        '<input type="date" value="'+(v.to||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'to\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;width:100%">'+
+        '</div>';
+    } else if(fd.type==='range'){
       const v=st.filters[fd.key]||{};
-      return '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+fd.label+'</div>'+
-        '<div style="display:flex;gap:6px;align-items:center">'+
-        '<input type="number" placeholder="Min" value="'+(v.min||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'min\',this.value)" style="width:80px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit">'+
-        '<span style="color:var(--muted);font-size:11px">to</span>'+
-        '<input type="number" placeholder="Max" value="'+(v.max||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'max\',this.value)" style="width:80px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit">'+
-        '</div></div>';
-    }
-    if(fd.type==='text'){
+      body='<div style="display:flex;flex-direction:column;gap:5px">'+
+        '<input type="number" placeholder="Min" value="'+(v.min||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'min\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;width:100%">'+
+        '<input type="number" placeholder="Max" value="'+(v.max||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',\'max\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;width:100%">'+
+        '</div>';
+    } else if(fd.type==='text'){
       const v=st.filters[fd.key]||'';
-      return '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+fd.label+'</div>'+
-        '<input type="text" value="'+esc(v)+'" placeholder="'+esc(fd.placeholder||'')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',null,this.value)" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;box-sizing:border-box"></div>';
+      body='<input type="text" value="'+esc(v)+'" placeholder="'+esc(fd.placeholder||'Search…')+'" onchange="rptSetFilter(\''+sectionKey+'\',\''+fd.key+'\',null,this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;width:100%;box-sizing:border-box">';
     }
-    return '';
+    return '<div style="min-width:150px;max-width:220px;flex:1;border-right:1px solid var(--border);padding:0 16px 0 0;margin-right:0">'+hd+body+'</div>';
   }).join('');
 
-  // ---- Fields panel HTML ----
-  const fieldChecks=cfg.fields.map(f=>'<label style="display:flex;align-items:flex-start;gap:7px;font-size:12px;cursor:pointer;margin-bottom:6px;line-height:1.4"><input type="checkbox" '+(st.fields.includes(f.key)?'checked':'')+' onchange="rptToggleField(\''+sectionKey+'\',\''+f.key+'\')" style="margin-top:2px;flex-shrink:0"><span style="color:var(--text)">'+esc(f.label)+'</span></label>').join('');
+  // ---- Columns row (horizontal scrollable) ----
+  const fieldChecks=cfg.fields.map(f=>'<label style="display:flex;align-items:flex-start;gap:6px;font-size:12px;cursor:pointer;white-space:nowrap;margin-right:18px;line-height:1.4"><input type="checkbox" '+(st.fields.includes(f.key)?'checked':'')+' onchange="rptToggleField(\''+sectionKey+'\',\''+f.key+'\')" style="margin-top:2px;flex-shrink:0"><span>'+esc(f.label)+'</span></label>').join('');
 
   // ---- Preview ----
   let previewHtml='<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px 0">Configure filters and click <strong>Run Report</strong> to preview results.</div>';
@@ -3122,34 +3119,36 @@ function buildReportUI(sectionKey,cfg){
     }
   }
 
+  const hasResults=st.preview&&st.preview.length>0;
   return `
-  <div style="display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start">
-    <!-- Left: Filters + Fields -->
-    <div>
-      <div class="card" style="margin-bottom:16px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:14px">Filters</div>
-        ${filterRows}
-        <button class="btn btn-primary" style="width:100%" onclick="rptRun('${sectionKey}')">Run Report</button>
-        <button class="btn btn-ghost" style="width:100%;margin-top:6px" onclick="rptClear('${sectionKey}')">Clear Filters</button>
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <!-- Row 1: Filter columns -->
+    <div class="card" style="padding:16px 20px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">Filters</div>
+      <div style="display:flex;gap:0;overflow-x:auto;padding-bottom:4px">
+        ${filterCols}
       </div>
-      <div class="card">
-        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Columns to Include</div>
+    </div>
+    <!-- Row 2: Columns to include -->
+    <div class="card" style="padding:14px 20px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Columns to Include</div>
+      <div style="display:flex;flex-wrap:wrap;overflow-x:auto;padding-bottom:2px">
         ${fieldChecks}
       </div>
     </div>
-    <!-- Right: Preview + Export -->
-    <div>
-      <div class="card" style="margin-bottom:16px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-          <div style="font-size:13px;font-weight:600">Preview</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap" id="rpt-export-btns-${sectionKey}" style="${st.preview&&st.preview.length?'':'opacity:.4;pointer-events:none'}">
-            <button class="btn btn-ghost btn-sm" onclick="rptExportCSV('${sectionKey}')" ${!st.preview||!st.preview.length?'disabled':''}>&#8595; CSV</button>
-            <button class="btn btn-ghost btn-sm" onclick="rptExportPDF('${sectionKey}')" ${!st.preview||!st.preview.length?'disabled':''}>&#8595; PDF</button>
-            <button class="btn btn-ghost btn-sm" onclick="rptExportDOC('${sectionKey}')" ${!st.preview||!st.preview.length?'disabled':''}>&#8595; Word Doc</button>
-          </div>
-        </div>
-        <div id="rpt-preview-${sectionKey}">${previewHtml}</div>
-      </div>
+    <!-- Row 3: Actions -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="rptRun('${sectionKey}')">Run Report</button>
+      <button class="btn btn-ghost" onclick="rptClear('${sectionKey}')">Clear Filters</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost btn-sm" onclick="rptExportCSV('${sectionKey}')" ${!hasResults?'disabled style="opacity:.4"':''}>&#8595; CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="rptExportPDF('${sectionKey}')" ${!hasResults?'disabled style="opacity:.4"':''}>&#8595; PDF</button>
+      <button class="btn btn-ghost btn-sm" onclick="rptExportDOC('${sectionKey}')" ${!hasResults?'disabled style="opacity:.4"':''}>&#8595; Word Doc</button>
+    </div>
+    <!-- Row 4: Preview -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:14px">Preview ${hasResults?'<span style="font-size:11px;font-weight:400;color:var(--muted);margin-left:6px">'+st.preview.length+' record'+(st.preview.length!==1?'s':'')+'</span>':''}</div>
+      <div id="rpt-preview-${sectionKey}">${previewHtml}</div>
     </div>
   </div>`;
 }
