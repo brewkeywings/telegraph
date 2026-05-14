@@ -1347,11 +1347,13 @@ function rConDash(){
   const el=document.getElementById('view');
   el.className='';
   // KPI calculations
-  const activeJobs=CONST_DATA.filter(d=>d.stage==='active');
-  const preconJobs=CONST_DATA.filter(d=>d.stage==='preconstruction');
+  const liveIds=new Set(S.con_deals.map(x=>x.id));
+  const allJobs=[...CONST_DATA.filter(d=>!liveIds.has(d.id)),...S.con_deals];
+  const activeJobs=allJobs.filter(d=>d.stage==='active');
+  const preconJobs=allJobs.filter(d=>d.stage==='preconstruction');
   const pipelineStages=['pricing','pursuing_bid','pursuing_budget','bid_pending','bid_hold','budget_submitted','con_monitoring'];
-  const pipeJobs=CONST_DATA.filter(d=>pipelineStages.includes(d.stage));
-  const completedJobs=CONST_DATA.filter(d=>d.stage==='con_completed');
+  const pipeJobs=allJobs.filter(d=>pipelineStages.includes(d.stage));
+  const completedJobs=allJobs.filter(d=>d.stage==='con_completed');
   const activeVal=activeJobs.reduce((a,d)=>a+d.cost,0);
   const preconVal=preconJobs.reduce((a,d)=>a+d.cost,0);
   const pipeVal=pipeJobs.reduce((a,d)=>a+(d.cost*(d.prob/100)||0),0);
@@ -1585,6 +1587,7 @@ function openConForm(did){
       '<button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById(\'summo\').style.display=\'none\'">Cancel</button>'+
       '<button type="submit" class="btn btn-primary btn-sm">'+(did?'Save Changes':'Create Job')+'</button>'+
     '</div></form>';
+  const body=document.getElementById('summo-body');body.scrollTop=0;
   document.getElementById('summo').style.display='flex';
 }
 function sConForm(e,did){
