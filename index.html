@@ -267,6 +267,15 @@ textarea{resize:vertical;min-height:80px}
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Reports
     </div>
+    <div class="nav-group-hd">Development</div>
+    <div class="ni ni-sub" onclick="navigate('dev_dash')" data-v="dev_dash">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="ni ni-sub" onclick="navigate('dev_projects')" data-v="dev_projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      All Projects
+    </div>
     <div class="ni" onclick="navigate('settings')" data-v="settings">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       Settings
@@ -359,20 +368,20 @@ function cbadge(sid){const s=csobj(sid);return '<span class="badge" style="backg
 const SB_URL='https://wponbaapholnvfpjmkpw.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwb25iYWFwaG9sbnZmcGpta3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzM2NDksImV4cCI6MjA4OTEwOTY0OX0.E1BmEskHoVFHdaeh2UvVfUQtfjizD9h_V8RT6wLBRg0';
 const sb=supabase.createClient(SB_URL,SB_KEY);
-let S={view:'con_dash',con_deals:[],con_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],con_did:null,con_dtab:'ov',con_live:false,drag:null,con_collapsed:{}};
+let S={view:'con_dash',con_deals:[],con_acts:[],dev_projects:[],dev_acts:[],settings:{firm:'Thomas Park'},team:['AK','BJ','CR','DL','ES'],con_did:null,con_dtab:'ov',con_live:false,dev_did:null,dev_dtab:'ov',drag:null,con_collapsed:{}};
 let _saveTimer=null;
 function setSyncDot(state){const d=document.getElementById('sync-dot');if(d){d.className='sync-dot'+(state==='syncing'?' syncing':'');}}
 function save(){
   const ts=new Date().toISOString();
-  try{localStorage.setItem('tg9',JSON.stringify({con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team,_updated_at:ts}))}catch(e){}
+  try{localStorage.setItem('tg9',JSON.stringify({con_deals:S.con_deals,con_acts:S.con_acts,dev_projects:S.dev_projects,dev_acts:S.dev_acts,settings:S.settings,team:S.team,_updated_at:ts}))}catch(e){}
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>{
     setSyncDot('syncing');
-    sb.from('app_data').upsert({id:'main',con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team,updated_at:ts})
+    sb.from('app_data').upsert({id:'main',con_deals:S.con_deals,con_acts:S.con_acts,dev_projects:S.dev_projects,dev_acts:S.dev_acts,settings:S.settings,team:S.team,updated_at:ts})
       .then(({error})=>{setSyncDot(error?'':'ok');if(error)console.error('Save error:',error);});
   },600);
 }
-function load(){try{const d=localStorage.getItem('tg9');if(d){const p=JSON.parse(d);S.con_deals=p.con_deals||[];S.con_acts=p.con_acts||[];S.settings=p.settings||{firm:'Thomas Park'};S.team=p.team||['AK','BJ','CR','DL','ES']}}catch(e){}}
+function load(){try{const d=localStorage.getItem('tg9');if(d){const p=JSON.parse(d);S.con_deals=p.con_deals||[];S.con_acts=p.con_acts||[];S.dev_projects=p.dev_projects||[];S.dev_acts=p.dev_acts||[];S.settings=p.settings||{firm:'Thomas Park'};S.team=p.team||['AK','BJ','CR','DL','ES']}}catch(e){}}
 // ============================================================
 // ALLOWED USERS — remove this block once self-signup is enabled
 const ALLOWED_EMAILS=[
@@ -511,11 +520,11 @@ async function onSignedIn(session){
   const remoteTs=data&&data.updated_at?data.updated_at:'';
   if(data&&remoteTs>=localTs){
     // Supabase is current or newer — use it and sync to localStorage
-    S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
-    try{localStorage.setItem('tg9',JSON.stringify({con_deals:S.con_deals,con_acts:S.con_acts,settings:S.settings,team:S.team,_updated_at:remoteTs}));}catch(e){}
+    S.con_deals=data.con_deals||[];S.con_acts=data.con_acts||[];S.dev_projects=data.dev_projects||[];S.dev_acts=data.dev_acts||[];S.settings=data.settings||{firm:'Thomas Park'};S.team=data.team||['AK','BJ','CR','DL','ES'];
+    try{localStorage.setItem('tg9',JSON.stringify({con_deals:S.con_deals,con_acts:S.con_acts,dev_projects:S.dev_projects,dev_acts:S.dev_acts,settings:S.settings,team:S.team,_updated_at:remoteTs}));}catch(e){}
   } else if(local&&localTs>remoteTs){
     // localStorage is newer (e.g. Supabase write pending) — use it and flush to Supabase now
-    S.con_deals=local.con_deals||[];S.con_acts=local.con_acts||[];S.settings=local.settings||{firm:'Thomas Park'};S.team=local.team||['AK','BJ','CR','DL','ES'];
+    S.con_deals=local.con_deals||[];S.con_acts=local.con_acts||[];S.dev_projects=local.dev_projects||[];S.dev_acts=local.dev_acts||[];S.settings=local.settings||{firm:'Thomas Park'};S.team=local.team||['AK','BJ','CR','DL','ES'];
     save();
   } else if(!error||(error&&error.code==='PGRST116')){
     // No row anywhere — seed from localStorage and create the row
@@ -525,9 +534,11 @@ async function onSignedIn(session){
     console.warn('Supabase fetch failed, using local cache:',error);
     load();
   }
+  // One-time seed: first run after the Development tracker shipped, nobody has dev_projects yet
+  if(!S.dev_projects.length){S.dev_projects=JSON.parse(JSON.stringify(DEV_SEED));save();}
   // Real-time sync
   sb.channel('app_data').on('postgres_changes',{event:'UPDATE',schema:'public',table:'app_data',filter:'id=eq.main'},payload=>{
-    const d=payload.new;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
+    const d=payload.new;S.con_deals=d.con_deals||S.con_deals;S.con_acts=d.con_acts||S.con_acts;S.dev_projects=d.dev_projects||S.dev_projects;S.dev_acts=d.dev_acts||S.dev_acts;S.team=d.team||S.team;S.settings=d.settings||S.settings;
     navigate(S.view);
   }).subscribe();
   const startView=USER_SECTION_PERMS[session.user.email]?USER_SECTION_PERMS[session.user.email][0]:(USER_DEFAULT_VIEW[session.user.email]||'con_dash');
@@ -551,12 +562,12 @@ function navigate(v){
   const el=document.getElementById('view');
   el.className='';
   document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.v===v));
-  const T={settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Pursuits Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',con_cal:'Bid Calendar',con_reports:'Reports'};
+  const T={settings:'Settings',con_dash:'Construction Dashboard',con_snap:'Active Pursuits Snapshot',con_deals:'Construction Pipeline',con_pipe:'All Projects Archive',con_cal:'Bid Calendar',con_reports:'Reports',dev_dash:'Development Dashboard',dev_projects:'All Development Projects'};
   document.getElementById('pg-title').textContent=T[v]||v;
   const btn=document.getElementById('topbar-new-btn');
-  const isConView=v==='con_deals'||v==='con_snap'||v==='con_dash'||v==='con_pipe'||v==='con_cal';
-  if(btn){btn.textContent='+ New Job';btn.style.display=isConView?'':'none'}
-  ({settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,con_cal:rConCal,con_reports:rConReports})[v]();
+  const NEW_BTN={con_dash:'+ New Job',con_snap:'+ New Job',con_deals:'+ New Job',con_pipe:'+ New Job',con_cal:'+ New Job',dev_dash:'+ New Project',dev_projects:'+ New Project'};
+  if(btn){const lbl=NEW_BTN[v];btn.textContent=lbl||'';btn.style.display=lbl?'':'none'}
+  ({settings:rSettings,con_dash:rConDash,con_snap:rConSnap,con_deals:rConDeals,con_pipe:rConPipe,con_cal:rConCal,con_reports:rConReports,dev_dash:rDevDash,dev_projects:rDevProjects})[v]();
   const sfEl=document.getElementById('sfirm');if(sfEl)sfEl.textContent=S.settings.firm||'Telegraph';
 }
 let _conMap=null,_conMapMarkers=[],_conInfoWin=null,_conPano=null,_conSvPos=null,_conSatellite=false;
@@ -608,7 +619,7 @@ function rSettings(){
 }
 function addMember(){const v=(document.getElementById('new-mbr').value||'').trim().toUpperCase().slice(0,3);if(!v||S.team.includes(v))return;S.team.push(v);save();rSettings()}
 function remMember(m){S.team=S.team.filter(x=>x!==m);save();rSettings()}
-function topNewBtn(){openConForm();}
+function topNewBtn(){if(S.view==='dev_dash'||S.view==='dev_projects')openDevForm();else openConForm();}
 function toast(msg){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className='toast';t.textContent=msg;w.appendChild(t);setTimeout(()=>t.remove(),3000)}
 function closeMo(id,e){if(e&&e.target.id!==id)return;document.getElementById(id).classList.remove('show')}
 // ============================================================
@@ -1240,6 +1251,290 @@ function bCalLookAhead(){
     '</div>'+
   '</div>';
 }
+
+// ============================================================
+// DEVELOPMENT PROJECTS — phase / budget / document tracker
+// (reusable template: add new projects via "+ New Project")
+// ============================================================
+const DEV_PHASES=[
+  {id:'predev',label:'Pre-Development / Entitlement',color:'#f59e0b',short:'PRE'},
+  {id:'design',label:'Design & Permitting',color:'#3b82f6',short:'DSN'},
+  {id:'construction',label:'Under Construction',color:'#10b981',short:'CON'},
+  {id:'closeout',label:'Closeout / Lease-Up',color:'#8b5cf6',short:'CLO'},
+  {id:'completed',label:'Completed',color:'#14b8a6',short:'CMP'},
+  {id:'on_hold',label:'On Hold',color:'#64748b',short:'HLD'},
+];
+const DEV_DOC_T=['Site Plan Approval','Building Permit','Zoning Variance / Special Exception','Environmental Approval','NPDES / Stormwater Permit','Utility Easements','Final Plat','Certificate of Occupancy'];
+const DEV_BUDGET_CATS=['Land Acquisition','Hard Costs','Soft Costs','FF&E','Contingency','Financing Costs'];
+const DEV_SEED=[{
+  id:'dev0001',name:'Lofts at Eastport Landing',addr:'',phase:'design',startDate:'',targetDate:'',notes:'',createdAt:new Date().toISOString(),
+  budget:DEV_BUDGET_CATS.map(c=>({cat:c,budgeted:0,actual:0})),
+  milestones:[{label:'Project created',ts:new Date().toISOString(),note:''}],
+  docs:[],rfis:[],submittals:[]
+}];
+function devSobj(pid){return DEV_PHASES.find(s=>s.id===pid)||DEV_PHASES[0];}
+function addDevAct(ico,msg){S.dev_acts.unshift({ico,msg,ts:new Date().toISOString()});if(S.dev_acts.length>100)S.dev_acts.pop();}
+function devBudgetTotals(d){const b=(a,x)=>a+(Number(x)||0);return{budgeted:(d.budget||[]).reduce((a,x)=>a+(Number(x.budgeted)||0),0),actual:(d.budget||[]).reduce((a,x)=>a+(Number(x.actual)||0),0)};}
+
+// ---- DEVELOPMENT DASHBOARD ----
+function rDevDash(){
+  const el=document.getElementById('view');
+  el.className='';
+  const projects=S.dev_projects;
+  const cards=projects.map(p=>{
+    const ph=devSobj(p.phase);
+    const tot=devBudgetTotals(p);
+    const variance=tot.budgeted-tot.actual;
+    const openRfi=(p.rfis||[]).filter(r=>r.status==='Open').length;
+    const openSub=(p.submittals||[]).filter(s=>s.status==='Pending'||s.status==='Revise').length;
+    const daysLeft=p.targetDate?Math.ceil((new Date(p.targetDate)-new Date())/864e5):null;
+    return '<div class="kpi" style="cursor:pointer;padding:14px 16px;border-top:3px solid '+ph.color+'" onclick="openDevDetFull(\''+p.id+'\')">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+        '<div style="font-weight:700;font-size:14px">'+esc(p.name)+'</div>'+
+        '<span class="badge" style="background:'+ph.color+'20;color:'+ph.color+'">'+ph.label+'</span>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">'+
+        '<div><div class="kpi-lbl">Budget Variance</div><div style="font-size:16px;font-weight:700;color:'+(variance<0?'var(--red)':'var(--green)')+'">'+fmt$(variance)+'</div></div>'+
+        '<div><div class="kpi-lbl">Open RFIs</div><div style="font-size:16px;font-weight:700">'+openRfi+'</div></div>'+
+        '<div><div class="kpi-lbl">Open Submittals</div><div style="font-size:16px;font-weight:700">'+openSub+'</div></div>'+
+        '<div><div class="kpi-lbl">Target Completion</div><div style="font-size:13px;font-weight:600">'+(p.targetDate?fmtD(p.targetDate)+(daysLeft!==null?' ('+daysLeft+'d)':''):'--')+'</div></div>'+
+      '</div>'+
+    '</div>';
+  }).join('')||'<div class="empty">No development projects yet. Click "+ New Project" to add one.</div>';
+  let feed=S.dev_acts.slice(0,10).map(a=>'<div class="act-item"><div class="act-ico">'+a.ico+'</div><div class="act-body"><div>'+a.msg+'</div><div class="act-time">'+fmtDT(a.ts)+'</div></div></div>').join('');
+  if(!feed)feed='<div class="empty">No activity yet.</div>';
+  el.innerHTML='<div style="display:grid;grid-template-columns:1fr 280px;gap:16px">'+
+    '<div style="display:flex;flex-direction:column;gap:12px">'+cards+'</div>'+
+    '<div style="background:#fff;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow-y:auto;max-height:480px">'+
+      '<div style="padding:10px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff">Recent Activity</div>'+
+      '<div class="act-feed" style="padding:0">'+feed+'</div>'+
+    '</div>'+
+  '</div>';
+}
+
+// ---- ALL DEVELOPMENT PROJECTS (list) ----
+function rDevProjects(){
+  const el=document.getElementById('view');
+  const thHtml=['Project','Phase','Start Date','Target Completion','Budgeted','Actual','Variance'].map(c=>'<th>'+c+'</th>').join('');
+  const rows=S.dev_projects.map(p=>{
+    const ph=devSobj(p.phase);
+    const tot=devBudgetTotals(p);
+    const variance=tot.budgeted-tot.actual;
+    return '<tr style="cursor:pointer" onclick="openDevDetFull(\''+p.id+'\')">'+
+      '<td style="font-weight:600">'+esc(p.name)+'</td>'+
+      '<td><span class="badge" style="background:'+ph.color+'20;color:'+ph.color+'">'+ph.short+'</span></td>'+
+      '<td>'+fmtD(p.startDate)+'</td>'+
+      '<td>'+fmtD(p.targetDate)+'</td>'+
+      '<td>'+fmt$(tot.budgeted)+'</td>'+
+      '<td>'+fmt$(tot.actual)+'</td>'+
+      '<td style="font-weight:600;color:'+(variance<0?'var(--red)':'var(--green)')+'">'+fmt$(variance)+'</td>'+
+    '</tr>';
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No development projects yet.</td></tr>';
+  el.innerHTML='<div class="tbl-wrap"><table><thead><tr>'+thHtml+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+// ---- DEVELOPMENT PROJECT FORM ----
+function openDevForm(did){
+  const d=did?S.dev_projects.find(x=>x.id===did):null;
+  const phOpts=DEV_PHASES.map(s=>'<option value="'+s.id+'"'+(d&&d.phase===s.id?' selected':'')+'>'+s.label+'</option>').join('');
+  document.getElementById('summo-title').textContent=did?'Edit Project':'New Development Project';
+  document.getElementById('summo-body').innerHTML=
+    '<form onsubmit="sDevForm(event,\''+(did||'')+'\')">'+
+    '<div class="form-grid">'+
+      '<div class="form-group full"><label>Project Name *</label><input type="text" id="devf-name" required value="'+esc(d?d.name:'')+'"></div>'+
+      '<div class="form-group full"><label>Address</label><input type="text" id="devf-addr" value="'+esc(d?d.addr:'')+'"></div>'+
+      '<div class="form-group"><label>Phase</label><select id="devf-phase">'+phOpts+'</select></div>'+
+      '<div class="form-group"><label>Start Date</label><input type="date" id="devf-start" value="'+(d?d.startDate:'')+'"></div>'+
+      '<div class="form-group"><label>Target Completion</label><input type="date" id="devf-target" value="'+(d?d.targetDate:'')+'"></div>'+
+      '<div class="form-group full"><label>Notes</label><textarea id="devf-notes" rows="3">'+esc(d?d.notes:'')+'</textarea></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById(\'summo\').style.display=\'none\'">Cancel</button>'+
+      '<button type="submit" class="btn btn-primary btn-sm">'+(did?'Save Changes':'Create Project')+'</button>'+
+    '</div></form>';
+  const body=document.getElementById('summo-body');body.scrollTop=0;
+  document.getElementById('summo').style.display='flex';
+}
+function sDevForm(e,did){
+  e.preventDefault();
+  const now=new Date().toISOString();
+  let d=did?S.dev_projects.find(x=>x.id===did):null;
+  const prevPhase=d?d.phase:null;
+  const isNew=!d;
+  if(!d){d={id:uid(),createdAt:now,budget:DEV_BUDGET_CATS.map(c=>({cat:c,budgeted:0,actual:0})),milestones:[],docs:[],rfis:[],submittals:[],notes:''};S.dev_projects.push(d);}
+  d.name=document.getElementById('devf-name').value.trim();
+  d.addr=document.getElementById('devf-addr').value.trim();
+  d.phase=document.getElementById('devf-phase').value;
+  d.startDate=document.getElementById('devf-start').value;
+  d.targetDate=document.getElementById('devf-target').value;
+  d.notes=document.getElementById('devf-notes').value.trim();
+  if(!d.milestones)d.milestones=[];
+  if(isNew){d.milestones.push({label:'Project created',ts:now,note:''});addDevAct('&#9733;','<strong>'+esc(d.name)+'</strong> created',null);}
+  else if(prevPhase&&prevPhase!==d.phase){d.milestones.push({label:'Phase changed: '+devSobj(prevPhase).label+' \u2192 '+devSobj(d.phase).label,ts:now,note:''});addDevAct('&#8594;','<strong>'+esc(d.name)+'</strong> moved to <strong>'+devSobj(d.phase).label+'</strong>',null);}
+  else addDevAct('&#9998;','<strong>'+esc(d.name)+'</strong> updated',null);
+  save();document.getElementById('summo').style.display='none';navigate(S.view);toast(isNew?'Project created':'Project updated');
+}
+function confirmDelDev(did){
+  const d=S.dev_projects.find(x=>x.id===did);if(!d)return;
+  document.getElementById('conf-title').textContent='Delete Project';
+  document.getElementById('conf-msg').textContent='Delete "'+d.name+'"? This cannot be undone.';
+  document.getElementById('conf-ok').onclick=()=>{S.dev_projects=S.dev_projects.filter(x=>x.id!==did);save();closeMo('confMo');closeMo('detMo');navigate('dev_dash');toast('Project deleted');};
+  document.getElementById('confMo').classList.add('show');
+}
+
+// ---- DEVELOPMENT DETAIL MODAL (full tabbed — reuses detMo) ----
+function openDevDetFull(did){
+  const d=S.dev_projects.find(x=>x.id===did);if(!d)return;
+  S.dev_did=did;S.dev_dtab='ov';
+  document.getElementById('det-title').textContent=d.name;
+  renderDevDetTabs();renderDevDetBody();renderDevDetFt();
+  document.getElementById('detMo').classList.add('show');
+}
+function renderDevDetTabs(){
+  const tabs=[{id:'ov',label:'Overview'},{id:'ms',label:'Milestones'},{id:'budget',label:'Budget'},{id:'docs',label:'Documents'},{id:'rfi',label:'RFIs & Submittals'},{id:'notes',label:'Notes'}];
+  document.getElementById('det-tabs').innerHTML=tabs.map(t=>'<div class="tab'+(S.dev_dtab===t.id?' active':'')+'" onclick="S.dev_dtab=\''+t.id+'\';renderDevDetTabs();renderDevDetBody()">'+t.label+'</div>').join('');
+}
+function renderDevDetBody(){
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  const el=document.getElementById('det-body');
+  if(S.dev_dtab==='ov')el.innerHTML=bDevOv(d);
+  else if(S.dev_dtab==='ms')el.innerHTML=bDevMs(d);
+  else if(S.dev_dtab==='budget')el.innerHTML=bDevBudget(d);
+  else if(S.dev_dtab==='docs')el.innerHTML=bDevDocs(d);
+  else if(S.dev_dtab==='rfi')el.innerHTML=bDevRfi(d);
+  else el.innerHTML=bDevNotes(d);
+}
+function renderDevDetFt(){
+  const did=S.dev_did;
+  document.getElementById('det-ft').innerHTML=
+    '<button class="btn btn-ghost btn-sm" onclick="closeMo(\'detMo\');openDevForm(\''+did+'\')">Edit</button>'+
+    '<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="closeMo(\'detMo\');confirmDelDev(\''+did+'\')">Delete</button>';
+}
+function bDevOv(d){
+  const idx=DEV_PHASES.findIndex(s=>s.id===d.phase);
+  const ph=devSobj(d.phase);
+  const prog=DEV_PHASES.map((s,i)=>'<div class="prog-seg" style="background:'+(i<=idx?s.color:'var(--border)')+'"></div>').join('');
+  const tot=devBudgetTotals(d);
+  return '<div class="stage-banner" style="background:'+ph.color+'15;border:1px solid '+ph.color+'40"><div style="font-size:20px;font-weight:800;color:'+ph.color+'">'+ph.short+'</div><div><div style="color:'+ph.color+'">'+ph.label+'</div><div style="font-size:11px;color:var(--muted);font-weight:400">Phase '+(idx+1)+' of '+DEV_PHASES.length+'</div></div></div>'+
+    '<div class="prog-bar">'+prog+'</div>'+
+    '<div class="det-grid">'+
+      '<div class="info-block"><h4>Project Info</h4>'+
+        '<div class="info-row"><span class="lbl">Address</span><span class="val">'+esc(d.addr||'--')+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Start Date</span><span class="val">'+fmtD(d.startDate)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Target Completion</span><span class="val">'+fmtD(d.targetDate)+'</span></div>'+
+      '</div>'+
+      '<div class="info-block"><h4>Budget Summary</h4>'+
+        '<div class="info-row"><span class="lbl">Total Budgeted</span><span class="val">'+fmt$(tot.budgeted)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Total Actual</span><span class="val">'+fmt$(tot.actual)+'</span></div>'+
+        '<div class="info-row"><span class="lbl">Variance</span><span class="val" style="color:'+((tot.budgeted-tot.actual)<0?'var(--red)':'var(--green)')+'">'+fmt$(tot.budgeted-tot.actual)+'</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="margin-top:16px">'+
+      (idx<DEV_PHASES.length-1?'<button class="btn btn-primary btn-sm" onclick="devAdvancePhase(\''+d.id+'\')">Advance to '+DEV_PHASES[idx+1].label+' &rarr;</button>':'<span style="color:var(--green);font-size:12px;font-weight:600">&#10003; Final Phase</span>')+
+    '</div>';
+}
+function devAdvancePhase(did){
+  const d=S.dev_projects.find(x=>x.id===did);if(!d)return;
+  const idx=DEV_PHASES.findIndex(s=>s.id===d.phase);const nxt=DEV_PHASES[idx+1];if(!nxt)return;
+  const prev=devSobj(d.phase).label;d.phase=nxt.id;
+  if(!d.milestones)d.milestones=[];
+  d.milestones.push({label:'Advanced: '+prev+' \u2192 '+nxt.label,ts:new Date().toISOString(),note:''});
+  addDevAct('&#8594;','<strong>'+esc(d.name)+'</strong> advanced to <strong>'+nxt.label+'</strong>',null);
+  save();renderDevDetBody();renderDevDetFt();toast('Advanced to '+nxt.label);
+}
+function bDevMs(d){
+  const ms=(d.milestones||[]).slice().reverse();
+  const list=ms.length?'<div class="timeline">'+ms.map(m=>'<div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><div class="tl-title">'+esc(m.label)+'</div><div class="tl-meta">'+fmtDT(m.ts)+'</div>'+(m.note?'<div class="tl-note">'+esc(m.note)+'</div>':'')+'</div></div>').join('')+'</div>':'<div class="empty">No milestones yet.</div>';
+  return list+'<div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="addDevMilestone()">+ Add Milestone</button></div>';
+}
+function addDevMilestone(){
+  const label=prompt('Milestone:');if(!label)return;
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  if(!d.milestones)d.milestones=[];
+  d.milestones.push({label,ts:new Date().toISOString(),note:''});
+  addDevAct('&#9733;','<strong>'+esc(d.name)+'</strong>: '+esc(label),null);
+  save();renderDevDetBody();
+}
+function bDevBudget(d){
+  if(!d.budget)d.budget=[];
+  const rows=d.budget.map((b,i)=>{
+    const variance=(Number(b.budgeted)||0)-(Number(b.actual)||0);
+    return '<tr><td style="font-weight:500">'+esc(b.cat)+'</td>'+
+      '<td><input type="number" min="0" value="'+(b.budgeted||0)+'" style="width:110px" oninput="updateDevBudget('+i+',\'budgeted\',this.value)"></td>'+
+      '<td><input type="number" min="0" value="'+(b.actual||0)+'" style="width:110px" oninput="updateDevBudget('+i+',\'actual\',this.value)"></td>'+
+      '<td id="devbv-'+i+'" style="font-weight:600;color:'+(variance<0?'var(--red)':'var(--green)')+'">'+fmt$(variance)+'</td>'+
+      '<td><button class="btn btn-ghost btn-sm" onclick="removeDevBudgetRow('+i+')" style="color:var(--red)">&times;</button></td>'+
+    '</tr>';
+  }).join('');
+  const tot=devBudgetTotals(d);
+  return '<div class="tbl-wrap"><table><thead><tr><th>Category</th><th>Budgeted ($)</th><th>Actual ($)</th><th>Variance</th><th></th></tr></thead><tbody>'+rows+
+    '</tbody><tfoot><tr><td style="font-weight:700">Total</td><td id="devbt-b" style="font-weight:700">'+fmt$(tot.budgeted)+'</td><td id="devbt-a" style="font-weight:700">'+fmt$(tot.actual)+'</td><td id="devbt-v" style="font-weight:700;color:'+((tot.budgeted-tot.actual)<0?'var(--red)':'var(--green)')+'">'+fmt$(tot.budgeted-tot.actual)+'</td><td></td></tr></tfoot>'+
+    '</table></div>'+
+    '<div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="addDevBudgetRow()">+ Add Category</button></div>';
+}
+function updateDevBudget(i,field,val){
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  d.budget[i][field]=Number(val)||0;save();
+  const b=d.budget[i];const variance=(Number(b.budgeted)||0)-(Number(b.actual)||0);
+  const vEl=document.getElementById('devbv-'+i);if(vEl){vEl.textContent=fmt$(variance);vEl.style.color=variance<0?'var(--red)':'var(--green)';}
+  const tot=devBudgetTotals(d);
+  const bEl=document.getElementById('devbt-b');if(bEl)bEl.textContent=fmt$(tot.budgeted);
+  const aEl=document.getElementById('devbt-a');if(aEl)aEl.textContent=fmt$(tot.actual);
+  const vtEl=document.getElementById('devbt-v');if(vtEl){vtEl.textContent=fmt$(tot.budgeted-tot.actual);vtEl.style.color=(tot.budgeted-tot.actual)<0?'var(--red)':'var(--green)';}
+}
+function addDevBudgetRow(){
+  const cat=prompt('Budget category:');if(!cat)return;
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  if(!d.budget)d.budget=[];d.budget.push({cat,budgeted:0,actual:0});save();renderDevDetBody();
+}
+function removeDevBudgetRow(i){
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  d.budget.splice(i,1);save();renderDevDetBody();
+}
+function bDevDocs(d){
+  if(!d.docs)d.docs=[];
+  const ico={received:'<span style="color:var(--green)">&#10003;</span>',pending:'<span style="color:var(--amber)">&#9679;</span>',na:'<span style="color:var(--muted)">&#8212;</span>'};
+  const rows=d.docs.map((doc,i)=>'<div class="doc-item"><div>'+ico[doc.status]+' '+esc(doc.type)+'</div><select onchange="setDevDocSt('+i+',this.value)" style="width:120px"><option value="pending"'+(doc.status==='pending'?' selected':'')+'>Pending</option><option value="received"'+(doc.status==='received'?' selected':'')+'>Received</option><option value="na"'+(doc.status==='na'?' selected':'')+'>N/A</option></select></div>').join('');
+  const list=rows||'<div class="empty">No documents or approvals logged yet.</div>';
+  return '<div class="doc-list">'+list+'</div>'+
+    '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">'+
+      DEV_DOC_T.map(t=>'<button class="btn btn-ghost btn-sm" onclick="addDevDocOfType(\''+t.replace(/'/g,"\\'")+'\')">+ '+t+'</button>').join('')+
+    '</div>'+
+    '<div style="margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="addDevDoc()">+ Add Other Document</button></div>';
+}
+function setDevDocSt(i,v){const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;d.docs[i].status=v;save();renderDevDetBody();}
+function addDevDocOfType(t){const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;if(!d.docs)d.docs=[];if(d.docs.some(x=>x.type===t))return;d.docs.push({type:t,status:'pending'});save();renderDevDetBody();}
+function addDevDoc(){const n=prompt('Document / approval name:');if(!n)return;const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;if(!d.docs)d.docs=[];d.docs.push({type:n,status:'pending'});save();renderDevDetBody();}
+function bDevRfi(d){
+  if(!d.rfis)d.rfis=[];if(!d.submittals)d.submittals=[];
+  const rfiRows=d.rfis.map((r,i)=>'<div class="doc-item"><div style="min-width:0"><div style="font-weight:600;font-size:12px">'+esc(r.subject)+'</div><div style="font-size:11px;color:var(--muted)">Sent '+fmtD(r.sent)+(r.due?' &middot; Due '+fmtD(r.due):'')+'</div></div><select onchange="setDevRfiStatus('+i+',this.value)" style="width:110px"><option value="Open"'+(r.status==='Open'?' selected':'')+'>Open</option><option value="Answered"'+(r.status==='Answered'?' selected':'')+'>Answered</option><option value="Closed"'+(r.status==='Closed'?' selected':'')+'>Closed</option></select></div>').join('')||'<div class="empty">No RFIs logged.</div>';
+  const subRows=d.submittals.map((s,i)=>'<div class="doc-item"><div style="min-width:0"><div style="font-weight:600;font-size:12px">'+esc(s.subject)+'</div><div style="font-size:11px;color:var(--muted)">Sent '+fmtD(s.sent)+(s.due?' &middot; Due '+fmtD(s.due):'')+'</div></div><select onchange="setDevSubStatus('+i+',this.value)" style="width:120px"><option value="Pending"'+(s.status==='Pending'?' selected':'')+'>Pending</option><option value="Approved"'+(s.status==='Approved'?' selected':'')+'>Approved</option><option value="Revise"'+(s.status==='Revise'?' selected':'')+'>Revise & Resubmit</option><option value="Rejected"'+(s.status==='Rejected'?' selected':'')+'>Rejected</option></select></div>').join('')||'<div class="empty">No submittals logged.</div>';
+  return '<div style="margin-bottom:8px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">RFIs</div>'+
+    '<div class="doc-list">'+rfiRows+'</div>'+
+    '<div style="margin:10px 0 18px"><button class="btn btn-ghost btn-sm" onclick="addDevRfi()">+ Add RFI</button></div>'+
+    '<div style="margin-bottom:8px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Submittals</div>'+
+    '<div class="doc-list">'+subRows+'</div>'+
+    '<div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="addDevSub()">+ Add Submittal</button></div>'+
+    '<p style="font-size:11px;color:var(--muted);margin-top:16px">RFI, submittal and drawing logs are tracked manually here for now — a Procore sync could be wired in later once API access is set up.</p>';
+}
+function setDevRfiStatus(i,v){const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;d.rfis[i].status=v;save();}
+function setDevSubStatus(i,v){const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;d.submittals[i].status=v;save();}
+function addDevRfi(){
+  const subject=prompt('RFI subject:');if(!subject)return;
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  if(!d.rfis)d.rfis=[];d.rfis.push({subject,status:'Open',sent:new Date().toISOString().slice(0,10),due:''});
+  addDevAct('&#128196;','RFI logged on <strong>'+esc(d.name)+'</strong>: '+esc(subject),null);
+  save();renderDevDetBody();
+}
+function addDevSub(){
+  const subject=prompt('Submittal description:');if(!subject)return;
+  const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;
+  if(!d.submittals)d.submittals=[];d.submittals.push({subject,status:'Pending',sent:new Date().toISOString().slice(0,10),due:''});
+  addDevAct('&#128196;','Submittal logged on <strong>'+esc(d.name)+'</strong>: '+esc(subject),null);
+  save();renderDevDetBody();
+}
+function bDevNotes(d){return '<div class="form-group"><label>Project Notes</label><textarea id="dev-notes-ta" rows="10" style="width:100%">'+esc(d.notes||'')+'</textarea></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveDevNote()">Save Notes</button></div>';}
+function saveDevNote(){const d=S.dev_projects.find(x=>x.id===S.dev_did);if(!d)return;d.notes=document.getElementById('dev-notes-ta').value||'';save();toast('Notes saved');}
 
 // ============================================================
 // REPORTS — shared builder + section-specific renderers
